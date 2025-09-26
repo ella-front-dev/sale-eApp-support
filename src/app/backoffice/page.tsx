@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm, useFieldArray, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { formSchema, FormData } from '@/types/form';
@@ -21,16 +21,60 @@ import {
   Save as SaveIcon
 } from '@mui/icons-material';
 
+// 임시 수정용 데이터 (실제로는 API에서 가져올 데이터)
+const mockEditData: FormData = {
+  title: "기존 고객 만족도 조사",
+  groups: [
+    {
+      name: "서비스 품질 평가",
+      components: [
+        {
+          name: "응답 속도 평가",
+          answers: [
+            {
+              content: "매우 만족",
+              subAnswers: [
+                { content: "빠른 응답이 좋았습니다" }
+              ]
+            },
+            {
+              content: "보통",
+              subAnswers: []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+};
 
 export default function BackofficePage() {
-  const { control, handleSubmit, formState: { errors }, watch } = useForm<FormData>({
+  // URL 파라미터나 props로 편집 모드 결정 (예시)
+  const isEditMode = true; // 수정 모드 테스트용 - 실제로는 useSearchParams() 등으로 판단
+  
+  const { control, handleSubmit, formState: { errors }, watch, reset } = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: '',
       groups: []
     }
   });
-  
+
+  // API에서 데이터 로드 (수정 모드일 때)
+  useEffect(() => {
+    if (isEditMode) {
+      // 실제로는 API 호출: fetchFormData(formId).then(data => reset(data))
+      // 시뮬레이션: 2초 후에 데이터 로드
+      const timer = setTimeout(() => {
+        console.log('📡 API에서 기존 데이터 로드 중...');
+        reset(mockEditData);
+        console.log('✅ 기존 데이터 로드 완료!');
+      }, 1000);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [isEditMode, reset]);
+
   const { fields: groups, append: appendGroup, remove: removeGroup } = useFieldArray({
     control,
     name: 'groups'
@@ -44,10 +88,25 @@ export default function BackofficePage() {
     });
   };
 
+  // 폼 초기화 (테스트용)
+  const handleResetForm = () => {
+    reset({
+      title: '',
+      groups: []
+    });
+    console.log('🔄 폼이 초기화되었습니다');
+  };
+
+  // 샘플 데이터 로드 (테스트용)
+  const loadSampleData = () => {
+    reset(mockEditData);
+    console.log('📋 샘플 데이터가 로드되었습니다');
+  };
+
   // 폼 제출
   const onSubmit = (data: FormData) => {
     console.log('✅ Form Validation Passed!');
-    console.log('📋 Form Data:', data);
+    console.log(`📋 ${isEditMode ? '수정' : '등록'} Form Data:`, data);
     
     // 데이터 통계
     const stats = {
@@ -110,12 +169,28 @@ export default function BackofficePage() {
                 그룹 추가
               </Button>
               <Button
+                type="button"
+                variant="outlined"
+                color="secondary"
+                onClick={loadSampleData}
+              >
+                📋 샘플 데이터 로드
+              </Button>
+              <Button
+                type="button"
+                variant="outlined"
+                color="warning"
+                onClick={handleResetForm}
+              >
+                🔄 폼 초기화
+              </Button>
+              <Button
                 type="submit"
                 variant="contained"
                 startIcon={<SaveIcon />}
                 color="primary"
               >
-                저장 및 검증
+                {isEditMode ? '수정 완료' : '저장 및 검증'}
               </Button>
             </Box>
 

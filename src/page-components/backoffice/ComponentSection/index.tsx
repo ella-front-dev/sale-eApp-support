@@ -1,5 +1,5 @@
 import React from 'react';
-import { Control, FieldErrors, useFieldArray, Controller } from 'react-hook-form';
+import { Control, FieldErrors, useFieldArray, Controller, useWatch } from 'react-hook-form';
 import { useCodeDuplicationCheck } from '@/hooks/useCodeDuplicationCheck';
 import {
   Box,
@@ -14,6 +14,7 @@ import {
   Delete as DeleteIcon
 } from '@mui/icons-material';
 import { FormData } from '@/types/form';
+import { PagePermissions, canDeleteItemByIndex } from '@/types/pageMode';
 import AnswerSection from '../AnswerSection';
 
 interface ComponentSectionProps {
@@ -22,6 +23,8 @@ interface ComponentSectionProps {
   componentIndex: number;
   onRemove: () => void;
   errors: FieldErrors<FormData>;
+  permissions: PagePermissions;
+  initialData?: FormData;
 }
 
 export default function ComponentSection({ 
@@ -29,7 +32,9 @@ export default function ComponentSection({
   groupIndex, 
   componentIndex, 
   onRemove,
-  errors
+  errors,
+  permissions,
+  initialData
 }: ComponentSectionProps) {
   const { fields: answers, append: appendAnswer, remove: removeAnswer } = useFieldArray({
     control,
@@ -38,6 +43,12 @@ export default function ComponentSection({
 
   // 중복 체크 훅
   const { checkComponentCodeDuplication } = useCodeDuplicationCheck(control);
+
+  // 현재 컴포넌트 정보 가져오기
+  const currentComponent = useWatch({
+    control,
+    name: `groups.${groupIndex}.components.${componentIndex}`
+  });
 
   const addAnswer = () => {
     appendAnswer({
@@ -68,6 +79,7 @@ export default function ComponentSection({
               helperText={componentError?.seq?.message}
               sx={{ width: 80 }}
               onChange={(e) => field.onChange(Number(e.target.value))}
+
             />
           )}
         />
@@ -97,6 +109,7 @@ export default function ComponentSection({
                 const upperValue = e.target.value.toUpperCase();
                 field.onChange(upperValue);
               }}
+
             />
           )}
         />
@@ -114,12 +127,20 @@ export default function ComponentSection({
               helperText={componentError?.name?.message}
               sx={{ flexGrow: 1 }}
               placeholder="예: 개인정보 입력"
+
             />
           )}
         />
-        <IconButton onClick={onRemove} color="error" size="small">
-          <DeleteIcon />
-        </IconButton>
+        {canDeleteItemByIndex(permissions, `groups.${groupIndex}.components`, componentIndex, initialData) && (
+          <IconButton 
+            onClick={onRemove} 
+            color="error" 
+            size="small"
+            title={permissions.canDeleteExisting ? "구성요소 삭제" : "새로 추가한 구성요소만 삭제 가능"}
+          >
+            <DeleteIcon />
+          </IconButton>
+        )}
       </Box>
 
       <Button
@@ -141,6 +162,8 @@ export default function ComponentSection({
           answerIndex={answerIndex}
           onRemove={() => removeAnswer(answerIndex)}
           errors={errors}
+          permissions={permissions}
+          initialData={initialData}
         />
       ))}
     </Paper>

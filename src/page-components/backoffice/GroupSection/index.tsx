@@ -18,6 +18,7 @@ import {
   ExpandMore as ExpandMoreIcon
 } from '@mui/icons-material';
 import { FormData } from '@/types/form';
+import { PageMode, PagePermissions, canDeleteItemByIndex } from '@/types/pageMode';
 import ComponentSection from '../ComponentSection';
 
 interface GroupSectionProps {
@@ -25,13 +26,17 @@ interface GroupSectionProps {
   groupIndex: number;
   onRemove: () => void;
   errors: FieldErrors<FormData>;
+  permissions: PagePermissions;
+  initialData?: FormData;
 }
 
 export default function GroupSection({ 
   control, 
   groupIndex, 
-  onRemove,
-  errors 
+  onRemove, 
+  errors,
+  permissions,
+  initialData
 }: GroupSectionProps) {
   const { fields: components, append: appendComponent, remove: removeComponent } = useFieldArray({
     control,
@@ -45,7 +50,13 @@ export default function GroupSection({
   const currentComponents = useWatch({
     control,
     name: `groups.${groupIndex}.components`
-  }) || [];
+  });
+
+  // 현재 그룹의 ID 가져오기
+  const currentGroup = useWatch({
+    control,
+    name: `groups.${groupIndex}`
+  });
 
   // Union 타입 날짜 정규화 유틸 (필수값)
   const normalizeDate = (value: Date | string): Date => {
@@ -59,10 +70,10 @@ export default function GroupSection({
     return new Date();
   };
 
-  // 무제한 날짜 감지 유틸
+  // 무제한 날짜 감지 유틸 (9999년 기준)
   const isInfiniteDate = (value: Date | string): boolean => {
     const date = normalizeDate(value);
-    return date.getFullYear() >= 2999;
+    return date.getFullYear() >= 9999;
   };
 
   // 그룹 생성시 기본 날짜 설정
@@ -76,7 +87,7 @@ export default function GroupSection({
     }
     
     if (!currentGroup?.endDate) {
-      setValue(`groups.${groupIndex}.endDate`, '2999-12-31T23:59:59'); // 무제한은 최대 날짜로 설정
+      setValue(`groups.${groupIndex}.endDate`, '9999-12-31T23:59:59'); // 무제한은 최대 날짜로 설정
     }
   }, [groupIndex, getValues, setValue]);
 
@@ -93,6 +104,23 @@ export default function GroupSection({
     // 특정 그룹의 컴포넌트들만 가져오기
     const groupComponents = getValues(`groups.${groupIndex}.components`);
     console.log('Group components:', groupComponents);
+  };
+
+  // 9999년 날짜 테스트 함수
+  const test9999Date = () => {
+    const test9999 = new Date('9999-12-31T23:59:59');
+    const dayjs9999 = dayjs('9999-12-31');
+    
+    console.log('=== 9999년 날짜 테스트 ===');
+    console.log('JavaScript Date:', test9999);
+    console.log('Date valid:', !isNaN(test9999.getTime()));
+    console.log('dayjs object:', dayjs9999);
+    console.log('dayjs valid:', dayjs9999.isValid());
+    console.log('dayjs format:', dayjs9999.format('YYYY-MM-DD'));
+    
+    // 그룹 종료일을 9999년으로 설정
+    setValue(`groups.${groupIndex}.endDate`, '9999-12-31T23:59:59');
+    console.log('그룹 종료일을 9999년으로 설정완료');
   };
 
   const addComponent = () => {
@@ -158,16 +186,19 @@ export default function GroupSection({
               />
             )}
           />
-          <IconButton
-            onClick={(e) => {
-              e.stopPropagation();
-              onRemove();
-            }}
-            color="error"
-            size="small"
-          >
-            <DeleteIcon />
-          </IconButton>
+          {canDeleteItemByIndex(permissions, "groups", groupIndex, initialData) && (
+            <IconButton
+              onClick={(e) => {
+                e.stopPropagation();
+                onRemove();
+              }}
+              color="error"
+              size="small"
+              title={permissions.canDeleteExisting ? "그룹 삭제" : "새로 추가한 그룹만 삭제 가능"}
+            >
+              <DeleteIcon />
+            </IconButton>
+          )}
         </Box>
       </AccordionSummary>
       <AccordionDetails>
@@ -184,8 +215,8 @@ export default function GroupSection({
                   field.onChange(newValue?.toDate() || new Date());
                 }}
                 format="YYYY-MM-DD"
-                minDate={dayjs('1900-01-01')}
-                maxDate={dayjs('2999-12-31')}
+                minDate={dayjs('1000-01-01')}
+                maxDate={dayjs('9999-12-31')}
                 slotProps={{
                   textField: {
                     size: 'small',
@@ -203,13 +234,13 @@ export default function GroupSection({
             render={({ field }) => (
               <DatePicker
                 label="종료일"
-                value={field.value ? dayjs(normalizeDate(field.value)) : dayjs('2999-12-31')}
+                value={field.value ? dayjs(normalizeDate(field.value)) : dayjs('9999-12-31')}
                 onChange={(newValue) => {
-                  field.onChange(newValue?.toDate() || new Date('2999-12-31'));
+                  field.onChange(newValue?.toDate() || new Date('9999-12-31'));
                 }}
                 format="YYYY-MM-DD"
-                minDate={dayjs('1900-01-01')}
-                maxDate={dayjs('2999-12-31')}
+                minDate={dayjs('1000-01-01')}
+                maxDate={dayjs('9999-12-31')}
                 slotProps={{
                   textField: {
                     size: 'small',
@@ -230,6 +261,7 @@ export default function GroupSection({
             startIcon={<AddIcon />}
             onClick={addComponent}
             size="small"
+            disabled={!permissions.canAdd}
           >
             구성 추가
           </Button>
@@ -243,6 +275,16 @@ export default function GroupSection({
           >
             날짜 정보 확인
           </Button>
+          
+          {/* 9999년 테스트 버튼 */}
+          <Button
+            variant="text"
+            onClick={test9999Date}
+            color="warning"
+            size="small"
+          >
+            9999년 테스트
+          </Button>
         </Box>
 
         {components.map((component, componentIndex) => (
@@ -253,6 +295,8 @@ export default function GroupSection({
             componentIndex={componentIndex}
             onRemove={() => removeComponent(componentIndex)}
             errors={errors}
+            permissions={permissions}
+            initialData={initialData}
           />
         ))}
       </AccordionDetails>

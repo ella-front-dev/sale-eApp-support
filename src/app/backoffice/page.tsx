@@ -4,6 +4,8 @@ import React, { useEffect } from 'react';
 import { useForm, useFieldArray, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { formSchema, FormData } from '@/types/form';
+import { PageMode, MODE_TITLES, MODE_BUTTON_TEXTS } from '@/types/pageMode';
+import { usePagePermissions } from '@/hooks/usePagePermissions';
 import GroupSection from '@/page-components/backoffice/GroupSection';
 import FormTextField from '@/components/FormTextField';
 import { useCodeDuplicationCheck } from '@/hooks/useCodeDuplicationCheck';
@@ -24,32 +26,38 @@ import {
 } from '@mui/icons-material';
 
 // 임시 수정용 데이터 (실제로는 API에서 가져올 데이터)
+// 기존 서버 데이터는 숫자 ID를 가지고 있어서 삭제 불가, 새로 추가한 항목은 UUID 형태라서 삭제 가능
 const mockEditData: FormData = {
   title: "기존 고객 만족도 조사",
   startDate: new Date('2024-01-01'),
   endDate: new Date('2024-12-31'),
   groups: [
     {
+      id: "1", // 서버에서 온 기존 데이터 (숫자 ID)
       seq: 1, // 그룹 채번
       name: "서비스 품질 평가",
       startDate: new Date('2024-01-01'),
       endDate: '2099-12-31T23:59:59',
       components: [
         {
+          id: "1", // 서버에서 온 기존 데이터 (숫자 ID)
           seq: 1, // 구성 채번
           code: "COMP_001", // 구성 코드
           name: "응답 속도 평가",
           answers: [
             {
+              id: "1", // 서버에서 온 기존 데이터 (숫자 ID)
               content: "매우 만족",
               subAnswers: [
                 { 
+                  id: "1", // 서버에서 온 기존 데이터 (숫자 ID)
                   code: "SUB_001", // 하위답변 코드
                   content: "빠른 응답이 좋았습니다" 
                 }
               ]
             },
             {
+              id: "2", // 서버에서 온 기존 데이터 (숫자 ID)
               content: "보통",
               subAnswers: []
             }
@@ -60,35 +68,53 @@ const mockEditData: FormData = {
   ]
 };
 
-export default function BackofficePage() {
-  // URL 파라미터나 props로 편집 모드 결정 (예시)
-  const isEditMode = true; // 수정 모드 테스트용 - 실제로는 useSearchParams() 등으로 판단
+interface BackofficePageProps {
+  mode?: PageMode;
+  formId?: string;
+}
+
+export default function BackofficePage({ 
+  mode: initialMode = 'register', 
+  formId 
+}: BackofficePageProps = {}) {
+  // 테스트용 모드 상태 (실제로는 URL 파라미터로 관리)
+  const [mode, setMode] = React.useState<PageMode>(initialMode);
+  // URL 파라미터로 모드 결정 (실제 구현시)
+  // const searchParams = useSearchParams();
+  // const mode = (searchParams.get('mode') as PageMode) || 'register';
+  // const formId = searchParams.get('id');
+
+  // 초기 데이터 저장 (기존 데이터 판별용)
+  const [initialData, setInitialData] = React.useState<FormData | null>(null);
+
+  const permissions = usePagePermissions(mode);
+  const pageTitle = MODE_TITLES[mode];
+  const buttonText = MODE_BUTTON_TEXTS[mode];
   
   const { control, handleSubmit, formState: { errors, isValid }, watch, reset, trigger, getValues } = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: '',
-      startDate: null,
-      endDate: null,
+      startDate: undefined,
+      endDate: undefined,
       groups: []
     }
   });
 
-  // API에서 데이터 로드 (수정 모드일 때)
+  // API에서 데이터 로드 (수정/업데이트 모드일 때)
   useEffect(() => {
-    if (isEditMode) {
+    if ((mode === 'edit' || mode === 'update') && formId) {
       // 실제로는 API 호출: fetchFormData(formId).then(data => reset(data))
       // 시뮬레이션: 2초 후에 데이터 로드
       const timer = setTimeout(() => {
-        console.log('📡 API에서 기존 데이터 로드 중...');
+        console.log(`📡 ${mode} 모드 - API에서 기존 데이터 로드 중...`);
         reset(mockEditData);
-        console.log('✅ 기존 데이터 로드 완료!');
+        console.log(`✅ ${mode} 모드 - 기존 데이터 로드 완료!`);
       }, 1000);
       
       return () => clearTimeout(timer);
     }
-    // isEditMode가 false일 때는 cleanup function 없음
-  }, [isEditMode, reset]);
+  }, [mode, formId, reset]);
 
   const { fields: groups, append: appendGroup, remove: removeGroup } = useFieldArray({
     control,
@@ -112,7 +138,7 @@ export default function BackofficePage() {
       seq: nextSeq,
       name: '',
       startDate: today,
-      endDate: '2999-12-31T23:59:59', // 무제한을 안전한 최대 날짜로 처리
+      endDate: '9999-12-31T23:59:59', // 무제한을 안전한 최대 날짜로 처리
       components: []
     });
     
@@ -123,8 +149,8 @@ export default function BackofficePage() {
   const handleResetForm = () => {
     reset({
       title: '',
-      startDate: null,
-      endDate: null,
+      startDate: undefined,
+      endDate: undefined,
       groups: []
     });
     console.log('🔄 폼이 초기화되었습니다');
@@ -133,8 +159,19 @@ export default function BackofficePage() {
   // 샘플 데이터 로드 (테스트용)
   const loadSampleData = () => {
     reset(mockEditData);
+    setInitialData(JSON.parse(JSON.stringify(mockEditData))); // 깊은 복사로 초기 데이터 저장
     console.log('📋 샘플 데이터가 로드되었습니다');
   };
+
+  // 실제 구현에서는 useEffect로 API 데이터 로드 시 초기 데이터 설정
+  React.useEffect(() => {
+    if (mode === 'edit' || mode === 'update') {
+      // API에서 기존 데이터 로드
+      // const data = await fetchFormData(formId);
+      // reset(data);
+      // setInitialData(JSON.parse(JSON.stringify(data)));
+    }
+  }, [mode, formId]);
 
   // 수동 전체 검증 (저장 버튼 외에 다른 곳에서 검증할 때)
   const validateAllFields = async () => {
@@ -207,7 +244,7 @@ export default function BackofficePage() {
     }
     
     console.log('📝 검증된 데이터:', data);
-    console.log(`📋 ${isEditMode ? '수정' : '등록'} Form Data:`, data);
+    console.log(`📋 ${mode} Form Data:`, data);
     
     // 데이터 통계
     const stats = {
@@ -236,8 +273,43 @@ export default function BackofficePage() {
   return (
     <Container maxWidth="xl" sx={{ py: 4 }}>
       <Typography variant="h4" gutterBottom>
-        백오피스 - 설문 폼 관리 (React Hook Form + Zod) ⚡
+        {pageTitle} - 설문 폼 관리 ⚡
       </Typography>
+
+      {/* 모드 표시 및 전환 */}
+      <Box sx={{ mb: 2, p: 2, backgroundColor: 'info.light', borderRadius: 1 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Typography variant="body2" color="info.contrastText">
+            <strong>현재 모드:</strong> {pageTitle} 
+            {mode === 'update' && ' (기존 항목 삭제 불가, 일부 필드만 수정 가능)'}
+          </Typography>
+          
+          {/* 테스트용 모드 전환 버튼 */}
+          <Box sx={{ display: 'flex', gap: 1 }}>
+            <Button 
+              size="small" 
+              variant={mode === 'register' ? 'contained' : 'outlined'}
+              onClick={() => setMode('register')}
+            >
+              등록
+            </Button>
+            <Button 
+              size="small" 
+              variant={mode === 'edit' ? 'contained' : 'outlined'}
+              onClick={() => setMode('edit')}
+            >
+              수정
+            </Button>
+            <Button 
+              size="small" 
+              variant={mode === 'update' ? 'contained' : 'outlined'}
+              onClick={() => setMode('update')}
+            >
+              업데이트
+            </Button>
+          </Box>
+        </Box>
+      </Box>
 
       <form onSubmit={handleSubmit(onSubmit)}>
         {/* 서식 제목 */}
@@ -362,6 +434,7 @@ export default function BackofficePage() {
                 variant="outlined"
                 startIcon={<AddIcon />}
                 onClick={addGroup}
+                disabled={!permissions.canAdd}
               >
                 그룹 추가
               </Button>
@@ -412,7 +485,7 @@ export default function BackofficePage() {
                 color="primary"
                 disabled={!isValid && Object.keys(errors).length > 0}
               >
-                {isEditMode ? '수정 완료' : '저장 및 검증'}
+{buttonText}
               </Button>
             </Box>
 
@@ -473,6 +546,8 @@ export default function BackofficePage() {
             groupIndex={groupIndex}
             onRemove={() => removeGroup(groupIndex)}
             errors={errors}
+            permissions={permissions}
+            initialData={initialData || undefined}
           />
         ))}
 

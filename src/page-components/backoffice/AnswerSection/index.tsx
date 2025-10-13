@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Control, FieldErrors, useFieldArray, Controller } from 'react-hook-form';
+import { Control, FieldErrors, useFieldArray, Controller, useWatch } from 'react-hook-form';
 import { useCodeDuplicationCheck } from '@/hooks/useCodeDuplicationCheck';
 import {
   Box,
@@ -17,6 +17,7 @@ import {
   Delete as DeleteIcon
 } from '@mui/icons-material';
 import { FormData } from '@/types/form';
+import { PagePermissions, canDeleteItemByIndex } from '@/types/pageMode';
 
 interface AnswerSectionProps {
   control: Control<FormData>;
@@ -25,6 +26,8 @@ interface AnswerSectionProps {
   answerIndex: number;
   onRemove: () => void;
   errors: FieldErrors<FormData>;
+  permissions: PagePermissions;
+  initialData?: FormData;
 }
 
 export default function AnswerSection({ 
@@ -33,7 +36,9 @@ export default function AnswerSection({
   componentIndex, 
   answerIndex, 
   onRemove,
-  errors
+  errors,
+  permissions,
+  initialData
 }: AnswerSectionProps) {
   const { fields: subAnswers, append: appendSubAnswer, remove: removeSubAnswer } = useFieldArray({
     control,
@@ -42,6 +47,12 @@ export default function AnswerSection({
 
   // 중복 체크 훅
   const { checkSubAnswerCodeDuplication } = useCodeDuplicationCheck(control);
+
+  // 현재 답변 정보 가져오기
+  const currentAnswer = useWatch({
+    control,
+    name: `groups.${groupIndex}.components.${componentIndex}.answers.${answerIndex}`
+  });
 
   const addSubAnswer = () => {
     const nextCode = `SUB_${String(subAnswers.length + 1).padStart(3, '0')}`;
@@ -108,9 +119,16 @@ export default function AnswerSection({
             ))}
           </Select>
         </FormControl>
-        <IconButton onClick={onRemove} color="error" size="small">
-          <DeleteIcon />
-        </IconButton>
+        {canDeleteItemByIndex(permissions, `groups.${groupIndex}.components.${componentIndex}.answers`, answerIndex, initialData) && (
+          <IconButton 
+            onClick={onRemove} 
+            color="error" 
+            size="small"
+            title={permissions.canDeleteExisting ? "답변 삭제" : "새로 추가한 답변만 삭제 가능"}
+          >
+            <DeleteIcon />
+          </IconButton>
+        )}
       </Box>
 
       {subAnswers.map((subAnswer, subAnswerIndex) => (
@@ -164,13 +182,16 @@ export default function AnswerSection({
                 />
               )}
             />
-            <IconButton
-              onClick={() => removeSubAnswer(subAnswerIndex)}
-              color="error"
-              size="small"
-            >
-              <DeleteIcon />
-            </IconButton>
+            {canDeleteItemByIndex(permissions, `groups.${groupIndex}.components.${componentIndex}.answers.${answerIndex}.subAnswers`, subAnswerIndex, initialData) && (
+              <IconButton
+                onClick={() => removeSubAnswer(subAnswerIndex)}
+                color="error"
+                size="small"
+                title={permissions.canDeleteExisting ? "하위답변 삭제" : "새로 추가한 하위답변만 삭제 가능"}
+              >
+                <DeleteIcon />
+              </IconButton>
+            )}
           </Box>
         </Box>
       ))}

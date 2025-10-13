@@ -31,7 +31,8 @@ export default function MuiThemeProvider({ children }: MuiThemeProviderProps) {
           month: 'MM',
           monthShort: 'MMM',
           dayOfMonth: 'DD',
-          fullDate: 'YYYY-MM-DD'
+          fullDate: 'YYYY-MM-DD',
+          normalDate: 'YYYY-MM-DD'
         }}
       >
         {children}

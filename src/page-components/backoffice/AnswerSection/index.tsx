@@ -1,11 +1,16 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Control, FieldErrors, useFieldArray, Controller } from 'react-hook-form';
+import { useCodeDuplicationCheck } from '@/hooks/useCodeDuplicationCheck';
 import {
   Box,
   IconButton,
   TextField,
   Button,
-  Chip
+  Chip,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel
 } from '@mui/material';
 import {
   Add as AddIcon,
@@ -35,10 +40,36 @@ export default function AnswerSection({
     name: `groups.${groupIndex}.components.${componentIndex}.answers.${answerIndex}.subAnswers`
   });
 
+  // 중복 체크 훅
+  const { checkSubAnswerCodeDuplication } = useCodeDuplicationCheck(control);
+
   const addSubAnswer = () => {
+    const nextCode = `SUB_${String(subAnswers.length + 1).padStart(3, '0')}`;
     appendSubAnswer({
+      code: nextCode,
       content: ''
     });
+  };
+
+  // 하위답변 개수 조정 함수
+  const adjustSubAnswersCount = (targetCount: number) => {
+    const currentCount = subAnswers.length;
+    
+    if (targetCount > currentCount) {
+      // 개수 증가: 새로운 하위답변 추가
+      for (let i = currentCount; i < targetCount; i++) {
+        const nextCode = `SUB_${String(i + 1).padStart(3, '0')}`;
+        appendSubAnswer({
+          code: nextCode,
+          content: ''
+        });
+      }
+    } else if (targetCount < currentCount) {
+      // 개수 감소: 뒤쪽 하위답변들 제거
+      for (let i = currentCount - 1; i >= targetCount; i--) {
+        removeSubAnswer(i);
+      }
+    }
   };
 
   const answerError = errors?.groups?.[groupIndex]?.components?.[componentIndex]?.answers?.[answerIndex];
@@ -63,14 +94,20 @@ export default function AnswerSection({
             />
           )}
         />
-        <Button
-          variant="text"
-          startIcon={<AddIcon />}
-          onClick={addSubAnswer}
-          size="small"
-        >
-          하위답변
-        </Button>
+        <FormControl size="small" sx={{ minWidth: 120 }}>
+          <InputLabel>하위답변 개수</InputLabel>
+          <Select
+            value={subAnswers.length}
+            label="하위답변 개수"
+            onChange={(e) => adjustSubAnswersCount(Number(e.target.value))}
+          >
+            {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((count) => (
+              <MenuItem key={count} value={count}>
+                {count}개
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
         <IconButton onClick={onRemove} color="error" size="small">
           <DeleteIcon />
         </IconButton>
@@ -80,6 +117,37 @@ export default function AnswerSection({
         <Box key={subAnswer.id} sx={{ ml: 4, mb: 1 }}>
           <Box display="flex" alignItems="center" gap={2}>
             <Chip label="↳ 하위답변" color="info" size="small" />
+            
+            {/* 하위답변 코드 필드 (중복 체크 포함) */}
+            <Controller
+              name={`groups.${groupIndex}.components.${componentIndex}.answers.${answerIndex}.subAnswers.${subAnswerIndex}.code`}
+              control={control}
+              rules={{
+                validate: (value) => {
+                  if (!value) return '코드를 입력해주세요';
+                  const duplicateError = checkSubAnswerCodeDuplication(value, groupIndex, componentIndex, answerIndex, subAnswerIndex);
+                  return duplicateError || true;
+                }
+              }}
+              render={({ field, fieldState }) => (
+                <TextField
+                  {...field}
+                  label="하위답변 코드"
+                  variant="outlined"
+                  size="small"
+                  error={!!fieldState.error}
+                  helperText={fieldState.error?.message}
+                  sx={{ width: 120 }}
+                  placeholder="예: SUB_001"
+                  onChange={(e) => {
+                    // 대문자로 변환
+                    const upperValue = e.target.value.toUpperCase();
+                    field.onChange(upperValue);
+                  }}
+                />
+              )}
+            />
+            
             <Controller
               name={`groups.${groupIndex}.components.${componentIndex}.answers.${answerIndex}.subAnswers.${subAnswerIndex}.content`}
               control={control}

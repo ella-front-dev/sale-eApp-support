@@ -1,5 +1,6 @@
 import React from 'react';
 import { Control, FieldErrors, useFieldArray, Controller } from 'react-hook-form';
+import { useCodeDuplicationCheck } from '@/hooks/useCodeDuplicationCheck';
 import {
   Box,
   IconButton,
@@ -35,6 +36,9 @@ export default function ComponentSection({
     name: `groups.${groupIndex}.components.${componentIndex}.answers`
   });
 
+  // 중복 체크 훅
+  const { checkComponentCodeDuplication } = useCodeDuplicationCheck(control);
+
   const addAnswer = () => {
     appendAnswer({
       content: '',
@@ -48,6 +52,55 @@ export default function ComponentSection({
     <Paper sx={{ p: 2, mb: 2, bgcolor: 'grey.50' }}>
       <Box display="flex" alignItems="center" gap={2} mb={2}>
         <Chip label="🔧 구성" color="secondary" size="small" />
+        
+        {/* 구성 순번 */}
+        <Controller
+          name={`groups.${groupIndex}.components.${componentIndex}.seq`}
+          control={control}
+          render={({ field }) => (
+            <TextField
+              {...field}
+              type="number"
+              label="순번"
+              variant="outlined"
+              size="small"
+              error={!!componentError?.seq}
+              helperText={componentError?.seq?.message}
+              sx={{ width: 80 }}
+              onChange={(e) => field.onChange(Number(e.target.value))}
+            />
+          )}
+        />
+        
+        {/* 구성 코드 (중복 체크 포함) */}
+        <Controller
+          name={`groups.${groupIndex}.components.${componentIndex}.code`}
+          control={control}
+          rules={{
+            validate: (value) => {
+              if (!value) return '코드를 입력해주세요';
+              const duplicateError = checkComponentCodeDuplication(value, groupIndex, componentIndex);
+              return duplicateError || true;
+            }
+          }}
+          render={({ field, fieldState }) => (
+            <TextField
+              {...field}
+              label="구성 코드"
+              variant="outlined"
+              size="small"
+              error={!!fieldState.error}
+              helperText={fieldState.error?.message}
+              sx={{ width: 150 }}
+              placeholder="예: COMP_001"
+              onChange={(e) => {
+                const upperValue = e.target.value.toUpperCase();
+                field.onChange(upperValue);
+              }}
+            />
+          )}
+        />
+        
         <Controller
           name={`groups.${groupIndex}.components.${componentIndex}.name`}
           control={control}

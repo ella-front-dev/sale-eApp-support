@@ -52,14 +52,15 @@ export const isNewItemByComparison = (
 ): boolean => {
   try {
     const pathArray = itemPath.split('.');
-    let initialItem = initialData;
-    let currentItem = currentData;
     
-    // 경로를 따라가며 해당 항목 찾기
-    for (const key of pathArray) {
-      initialItem = initialItem?.[key];
-      currentItem = currentItem?.[key];
-    }
+    // reduce를 사용한 함수형 접근 (ESLint 친화적)
+    const initialItem = pathArray.reduce((current, key) => {
+      return current?.[key];
+    }, initialData);
+    
+    const currentItem = pathArray.reduce((current, key) => {
+      return current?.[key];
+    }, currentData);
     
     // 초기 데이터에 없었다면 새로 추가된 항목
     return !initialItem && !!currentItem;
@@ -76,11 +77,11 @@ export const isNewItemByIndex = (
 ): boolean => {
   try {
     const pathArray = arrayPath.split('.');
-    let initialArray = initialData;
     
-    for (const key of pathArray) {
-      initialArray = initialArray?.[key];
-    }
+    // reduce를 사용한 함수형 접근 (ESLint 친화적)
+    const initialArray = pathArray.reduce((current, key) => {
+      return current?.[key];
+    }, initialData);
     
     const initialLength = Array.isArray(initialArray) ? initialArray.length : 0;
     return itemIndex >= initialLength; // 초기 길이보다 큰 인덱스면 새 항목

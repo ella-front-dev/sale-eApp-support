@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
-import { Control, FieldErrors, useFieldArray, Controller, useWatch, useFormContext } from 'react-hook-form';
+import { Control, FieldErrors, useFieldArray, Controller, useWatch, UseFormGetValues, UseFormSetValue } from 'react-hook-form';
+import { Virtuoso } from 'react-virtuoso';
 import {
   Box,
   IconButton,
@@ -8,7 +9,8 @@ import {
   AccordionDetails,
   TextField,
   Button,
-  Chip
+  Chip,
+  Typography
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
@@ -28,6 +30,8 @@ interface GroupSectionProps {
   errors: FieldErrors<FormData>;
   permissions: PagePermissions;
   initialData?: FormData;
+  getValues: UseFormGetValues<FormData>; // React Hook Form의 getValues 함수
+  setValue: UseFormSetValue<FormData>;  // React Hook Form의 setValue 함수
 }
 
 export default function GroupSection({ 
@@ -36,15 +40,16 @@ export default function GroupSection({
   onRemove, 
   errors,
   permissions,
-  initialData
+  initialData,
+  getValues,
+  setValue
 }: GroupSectionProps) {
   const { fields: components, append: appendComponent, remove: removeComponent } = useFieldArray({
     control,
     name: `groups.${groupIndex}.components`
   });
 
-  // getValues() 사용하여 현재 폼 데이터 가져오기
-  const { getValues, setValue } = useFormContext<FormData>();
+  // props로 받은 getValues, setValue 사용
 
   // 현재 그룹의 구성요소들 감시
   const currentComponents = useWatch({
@@ -52,11 +57,9 @@ export default function GroupSection({
     name: `groups.${groupIndex}.components`
   });
 
-  // 현재 그룹의 ID 가져오기
-  const currentGroup = useWatch({
-    control,
-    name: `groups.${groupIndex}`
-  });
+  // 🚀 성능 최적화: Component 가상화 임계값 설정 (테스트를 위해 낮게 설정)
+  const COMPONENT_VIRTUALIZATION_THRESHOLD = 5; // 5개 이상부터 가상화 적용 (테스트용)
+  const shouldUseComponentVirtualization = currentComponents.length >= COMPONENT_VIRTUALIZATION_THRESHOLD;
 
   // Union 타입 날짜 정규화 유틸 (필수값)
   const normalizeDate = (value: Date | string): Date => {
@@ -131,20 +134,35 @@ export default function GroupSection({
     // 자동 코드 생성: COMP_001, COMP_002 형태
     const nextCode = `COMP_${String(nextSeq).padStart(3, '0')}`;
     
+    // 기본 답변을 포함한 컴포넌트 생성
     appendComponent({
       seq: nextSeq,
       code: nextCode,
       name: '',
-      answers: []
+      answers: [
+        {
+          content: '만족',
+          subAnswers: []
+        },
+        {
+          content: '보통',
+          subAnswers: []
+        },
+        {
+          content: '불만족',
+          subAnswers: []
+        }
+      ]
     });
     
     console.log(`🔢 새 구성 추가 - 그룹 ${groupIndex + 1}, 구성 순번: ${nextSeq}, 코드: ${nextCode}`);
+    console.log(`💬 기본 답변 3개 추가 - 만족/보통/불만족`);
   };
 
   const groupError = errors?.groups?.[groupIndex];
 
   return (
-    <Accordion sx={{ mb: 2 }}>
+    <Accordion sx={{ mb: 2 }} defaultExpanded={true}>
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
         <Box display="flex" alignItems="center" gap={2} width="100%">
           <Chip label="📁 그룹" color="primary" size="small" />
@@ -167,6 +185,34 @@ export default function GroupSection({
                 onChange={(e) => field.onChange(Number(e.target.value))}
               />
             )}
+          />
+          
+          {/* 그룹 코드 입력 */}
+          <Controller
+            name={`groups.${groupIndex}.code`}
+            control={control}
+            render={({ field, fieldState }) => {
+              const fieldError = fieldState.error;
+              const groupCodeError = groupError?.code;
+              const hasError = !!fieldError || !!groupCodeError;
+              const errorMessage = fieldError?.message || groupCodeError?.message;
+              
+              return (
+                <TextField
+                  {...field}
+                  label="그룹 코드"
+                  variant="outlined"
+                  size="small"
+                  onClick={(e) => e.stopPropagation()}
+                  error={hasError}
+                  helperText={errorMessage || '대문자, 숫자, 언더스코어만 입력'}
+                  sx={{ width: 120 }}
+                  placeholder="GROUP_001"
+                  inputProps={{ style: { textTransform: 'uppercase' } }}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => field.onChange(e.target.value.toUpperCase())}
+                />
+              );
+            }}
           />
           
           <Controller
@@ -255,7 +301,7 @@ export default function GroupSection({
           />
         </Box>
 
-        <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+        <Box sx={{ display: 'flex', gap: 2, mb: 2, alignItems: 'center', flexWrap: 'wrap' }}>
           <Button
             variant="outlined"
             startIcon={<AddIcon />}
@@ -265,6 +311,18 @@ export default function GroupSection({
           >
             구성 추가
           </Button>
+          
+          {/* Component 가상화 상태 표시 */}
+          {components.length > 0 && (
+            <Chip
+              label={shouldUseComponentVirtualization 
+                ? `🚀 가상화 모드 (${components.length}개)` 
+                : `일반 모드 (${components.length}개)`
+              }
+              color={shouldUseComponentVirtualization ? "success" : "default"}
+              size="small"
+            />
+          )}
           
           {/* getValues() 사용 예시 버튼 */}
           <Button
@@ -287,18 +345,72 @@ export default function GroupSection({
           </Button>
         </Box>
 
-        {components.map((component, componentIndex) => (
-          <ComponentSection
-            key={component.id}
-            control={control}
-            groupIndex={groupIndex}
-            componentIndex={componentIndex}
-            onRemove={() => removeComponent(componentIndex)}
-            errors={errors}
-            permissions={permissions}
-            initialData={initialData}
-          />
-        ))}
+        {/* 🚀 성능 최적화: Component 가상화 또는 일반 렌더링 */}
+        {components.length === 0 ? (
+          // 빈 상태 처리
+          <Box sx={{ textAlign: 'center', py: 3, bgcolor: 'grey.50', borderRadius: 1 }}>
+            <Typography color="text.secondary" sx={{ mb: 2 }}>
+              🔧 아직 구성요소가 없습니다
+            </Typography>
+            <Button
+              variant="outlined"
+              size="small"
+              startIcon={<AddIcon />}
+              onClick={addComponent}
+            >
+              첫 번째 구성요소 추가하기
+            </Button>
+          </Box>
+        ) : shouldUseComponentVirtualization ? (
+          // 가상화 렌더링 (10개 이상) - 높이 자동 계산으로 개선
+          <Box sx={{ height: '600px', border: '1px solid #e0e0e0', borderRadius: 1, overflow: 'hidden' }}>
+            <Virtuoso
+              data={components}
+              itemContent={(index, component) => (
+                <Box sx={{ p: 2, mb: 1 }}>
+                  <ComponentSection
+                    key={component.id}
+                    control={control}
+                    groupIndex={groupIndex}
+                    componentIndex={index}
+                    onRemove={() => removeComponent(index)}
+                    errors={errors}
+                    permissions={permissions}
+                    initialData={initialData}
+                    getValues={getValues}
+                    setValue={setValue}
+                  />
+                </Box>
+              )}
+              // 🚀 높이 자동 계산 개선
+              defaultItemHeight={200}  // 기본 아이템 높이 설정
+              overscan={5}             // 화면 밖 렌더링 개수 증가
+              increaseViewportBy={{ top: 100, bottom: 100 }} // 뷰포트 확장
+              style={{
+                height: '100%',
+                width: '100%'
+              }}
+            />
+          </Box>
+        ) : (
+          // 일반 렌더링 (10개 미만)
+          <>
+            {components.map((component, componentIndex) => (
+              <ComponentSection
+                key={component.id}
+                control={control}
+                groupIndex={groupIndex}
+                componentIndex={componentIndex}
+                onRemove={() => removeComponent(componentIndex)}
+                errors={errors}
+                permissions={permissions}
+                initialData={initialData}
+                getValues={getValues}
+                setValue={setValue}
+              />
+            ))}
+          </>
+        )}
       </AccordionDetails>
     </Accordion>
   );

@@ -9,6 +9,7 @@ import {
   CardContent 
 } from '@mui/material';
 import { useRouter } from 'next/navigation';
+import ToastTest from '@/components/ToastTest';
 
 export default function Home() {
   const router = useRouter();
@@ -34,10 +35,25 @@ export default function Home() {
               <Button variant="contained" color="primary" sx={{ mr: 2 }} onClick={()=> router.push('/backoffice')}>
                 Back Office
               </Button>
-              <Button variant="outlined" color="secondary" onClick={()=> router.push('/eapp-support')}>
+              <Button variant="outlined" color="secondary" sx={{ mr: 2 }} onClick={()=> router.push('/eapp-support')}>
                 eApp Support
               </Button>
+              <Button variant="contained" color="success" onClick={()=> router.push('/search')}>
+                검색 팝업 데모
+              </Button>
             </Box>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardContent>
+            <Typography variant="h5" component="h2" gutterBottom>
+              Toast 알림 테스트
+            </Typography>
+            <Typography variant="body2" sx={{ mb: 2 }}>
+              BusinessError 발생 시 자동으로 토스트가 표시됩니다.
+            </Typography>
+            <ToastTest />
           </CardContent>
         </Card>
       </Box>

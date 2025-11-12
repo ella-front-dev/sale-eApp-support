@@ -4,6 +4,20 @@ import { FormData } from '@/types/form';
 export function useCodeDuplicationCheck(control: Control<FormData>) {
   const watchedData = useWatch({ control });
 
+  // 모든 Group Code 수집
+  const getAllGroupCodes = (): string[] => {
+    const codes: string[] = [];
+    if (!watchedData?.groups) return codes;
+
+    watchedData.groups.forEach(group => {
+      if (group.code) {
+        codes.push(group.code);
+      }
+    });
+
+    return codes;
+  };
+
   // 모든 Component Code 수집
   const getAllComponentCodes = (): string[] => {
     const codes: string[] = [];
@@ -40,12 +54,36 @@ export function useCodeDuplicationCheck(control: Control<FormData>) {
     return codes;
   };
 
-  // 모든 코드 수집 (Component + SubAnswer)
-  const getAllCodes = (): string[] => {
+  // Component + SubAnswer 코드 수집 (서로 중복 체크용)
+  const getComponentAndSubAnswerCodes = (): string[] => {
     return [...getAllComponentCodes(), ...getAllSubAnswerCodes()];
   };
 
-  // Component Code 중복 체크
+  // 모든 코드 수집 (Group + Component + SubAnswer) - 전체 통계용
+  const getAllCodes = (): string[] => {
+    return [...getAllGroupCodes(), ...getAllComponentCodes(), ...getAllSubAnswerCodes()];
+  };
+
+  // Group Code 중복 체크 (Group끼리만)
+  const checkGroupCodeDuplication = (
+    currentCode: string,
+    currentGroupIndex: number
+  ): string | null => {
+    if (!currentCode) return null;
+
+    let duplicateCount = 0;
+
+    // 다른 Group에서 같은 코드 사용하는지 확인
+    watchedData?.groups?.forEach((group, gIndex) => {
+      if (gIndex !== currentGroupIndex && group.code === currentCode) {
+        duplicateCount++;
+      }
+    });
+
+    return duplicateCount > 0 ? `그룹 코드 "${currentCode}"가 이미 사용 중입니다` : null;
+  };
+
+  // Component Code 중복 체크 (Component + SubAnswer와만)
   const checkComponentCodeDuplication = (
     currentCode: string,
     currentGroupIndex: number,
@@ -53,10 +91,9 @@ export function useCodeDuplicationCheck(control: Control<FormData>) {
   ): string | null => {
     if (!currentCode) return null;
 
-    const allCodes = getAllCodes();
     let duplicateCount = 0;
 
-    // 현재 위치가 아닌 다른 곳에서 같은 코드가 사용되는지 확인
+    // 다른 Component에서 같은 코드 사용하는지 확인
     watchedData?.groups?.forEach((group, gIndex) => {
       group.components?.forEach((component, cIndex) => {
         // 현재 위치가 아니고 같은 코드인 경우
@@ -78,10 +115,10 @@ export function useCodeDuplicationCheck(control: Control<FormData>) {
       });
     });
 
-    return duplicateCount > 0 ? `코드 "${currentCode}"가 이미 사용 중입니다` : null;
+    return duplicateCount > 0 ? `구성 코드 "${currentCode}"가 이미 사용 중입니다` : null;
   };
 
-  // SubAnswer Code 중복 체크
+  // SubAnswer Code 중복 체크 (Component + SubAnswer와만)
   const checkSubAnswerCodeDuplication = (
     currentCode: string,
     currentGroupIndex: number,
@@ -120,29 +157,47 @@ export function useCodeDuplicationCheck(control: Control<FormData>) {
       });
     });
 
-    return duplicateCount > 0 ? `코드 "${currentCode}"가 이미 사용 중입니다` : null;
+    return duplicateCount > 0 ? `하위답변 코드 "${currentCode}"가 이미 사용 중입니다` : null;
   };
 
   // 전체 중복 체크 결과
   const getDuplicationReport = () => {
-    const allCodes = getAllCodes();
-    const duplicates = allCodes.filter((code, index) => 
-      allCodes.indexOf(code) !== index
+    const groupCodes = getAllGroupCodes();
+    const componentAndSubAnswerCodes = getComponentAndSubAnswerCodes();
+    
+    // Group 코드 중복
+    const groupDuplicates = groupCodes.filter((code, index) => 
+      groupCodes.indexOf(code) !== index
     );
     
+    // Component + SubAnswer 코드 중복
+    const componentSubAnswerDuplicates = componentAndSubAnswerCodes.filter((code, index) => 
+      componentAndSubAnswerCodes.indexOf(code) !== index
+    );
+    
+    const allDuplicates = [...groupDuplicates, ...componentSubAnswerDuplicates];
+    
     return {
-      hasDuplicates: duplicates.length > 0,
-      duplicateCodes: [...new Set(duplicates)],
-      totalCodes: allCodes.length,
-      uniqueCodes: new Set(allCodes).size
+      hasDuplicates: allDuplicates.length > 0,
+      duplicateCodes: Array.from(new Set(allDuplicates)),
+      groupDuplicates: Array.from(new Set(groupDuplicates)),
+      componentSubAnswerDuplicates: Array.from(new Set(componentSubAnswerDuplicates)),
+      totalCodes: getAllCodes().length,
+      uniqueCodes: new Set(getAllCodes()).size,
+      groupCodesCount: groupCodes.length,
+      componentCodesCount: getAllComponentCodes().length,
+      subAnswerCodesCount: getAllSubAnswerCodes().length
     };
   };
 
   return {
+    checkGroupCodeDuplication,
     checkComponentCodeDuplication,
     checkSubAnswerCodeDuplication,
+    getAllGroupCodes,
     getAllComponentCodes,
     getAllSubAnswerCodes,
+    getComponentAndSubAnswerCodes,
     getAllCodes,
     getDuplicationReport
   };

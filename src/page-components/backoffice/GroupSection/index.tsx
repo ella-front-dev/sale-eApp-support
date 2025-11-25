@@ -1,16 +1,17 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Control, FieldErrors, useFieldArray, Controller, useWatch, UseFormGetValues, UseFormSetValue } from 'react-hook-form';
-import { Virtuoso } from 'react-virtuoso';
 import {
   Box,
   IconButton,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
+  Card,
+  CardContent,
   TextField,
   Button,
   Chip,
-  Typography
+  Typography,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
@@ -20,7 +21,7 @@ import {
   ExpandMore as ExpandMoreIcon
 } from '@mui/icons-material';
 import { FormData } from '@/types/form';
-import { PageMode, PagePermissions, canDeleteItemByIndex } from '@/types/pageMode';
+import { PagePermissions, canDeleteItemByIndex } from '@/types/pageMode';
 import ComponentSection from '../ComponentSection';
 
 interface GroupSectionProps {
@@ -34,7 +35,7 @@ interface GroupSectionProps {
   setValue: UseFormSetValue<FormData>;  // React Hook Form의 setValue 함수
 }
 
-export default function GroupSection({ 
+function GroupSection({ 
   control, 
   groupIndex, 
   onRemove, 
@@ -57,9 +58,18 @@ export default function GroupSection({
     name: `groups.${groupIndex}.components`
   });
 
-  // 🚀 성능 최적화: Component 가상화 임계값 설정 (테스트를 위해 낮게 설정)
-  const COMPONENT_VIRTUALIZATION_THRESHOLD = 5; // 5개 이상부터 가상화 적용 (테스트용)
-  const shouldUseComponentVirtualization = currentComponents.length >= COMPONENT_VIRTUALIZATION_THRESHOLD;
+  // 아코디언 상태 관리 (기본적으로 펼쳐진 상태)
+  const [isDetailsExpanded, setIsDetailsExpanded] = useState(true);
+
+  // 아코디언 토글
+  const toggleDetails = () => {
+    setIsDetailsExpanded(!isDetailsExpanded);
+    console.log(`🔄 그룹 ${groupIndex} 상세 정보 ${!isDetailsExpanded ? '펼침' : '접힘'}`);
+  };
+
+
+
+
 
   // Union 타입 날짜 정규화 유틸 (필수값)
   const normalizeDate = (value: Date | string): Date => {
@@ -162,8 +172,9 @@ export default function GroupSection({
   const groupError = errors?.groups?.[groupIndex];
 
   return (
-    <Accordion sx={{ mb: 2 }} defaultExpanded={true}>
-      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+    <Card sx={{ mb: 2 }} elevation={2}>
+      <CardContent>
+        {/* 그룹 헤더 섹션 */}
         <Box display="flex" alignItems="center" gap={2} width="100%">
           <Chip label="📁 그룹" color="primary" size="small" />
           
@@ -246,8 +257,8 @@ export default function GroupSection({
             </IconButton>
           )}
         </Box>
-      </AccordionSummary>
-      <AccordionDetails>
+        
+        {/* 그룹 컨텐츠 영역 */}
         {/* 그룹별 날짜 설정 */}
         <Box sx={{ display: 'flex', gap: 2, mb: 3, p: 2, backgroundColor: 'grey.50', borderRadius: 1 }}>
           <Controller
@@ -301,51 +312,57 @@ export default function GroupSection({
           />
         </Box>
 
-        <Box sx={{ display: 'flex', gap: 2, mb: 2, alignItems: 'center', flexWrap: 'wrap' }}>
-          <Button
-            variant="outlined"
-            startIcon={<AddIcon />}
-            onClick={addComponent}
-            size="small"
-            disabled={!permissions.canAdd}
+        {/* 아코디언으로 상세 정보 감싸기 */}
+        <Accordion expanded={isDetailsExpanded} onChange={toggleDetails} sx={{ mb: 2, boxShadow: 1 }}>
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls={`group-${groupIndex}-details`}
+            id={`group-${groupIndex}-summary`}
+            sx={{ bgcolor: 'grey.50', '&:hover': { bgcolor: 'grey.100' } }}
           >
-            구성 추가
-          </Button>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, width: '100%' }}>
+              <Chip label="📋 상세 정보" color="primary" size="small" />
+              <Typography variant="body2" color="text.secondary">
+                구성요소 {components.length}개
+                {components.length > 0 && ` • 총 답변 ${components.reduce((sum, comp) => sum + (comp.answers?.length || 0), 0)}개`}
+              </Typography>
+            </Box>
+          </AccordionSummary>
           
-          {/* Component 가상화 상태 표시 */}
-          {components.length > 0 && (
-            <Chip
-              label={shouldUseComponentVirtualization 
-                ? `🚀 가상화 모드 (${components.length}개)` 
-                : `일반 모드 (${components.length}개)`
-              }
-              color={shouldUseComponentVirtualization ? "success" : "default"}
-              size="small"
-            />
-          )}
-          
-          {/* getValues() 사용 예시 버튼 */}
-          <Button
-            variant="text"
-            onClick={handleGetDateValues}
-            color="info"
-            size="small"
-          >
-            날짜 정보 확인
-          </Button>
-          
-          {/* 9999년 테스트 버튼 */}
-          <Button
-            variant="text"
-            onClick={test9999Date}
-            color="warning"
-            size="small"
-          >
-            9999년 테스트
-          </Button>
-        </Box>
+          <AccordionDetails sx={{ p: 2 }}>
+            <Box sx={{ display: 'flex', gap: 2, mb: 2, alignItems: 'center', flexWrap: 'wrap' }}>
+              <Button
+                variant="outlined"
+                startIcon={<AddIcon />}
+                onClick={addComponent}
+                size="small"
+                disabled={!permissions.canAdd}
+              >
+                구성 추가
+              </Button>
+              
+              {/* getValues() 사용 예시 버튼 */}
+              <Button
+                variant="text"
+                onClick={handleGetDateValues}
+                color="info"
+                size="small"
+              >
+                날짜 정보 확인
+              </Button>
+              
+              {/* 9999년 테스트 버튼 */}
+              <Button
+                variant="text"
+                onClick={test9999Date}
+                color="warning"
+                size="small"
+              >
+                9999년 테스트
+              </Button>
+            </Box>
 
-        {/* 🚀 성능 최적화: Component 가상화 또는 일반 렌더링 */}
+        {/* Component 렌더링 */}
         {components.length === 0 ? (
           // 빈 상태 처리
           <Box sx={{ textAlign: 'center', py: 3, bgcolor: 'grey.50', borderRadius: 1 }}>
@@ -361,39 +378,8 @@ export default function GroupSection({
               첫 번째 구성요소 추가하기
             </Button>
           </Box>
-        ) : shouldUseComponentVirtualization ? (
-          // 가상화 렌더링 (10개 이상) - 높이 자동 계산으로 개선
-          <Box sx={{ height: '600px', border: '1px solid #e0e0e0', borderRadius: 1, overflow: 'hidden' }}>
-            <Virtuoso
-              data={components}
-              itemContent={(index, component) => (
-                <Box sx={{ p: 2, mb: 1 }}>
-                  <ComponentSection
-                    key={component.id}
-                    control={control}
-                    groupIndex={groupIndex}
-                    componentIndex={index}
-                    onRemove={() => removeComponent(index)}
-                    errors={errors}
-                    permissions={permissions}
-                    initialData={initialData}
-                    getValues={getValues}
-                    setValue={setValue}
-                  />
-                </Box>
-              )}
-              // 🚀 높이 자동 계산 개선
-              defaultItemHeight={200}  // 기본 아이템 높이 설정
-              overscan={5}             // 화면 밖 렌더링 개수 증가
-              increaseViewportBy={{ top: 100, bottom: 100 }} // 뷰포트 확장
-              style={{
-                height: '100%',
-                width: '100%'
-              }}
-            />
-          </Box>
         ) : (
-          // 일반 렌더링 (10개 미만)
+          // 일반 렌더링 (가상화 없음)
           <>
             {components.map((component, componentIndex) => (
               <ComponentSection
@@ -411,7 +397,12 @@ export default function GroupSection({
             ))}
           </>
         )}
-      </AccordionDetails>
-    </Accordion>
+          </AccordionDetails>
+        </Accordion>
+      </CardContent>
+    </Card>
   );
 }
+
+// React.memo로 메모이제이션 적용 (성능 최적화)
+export default React.memo(GroupSection);

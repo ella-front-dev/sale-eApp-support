@@ -1,12 +1,11 @@
-import React, { useEffect } from 'react';
-import { Control, FieldErrors, useFieldArray, Controller, useWatch } from 'react-hook-form';
+import React from 'react';
+import { Control, FieldErrors, useFieldArray, Controller } from 'react-hook-form';
 import { useCodeDuplicationCheck } from '@/hooks/useCodeDuplicationCheck';
 import { rhfRules } from '@/hooks/useCustomValidation';
 import {
   Box,
   IconButton,
   TextField,
-  Button,
   Chip,
   Select,
   MenuItem,
@@ -14,10 +13,7 @@ import {
   InputLabel,
   FormHelperText
 } from '@mui/material';
-import {
-  Add as AddIcon,
-  Delete as DeleteIcon
-} from '@mui/icons-material';
+import { Delete as DeleteIcon } from '@mui/icons-material';
 import { FormData } from '@/types/form';
 import { PagePermissions, canDeleteItemByIndex } from '@/types/pageMode';
 
@@ -32,7 +28,7 @@ interface AnswerSectionProps {
   initialData?: FormData;
 }
 
-export default function AnswerSection({ 
+function AnswerSection({ 
   control,
   groupIndex, 
   componentIndex, 
@@ -42,6 +38,7 @@ export default function AnswerSection({
   permissions,
   initialData
 }: AnswerSectionProps) {
+
   const { fields: subAnswers, append: appendSubAnswer, remove: removeSubAnswer } = useFieldArray({
     control,
     name: `groups.${groupIndex}.components.${componentIndex}.answers.${answerIndex}.subAnswers`
@@ -50,34 +47,7 @@ export default function AnswerSection({
   // 중복 체크 훅
   const { checkSubAnswerCodeDuplication } = useCodeDuplicationCheck(control);
 
-  // 현재 답변 정보 가져오기
-  const currentAnswer = useWatch({
-    control,
-    name: `groups.${groupIndex}.components.${componentIndex}.answers.${answerIndex}`
-  });
-
-  const addSubAnswer = () => {
-    const nextCode = `SUB_${String(subAnswers.length + 1).padStart(3, '0')}`;
-    
-    // 현재 하위답변 개수에 따라 기본 내용 설정
-    const subAnswerCount = subAnswers.length;
-    const defaultSubAnswers = [
-      '추가 의견 1',
-      '추가 의견 2', 
-      '기타 사항',
-      '상세 설명',
-      '개선 사항'
-    ];
-    
-    const defaultContent = subAnswerCount < defaultSubAnswers.length 
-      ? defaultSubAnswers[subAnswerCount] 
-      : `하위답변 ${subAnswerCount + 1}`;
-    
-    appendSubAnswer({
-      code: nextCode,
-      content: defaultContent
-    });
-  };
+  // addSubAnswer 함수는 Select를 통한 개수 제어 방식으로 대체되었습니다.
 
   // 초기 하위답변 개수 가져오기 (권한 체크용)
   const getInitialSubAnswerCount = (): number => {
@@ -273,3 +243,6 @@ export default function AnswerSection({
     </Box>
   );
 }
+
+// React.memo로 메모이제이션 적용 (성능 최적화)
+export default React.memo(AnswerSection);

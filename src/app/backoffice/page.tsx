@@ -1,8 +1,7 @@
 'use client';
 
-import React, { useEffect, useMemo, useCallback } from 'react';
-import { useForm, useFieldArray, Controller, FormProvider } from 'react-hook-form';
-import { Virtuoso } from 'react-virtuoso';
+import React, { useCallback, useEffect } from 'react';
+import { useForm, useFieldArray, Controller } from 'react-hook-form';
 
 import { FormData } from '@/types/form';
 import { PageMode, MODE_TITLES, MODE_BUTTON_TEXTS } from '@/types/pageMode';
@@ -19,8 +18,6 @@ import {
   TextField,
   Button,
   Box,
-  Stack,
-  Chip,
   Alert
 } from '@mui/material';
 import {
@@ -155,9 +152,12 @@ export default function BackofficePage({
     name: 'groups'
   });
 
-  // 🚀 성능 최적화: 가상화 임계값 설정 (테스트를 위해 낮게 설정)
-  const VIRTUALIZATION_THRESHOLD = 5; // 5개 이상부터 가상화 적용 (테스트용)
-  const shouldUseVirtualization = groups.length >= VIRTUALIZATION_THRESHOLD;
+  // 가상화 제거됨 - 동적 높이 계산 함수 주석 처리
+  /*
+  const calculateGroupHeight = React.useCallback((index: number) => {
+    // 전체 함수 내용 주석 처리
+  }, [groups]);
+  */
 
   // 🚀 성능 최적화: 그룹 관리 콜백 메모이제이션
   const handleRemoveGroup = useCallback((groupIndex: number) => {
@@ -603,44 +603,7 @@ export default function BackofficePage({
           </CardContent>
         </Card>
 
-        {/* 🚀 성능 디버깅: 가상화 통계 */}
-        <Card sx={{ mb: 3, bgcolor: '#f8f9fa' }}>
-          <CardContent sx={{ py: 2 }}>
-            <Typography variant="h6" sx={{ mb: 1, display: 'flex', alignItems: 'center', gap: 1 }}>
-              ⚡ {shouldUseVirtualization ? '가상화' : '일반'} 렌더링 통계
-            </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-              💡 {shouldUseVirtualization 
-                ? `${VIRTUALIZATION_THRESHOLD}개 이상 - 가상화로 메모리 효율성 극대화` 
-                : `${VIRTUALIZATION_THRESHOLD}개 미만 - 일반 렌더링으로 성능 최적화`
-              }
-            </Typography>
-            <Stack direction="row" spacing={2} flexWrap="wrap">
-              <Chip 
-                label={`총 그룹: ${groups.length}개`} 
-                color="primary" 
-                size="small" 
-              />
-              <Chip 
-                label={shouldUseVirtualization ? '가상화 활성' : '일반 렌더링'} 
-                color={shouldUseVirtualization ? "success" : "secondary"} 
-                size="small" 
-              />
-              <Chip 
-                label={`임계값: ${VIRTUALIZATION_THRESHOLD}개`} 
-                color="info" 
-                size="small" 
-              />
-              {shouldUseVirtualization && (
-                <Chip 
-                  label="🚀 메모리 절약 모드" 
-                  color="warning" 
-                  size="small" 
-                />
-              )}
-            </Stack>
-          </CardContent>
-        </Card>
+
 
         {/* 🚀 성능 최적화: 가상화 또는 일반 렌더링 */}
         {groups.length === 0 ? (
@@ -659,54 +622,6 @@ export default function BackofficePage({
               </Button>
             </CardContent>
           </Card>
-        ) : shouldUseVirtualization ? (
-          // 가상화 렌더링 (15개 이상) - 높이 자동 계산 개선
-          <div style={{ height: 'calc(100vh - 600px)', minHeight: '500px' }}>
-            <Virtuoso
-              data={groups}
-              itemContent={(index, group) => (
-                <div style={{ marginBottom: '16px' }}>
-                  <GroupSection
-                    key={group.id}
-                    control={control}
-                    groupIndex={index}
-                    onRemove={() => handleRemoveGroup(index)}
-                    errors={errors}
-                    permissions={permissions}
-                    initialData={initialData || undefined}
-                    getValues={getValues}
-                    setValue={setValue}
-                  />
-                </div>
-              )}
-              // 🚀 높이 자동 계산 개선
-              defaultItemHeight={300}  // 그룹의 기본 높이
-              overscan={3}             // 화면 밖 렌더링 개수
-              increaseViewportBy={{ top: 200, bottom: 200 }} // 뷰포트 확장
-              components={{
-                EmptyPlaceholder: () => (
-                  <Card sx={{ mb: 3 }}>
-                    <CardContent sx={{ textAlign: 'center', py: 4 }}>
-                      <Typography color="text.secondary" sx={{ mb: 2 }}>
-                        📋 아직 그룹이 없습니다
-                      </Typography>
-                      <Button
-                        variant="outlined"
-                        startIcon={<AddIcon />}
-                        onClick={addGroup}
-                      >
-                        첫 번째 그룹 추가하기
-                      </Button>
-                    </CardContent>
-                  </Card>
-                )
-              }}
-              style={{
-                height: '100%',
-                width: '100%'
-              }}
-            />
-          </div>
         ) : (
           // 일반 렌더링 (15개 미만)
           <>

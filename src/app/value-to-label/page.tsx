@@ -1,3 +1,5 @@
+'use client';
+
 import ValueToLabelDemo from '@/components/ValueToLabelDemo';
 
 export default function ValueToLabelPage() {

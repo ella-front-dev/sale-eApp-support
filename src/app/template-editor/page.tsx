@@ -17,7 +17,7 @@ import {
   IconButton,
   Stack,
 } from "@mui/material";
-import { Delete as DeleteIcon } from "@mui/icons-material";
+import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
 import { useRouter } from "next/navigation";
 
 interface FormTemplate {
@@ -61,12 +61,12 @@ const mockForms: FormTemplate[] = [
   },
 ];
 
-export default function FormsListPage() {
+export default function TemplateListPage() {
   const router = useRouter();
   const [forms, setForms] = React.useState<FormTemplate[]>(mockForms);
 
   const handleDelete = (id: string) => {
-    if (confirm("정말 이 서식 폼을 삭제하시겠습니까?")) {
+    if (confirm("정말 이 서식 템플릿을 삭제하시겠습니까?")) {
       setForms((prev) => prev.filter((t) => t.id !== id));
       // TODO: API 호출
       // await deleteForm(id);
@@ -76,14 +76,17 @@ export default function FormsListPage() {
   return (
     <Container maxWidth="xl" sx={{ py: 4 }}>
       <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 3 }}>
-        <Typography variant="h4">📋 서식 폼 관리</Typography>
+        <Typography variant="h4">📋 서식 템플릿 관리</Typography>
+        <Button variant="contained" size="large" onClick={() => router.push("/template-editor/new")}>
+          + 새 템플릿 만들기
+        </Button>
       </Box>
 
       <TableContainer component={Paper} elevation={2}>
         <Table>
           <TableHead>
             <TableRow sx={{ bgcolor: 'grey.100' }}>
-              <TableCell width="40%"><strong>서식 폼 이름</strong></TableCell>
+              <TableCell width="40%"><strong>템플릿 이름</strong></TableCell>
               <TableCell width="30%"><strong>설명</strong></TableCell>
               <TableCell width="10%" align="center"><strong>항목 수</strong></TableCell>
               <TableCell width="10%" align="center"><strong>상태</strong></TableCell>
@@ -123,6 +126,14 @@ export default function FormsListPage() {
                   <Stack direction="row" spacing={0.5} justifyContent="center">
                     <IconButton
                       size="small"
+                      color="primary"
+                      onClick={() => router.push(`/template-editor/${form.id}`)}
+                      title="수정"
+                    >
+                      <EditIcon fontSize="small" />
+                    </IconButton>
+                    <IconButton
+                      size="small"
                       color="error"
                       onClick={() => handleDelete(form.id)}
                       title="삭제"
@@ -140,8 +151,11 @@ export default function FormsListPage() {
       {forms.length === 0 && (
         <Box sx={{ textAlign: "center", py: 8 }}>
           <Typography variant="h6" color="text.secondary" gutterBottom>
-            등록된 서식 폼이 없습니다
+            등록된 템플릿이 없습니다
           </Typography>
+          <Button variant="contained" sx={{ mt: 2 }} onClick={() => router.push("/template-editor/new")}>
+            첫 템플릿 만들기
+          </Button>
         </Box>
       )}
     </Container>

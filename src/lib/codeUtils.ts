@@ -18,6 +18,7 @@ export interface FormattedCodeItem {
 export interface FormattedCodeGroup {
   id: number;
   codes: FormattedCodeItem[];
+  defaultValue?: FormattedCodeItem;
 }
 
 /**

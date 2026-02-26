@@ -30,13 +30,12 @@ import { useCommonCodes } from '@/lib/commonCodeService';
 export default function CommonCodeDemo() {
   // 공통 코드 Hook 사용 (Mock 데이터 사용)
   const { 
-    formatter, 
     loading, 
     error, 
     getCodes, 
     getSelectOptions, 
     getRadioOptions, 
-    getDefaultValue, 
+    getFirstCode,
     getAllGroups,
     isReady 
   } = useCommonCodes('demo', true);
@@ -47,17 +46,6 @@ export default function CommonCodeDemo() {
     satisfaction: '',
     device: ''
   });
-
-  // 컴포넌트 마운트 시 기본값 설정
-  React.useEffect(() => {
-    if (isReady) {
-      setFormData({
-        answer: getFirstCode(1)?.value || '',
-        satisfaction: getFirstCode(2)?.value || '',
-        device: getFirstCode(3)?.value || ''
-      });
-    }
-  }, [isReady, getFirstCode]);
 
   if (loading) {
     return (
@@ -296,9 +284,9 @@ export default function CommonCodeDemo() {
               variant="outlined"
               onClick={() => {
                 setFormData({
-                  answer: getDefaultValue(1)?.value || '',
-                  satisfaction: getDefaultValue(2)?.value || '',
-                  device: getDefaultValue(3)?.value || ''
+                  answer: getFirstCode(1)?.value || '',
+                  satisfaction: getFirstCode(2)?.value || '',
+                  device: getFirstCode(3)?.value || ''
                 });
               }}
             >
@@ -311,25 +299,11 @@ export default function CommonCodeDemo() {
                 console.log('=== 공통 코드 정보 ===');
                 console.log('모든 그룹:', getAllGroups());
                 console.log('ID 1 코드들:', getCodes(1));
-                console.log('ID 2 기본값:', getDefaultValue(2));
+                console.log('ID 2 첫번째 코드:', getFirstCode(2));
                 console.log('ID 3 Radio 옵션:', getRadioOptions(3));
               }}
             >
               콘솔에서 데이터 확인
-            </Button>
-
-            <Button
-              variant="outlined"
-              color="info"
-              onClick={() => {
-                if (formatter) {
-                  // 동적으로 기본값 변경
-                  formatter.setDefaultValue(2, '1', '매우 만족');
-                  alert('만족도 기본값을 "매우 만족"으로 변경했습니다.');
-                }
-              }}
-            >
-              만족도 기본값 변경
             </Button>
 
             <Button
@@ -358,7 +332,7 @@ export default function CommonCodeDemo() {
           </Typography>
           <Box sx={{ '& pre': { fontSize: '12px', overflow: 'auto', p: 2, bgcolor: 'grey.100', borderRadius: 1 } }}>
             <Typography variant="subtitle2" gutterBottom>1. Hook 사용:</Typography>
-            <pre>{`const { getCodes, getSelectOptions, getRadioOptions, getDefaultValue } = useCommonCodes();
+            <pre>{`const { getCodes, getSelectOptions, getRadioOptions, getFirstCode } = useCommonCodes();
 
 // Select 컴포넌트
 {getSelectOptions(1).map(option => (
@@ -377,12 +351,12 @@ export default function CommonCodeDemo() {
   />
 ))}`}</pre>
 
-            <Typography variant="subtitle2" gutterBottom sx={{ mt: 2 }}>2. 클래스 직접 사용:</Typography>
+            <Typography variant="subtitle2" gutterBottom sx={{ mt: 2 }}>2. 데이터 직접 사용:</Typography>
             <pre>{`const apiData = await api.get('/common-codes');
-const formatter = new CommonCodeFormatter(apiData);
+const formattedData = formatCodeData(apiData);
 
-const codes = formatter.getCodesById(1);
-const defaultValue = formatter.getDefaultValueById(1);`}</pre>
+const codes = getCodesById(formattedData, 1);
+const firstCode = getFirstCodeById(formattedData, 1);`}</pre>
           </Box>
         </CardContent>
       </Card>

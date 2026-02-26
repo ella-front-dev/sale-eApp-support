@@ -68,17 +68,7 @@ export default function TemplateEditor({ mode, templateId }: TemplateEditorProps
     setIsLoadingDetail(true);
     try {
       console.log('[TemplateEditor] 노드 상세 정보 API 호출:', nodeId);
-      
-      // TODO: API 호출
-      // const [detailResponse, childrenResponse] = await Promise.all([
-      //   fetch(`/api/forms/${templateId}/nodes/${nodeId}`),
-      //   fetch(`/api/forms/${templateId}/nodes/${nodeId}/children`)
-      // ]);
-      // const detail = await detailResponse.json();
-      // const children = await childrenResponse.json();
-      // setSelectedNodeDetail(detail);
-      // setDetailRows(children);
-      
+
       // 임시: Mock 데이터에서 찾기
       await new Promise(resolve => setTimeout(resolve, 200));
       const selectedNode = findNodeById(treeNodes, nodeId);
@@ -230,7 +220,7 @@ export default function TemplateEditor({ mode, templateId }: TemplateEditorProps
     // }
 
     alert(`서식 폼이 ${mode === "create" ? "생성" : "수정"}되었습니다.`);
-    router.push("/backoffice/admin");
+    router.push("/template-editor");
   };
 
   if (!mounted) {

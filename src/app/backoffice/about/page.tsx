@@ -292,7 +292,7 @@ export default function AboutPage() {
                   <ListItem>
                     <ListItemText
                       primary="3단계: 페이지 통합"
-                      secondary="유사 기능이라 하나의 /demo 페이지로 합침"
+                      secondary="유사 기능이라 하나의 demo 페이지로 합침"
                     />
                   </ListItem>
                 </List>

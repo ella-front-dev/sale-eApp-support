@@ -19,7 +19,10 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@/backoffice/*": ["./src/page-components/backoffice/*"],
+      "@/search/*": ["./src/page-components/search/*"],
+      "@/template-editor/*": ["./src/page-components/template-editor/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

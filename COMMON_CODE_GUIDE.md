@@ -215,7 +215,7 @@ export const commonCodeService = {
 ## 🧪 테스트 & 디버깅
 
 ### 1. 데모 페이지 확인
-- 경로: `/demo`
+- 경로: `/backoffice/demo`
 - Mock 데이터로 모든 기능 테스트 가능
 
 ### 2. 콘솔 디버깅
@@ -332,7 +332,7 @@ const apiData = [
 
 ## 🎯 데모 페이지
 
-- **기본 사용법**: `/demo` - 공통코드 기본 기능 데모
-- **Value → Label**: `/value-to-label` - 코드 값 치환 데모
+- **기본 사용법**: `/backoffice/demo` - 공통코드 기본 기능 데모
+- **Value → Label**: `/backoffice/value-to-label` - 코드 값 치환 데모
 
 이제 모든 Select, Radio 컴포넌트에서 공통 코드를 쉽게 사용할 수 있습니다! 🎉

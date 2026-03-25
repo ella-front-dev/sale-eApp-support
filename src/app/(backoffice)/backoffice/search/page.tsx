@@ -11,8 +11,8 @@ import {
   Paper
 } from '@mui/material';
 import SearchPopup from '@/page-components/search/SearchPopup';
-import ExcelDownload from '@/components/ExcelDownload';
-import ApiExcelDownload from '@/components/ApiExcelDownload';
+import ExcelDownload from '@/components/utils/ExcelDownload';
+import ApiExcelDownload from '@/components/utils/ApiExcelDownload';
 import SimpleExcelDownload from '@/components/SimpleExcelDownload';
 
 export default function SearchPage() {

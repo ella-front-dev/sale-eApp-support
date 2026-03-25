@@ -1,0 +1,22 @@
+@use 'sales-frontend-design-system/design-system-context' as *;
+
+/* table-header variant 전용 */
+.table-header-list {
+  padding: padding(xsmall) 0;
+  overflow: initial;
+  -webkit-tap-highlight-color: transparent;
+
+  @include apply-typography(input_large);
+}
+
+.table-header-list-item {
+  user-select: none;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+
+  &:focus,
+  &:active {
+    outline: none;
+    box-shadow: none;
+  }
+}

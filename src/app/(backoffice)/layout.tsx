@@ -2,9 +2,11 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Suspense } from "react";
 import { Toaster } from "react-hot-toast";
-import "./globals.css";
+import "../globals.css";
 import MuiThemeProvider from "@/components/MuiThemeProvider";
 import { GlobalLoading } from "@/components/Loading";
+import { MswInitializer } from "@/components/dev/msw-initializer";
+import { MSW_ENABLED } from "@/lib/constants/environments";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -21,7 +23,7 @@ export const metadata: Metadata = {
   description: "A support service for sale-eApp, providing template management and other features to enhance user experience.",
 };
 
-export default function RootLayout({
+export default function BackofficeLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -29,6 +31,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
+        <MswInitializer isActive={MSW_ENABLED}>
         <MuiThemeProvider>
           <Suspense fallback={<GlobalLoading />}>
             {children}
@@ -58,6 +61,7 @@ export default function RootLayout({
             }}
           />
         </MuiThemeProvider>
+        </MswInitializer>
       </body>
     </html>
   );

@@ -34,7 +34,7 @@ export default function Home() {
             '&:hover': { transform: 'translateY(-2px)', boxShadow: 8 },
             cursor: 'pointer'
           }}
-          onClick={() => router.push('/about')}
+          onClick={() => router.push('/backoffice/about')}
         >
           <CardContent sx={{ p: 4 }}>
             <Box sx={{ 
@@ -180,7 +180,7 @@ export default function Home() {
                   variant="contained" 
                   size="large" 
                   fullWidth
-                  onClick={() => router.push('/large-form')}
+                  onClick={() => router.push('/backoffice/large-form')}
                 >
                   페이지 이동
                 </Button>
@@ -223,7 +223,7 @@ export default function Home() {
                   variant="contained" 
                   size="large" 
                   fullWidth
-                  onClick={() => router.push('/template-editor')}
+                  onClick={() => router.push('/backoffice/template-editor')}
                 >
                   페이지 이동
                 </Button>
@@ -266,7 +266,7 @@ export default function Home() {
                   variant="contained" 
                   size="large" 
                   fullWidth
-                  onClick={() => router.push('/demo')}
+                  onClick={() => router.push('/backoffice/demo')}
                 >
                   페이지 이동
                 </Button>
@@ -309,7 +309,7 @@ export default function Home() {
                   variant="contained" 
                   size="large" 
                   fullWidth
-                  onClick={() => router.push('/search')}
+                  onClick={() => router.push('/backoffice/search')}
                 >
                   페이지 이동
                 </Button>
@@ -390,6 +390,128 @@ export default function Home() {
             </Box>
           </CardContent>
         </Card>
+
+        {/* 앱체널 프로젝트 Header */}
+        <Card
+          sx={{
+            mt: 6,
+            mb: 4,
+            border: '2px solid',
+            borderColor: 'success.main',
+            background: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+            color: 'white',
+            transition: 'transform 0.2s, box-shadow 0.2s',
+            '&:hover': { transform: 'translateY(-2px)', boxShadow: 8 },
+            cursor: 'pointer'
+          }}
+          onClick={() => router.push('/app-channel')}
+        >
+          <CardContent sx={{ p: 4 }}>
+            <Box sx={{
+              display: 'flex',
+              flexDirection: { xs: 'column', md: 'row' },
+              alignItems: { xs: 'flex-start', md: 'center' },
+              justifyContent: 'space-between',
+              gap: 3
+            }}>
+              <Box sx={{ flex: 1 }}>
+                <Typography variant="h4" component="h2" gutterBottom sx={{ fontWeight: 700, color: 'white', display: 'flex', alignItems: 'center', gap: 1 }}>
+                  📱 앱체널
+                </Typography>
+                <Typography variant="h6" sx={{ mb: 2, color: 'rgba(255,255,255,0.9)' }}>
+                  앱 채널 공통 컴포넌트 & 네비게이션
+                </Typography>
+                <Typography variant="body1" sx={{ mb: 2, color: 'rgba(255,255,255,0.8)' }}>
+                  앱 채널에서 사용하는 공통 컴포넌트와 네비게이션 구조를 관리하는 프로젝트입니다.
+                </Typography>
+                <Box sx={{
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  gap: 1,
+                  mt: 2
+                }}>
+                  <Chip label="앱 채널" size="small" sx={{ bgcolor: 'rgba(255,255,255,0.2)', color: 'white', fontWeight: 600 }} />
+                </Box>
+              </Box>
+              <Box sx={{
+                display: 'flex',
+                alignItems: 'center',
+                minWidth: { xs: '100%', md: 'auto' }
+              }}>
+                <Button
+                  variant="contained"
+                  size="large"
+                  sx={{
+                    bgcolor: 'white',
+                    color: 'success.main',
+                    fontWeight: 700,
+                    fontSize: '1.1rem',
+                    px: 4,
+                    py: 1.5,
+                    width: { xs: '100%', md: 'auto' },
+                    '&:hover': {
+                      bgcolor: 'rgba(255,255,255,0.9)',
+                      transform: 'scale(1.05)'
+                    }
+                  }}
+                >
+                  페이지 이동 →
+                </Button>
+              </Box>
+            </Box>
+          </CardContent>
+        </Card>
+
+        {/* 앱체널 Feature Cards */}
+        <Box sx={{
+          display: 'grid',
+          gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' },
+          gap: 3,
+          mb: 4
+        }}>
+          {/* Biz-Navi */}
+          <Card sx={{
+              width: '100%',
+              height: '100%',
+              minHeight: '420px',
+              maxHeight: '420px',
+              display: 'flex',
+              flexDirection: 'column',
+              transition: 'transform 0.2s, box-shadow 0.2s',
+              '&:hover': { transform: 'translateY(-4px)', boxShadow: 6 }
+            }}>
+              <CardContent sx={{ flexGrow: 1, overflow: 'auto' }}>
+                <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 600, color: 'primary.main' }}>
+                  Biz-Navi
+                </Typography>
+                <Typography variant="subtitle1" color="textPrimary" sx={{ fontWeight: 600, mb: 1.5 }}>
+                  헤더 네비게이션 컴포넌트
+                </Typography>
+                <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
+                  앱 채널 상단 헤더 네비게이션을 구성하는 공통 컴포넌트입니다. 다양한 페이지에서 일관된 네비게이션 UX를 제공합니다.
+                </Typography>
+                <Typography variant="body2" color="textSecondary" sx={{ mb: 1 }}>
+                  제공 기능:
+                </Typography>
+                <Box component="ul" sx={{ m: 0, pl: 2.5, '& li': { fontSize: '0.875rem', color: 'text.secondary' } }}>
+                  <li>헤더 네비게이션 UI</li>
+                  <li>라우팅 연동</li>
+                  <li>반응형 레이아웃</li>
+                  <li>공통 스타일 적용</li>
+                </Box>
+              </CardContent>
+              <CardActions sx={{ p: 2, pt: 0 }}>
+                <Button
+                  variant="contained"
+                  size="large"
+                  fullWidth
+                  onClick={() => router.push('/app-channel/biz-navi')}
+                >
+                  페이지 이동
+                </Button>
+              </CardActions>
+            </Card>
+        </Box>
 
         {/* DSP 공통 프로젝트 Feature Cards (필요시 추가) */}
         {/* 

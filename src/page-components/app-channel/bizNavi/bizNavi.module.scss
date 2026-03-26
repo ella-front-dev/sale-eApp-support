@@ -1,13 +1,158 @@
 @use 'sales-frontend-design-system/design-system-context' as *;
 
+.biznavi-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: padding(medium);
+  flex: 1;
+  min-height: 0;
+}
+
+// ─── 조회 조건 섹션 ───
+.search-section {
+  background-color: colors(background-100);
+  border-radius: radius-basic(xlarge);
+  padding: padding(medium) margin(card-around-large);
+  border: 1px solid colors(border-neutral_3);
+
+  .search-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: padding(medium);
+  }
+
+  .field-group {
+    display: flex;
+    align-items: center;
+    gap: padding(small);
+  }
+
+  .field-group-label {
+    @include apply-typography(subtitle3);
+    color: colors(text-body_2);
+    white-space: nowrap;
+  }
+  .button-group {
+    display: flex;
+    gap: margin(button-small);
+    flex-wrap: nowrap;
+
+    button {
+      white-space: nowrap;
+    }
+  }
+}
+
+// ─── 리스트 섹션 ───
+.list-section {
+  background-color: colors(background-100);
+  border-radius: radius-basic(xlarge);
+  overflow: hidden;
+  padding: margin(card-around-large);
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.list-scroll-area {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: margin(title-small);
+}
+
+.list-total {
+  @include apply-typography(subtitle3);
+  color: colors(text-body_1);
+}
+
+.list-total-count {
+  color: colors(text-primary);
+  font-weight: font-weight(bold);
+}
+
+.list-empty {
+  @include apply-typography(body3);
+  text-align: center;
+  color: colors(text-neutral_1);
+  padding: spacing(48);
+}
+
+.list-content {
+  display: flex;
+  flex-direction: column;
+  gap: margin(card);
+}
+
+// ─── 리스트 아이템 ───
+.list-item-content {
+  display: flex;
+  align-items: center;
+  padding: margin(card-around-small);
+  border: 1px solid colors(border-neutral_3);
+  width: 100%;
+  gap: padding(small);
+  border-radius: radius-basic(xlarge);
+  cursor: pointer;
+}
+
+.item-title {
+  @include apply-typography(subtitle3);
+  color: colors(text-body_1);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+}
+
+.item-meta {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: spacing(20);
+}
+
+.item-meta-text {
+  @include apply-typography(body2);
+}
+
+.item-meta-label {
+  color: colors(text-body_3);
+
+  &::after {
+    content: '';
+    display: inline-block;
+    width: 1px;
+    height: 1em;
+    background-color: colors(border-neutral_3);
+    margin: 0 padding(small);
+    vertical-align: middle;
+  }
+}
+
+.item-meta-value {
+  color: colors(text-body_1);
+  font-weight: font-weight(bold);
+}
+
+// ─── 드롭다운 버튼 ───
 .dropdown-button {
   padding: 0;
-  border: none !important;      /* ← 테두리 제거 */
-  box-shadow: none;       /* ← 그림자 제거 */
+  border: none !important;
+  box-shadow: none;
   color: colors(text-body_2);
-  
-  &:focus, &:hover {
-    background: none !important;  /* ← 배경 제거 */
+
+  &:focus,
+  &:hover {
+    background: none !important;
     box-shadow: none !important;
   }
 }

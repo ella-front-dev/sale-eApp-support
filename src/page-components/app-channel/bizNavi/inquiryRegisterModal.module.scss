@@ -1,0 +1,66 @@
+@use 'sales-frontend-design-system/design-system-context' as *;
+
+// ─── 질의 등록 모달 ───
+
+.register-customer-section {
+  display: flex;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: margin(inputfield-horizontal);
+}
+
+.register-field {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: padding(large);
+
+  .register-label {
+    @include apply-typography(subtitle3);
+    color: colors(text-body_1);
+  }
+
+  .register-resident-number {
+    display: flex;
+    align-items: center;
+    gap: padding(xxxsmall);
+  }
+
+  .register-resident-dash {
+    @include apply-typography(body2);
+    color: colors(text-body_3);
+  }
+}
+
+.register-inquiry-section {
+  display: flex;
+  flex-direction: column;
+  gap: padding(medium);
+
+  .register-content {
+    display: flex;
+    flex-direction: column;
+    gap: margin(inputfield-vertical);
+
+    .register-textarea {
+      width: 100%;
+      min-height: spacing(200);
+      padding: padding(medium);
+      border: 1px solid colors(border-neutral_3);
+      border-radius: radius-basic(medium);
+      resize: vertical;
+      @include apply-typography(body2);
+      color: colors(text-body_1);
+      background-color: colors(background-100);
+
+      &::placeholder {
+        color: colors(text-neutral_1);
+      }
+
+      &:focus {
+        outline: none;
+        border-color: colors(border-primary);
+      }
+    }
+  }
+}

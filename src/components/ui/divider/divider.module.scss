@@ -1,0 +1,19 @@
+@use 'sales-frontend-design-system/design-system-context' as *;
+
+.divider {
+  width: 100%;
+  word-break: keep-all;
+  border-top: 1px solid colors(border-neutral_2);
+
+  &.divider-size-small {
+    margin: margin(divider-small) 0;
+  }
+
+  &.divider-size-xsmall {
+    margin: margin(divider-xsmall) 0;
+  }
+
+  &.divider-size-large {
+    margin: margin(divider-large) 0;
+  }
+}

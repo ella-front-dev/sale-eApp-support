@@ -1,0 +1,10 @@
+.button-wrapper {
+  width: 120px;
+  height: 100%;
+}
+
+svg.back-icon {
+  & > path {
+    fill: var(--sales-color-text-body_0);
+  }
+}

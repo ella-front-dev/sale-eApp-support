@@ -1,21 +1,12 @@
 'use client';
 
+import { useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { CommandModalProvider } from 'sales-frontend-design-system';
 import { ClientSessionProvider } from 'sales-frontend-features';
 
 import { MswInitializer } from '@/components/dev/msw-initializer';
-
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      enabled: false,
-      refetchOnWindowFocus: false,
-      refetchOnMount: false
-    }
-  }
-});
 
 interface IProvidersProps {
   /** 자식 */
@@ -26,6 +17,17 @@ interface IProvidersProps {
 }
 
 export const Providers = ({ children, enableMocking = false }: IProvidersProps) => {
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            refetchOnWindowFocus: false,
+            refetchOnMount: false
+          }
+        }
+      })
+  );
   return (
     <MswInitializer isActive={enableMocking}>
       <QueryClientProvider client={queryClient}>

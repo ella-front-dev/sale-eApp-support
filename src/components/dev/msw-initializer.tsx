@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { useState, useEffect } from 'react';
 
@@ -14,10 +14,11 @@ interface IMswInitializerProps {
  * MSW 설정을 초기화 해줍니다.
  */
 export const MswInitializer = ({ children, isActive = true, onUnhandledRequest = 'bypass' }: IMswInitializerProps) => {
-  const [isMswInitialized, setIsMswInitialized] = useState(!isActive);
+  const [isMswInitialized, setIsMswInitialized] = useState(false);
 
   useEffect(() => {
-    if (!isActive || typeof window === 'undefined') {
+    if (!isActive) {
+      setIsMswInitialized(true);
       return;
     }
 

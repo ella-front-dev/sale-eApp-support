@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Button, FormField, Modal } from 'sales-frontend-design-system';
 import { Divider } from '@/components/ui/divider';
+import { TextArea } from '@/components/ui/field/text-area';
 import classNames from 'classnames/bind';
 import type { BizNaviInquiryItem } from '@/api/biz-navi/dto';
 import styles from './inquiryDetailModal.module.scss';
@@ -63,15 +64,22 @@ export default function InquiryDetailModal({ item, isOpen, onClose }: InquiryDet
             <div className={cx('detail-customer-section')}>
               <div className={cx('detail-field-row')}>
                 <label className={cx('detail-label')}>고객명</label>
-                <TextField value={item.customerName} readOnly size="small" />
+                <TextField
+                  rootProps={{
+                    className: 'w-full'
+                  }}
+                  value={item.customerName}
+                  readOnly
+                  size="medium"
+                />
               </div>
 
               <div className={cx('detail-field-row')}>
                 <label className={cx('detail-label')}>주민등록번호</label>
                 <div className={cx('detail-resident-number')}>
-                  <TextField value={item.residentNumberFront} readOnly size="small" />
+                  <TextField value={item.residentNumberFront} readOnly size="medium" />
                   <span className={cx('detail-resident-dash')}>-</span>
-                  <TextField value={item.residentNumberBack} readOnly type="password" size="small" />
+                  <TextField value={item.residentNumberBack} readOnly type="password" size="medium" />
                 </div>
               </div>
             </div>
@@ -100,6 +108,10 @@ export default function InquiryDetailModal({ item, isOpen, onClose }: InquiryDet
                 <label className={cx('detail-label')}>질의제목</label>
                 <TextField
                   value={isEditing ? editTitle : item.title}
+                  rootProps={{
+                    className: 'w-full'
+                  }}
+                  size="medium"
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEditTitle(e.target.value)}
                   readOnly={!isEditing}
                   placeholder="제목 입력"
@@ -108,8 +120,7 @@ export default function InquiryDetailModal({ item, isOpen, onClose }: InquiryDet
 
               <div className={cx('detail-field-row')}>
                 <label className={cx('detail-label')}>질의내용</label>
-                <textarea
-                  className={cx('detail-textarea')}
+                <TextArea
                   value={isEditing ? editContent : item.content}
                   onChange={(e) => setEditContent(e.target.value)}
                   readOnly={!isEditing}
@@ -131,16 +142,18 @@ export default function InquiryDetailModal({ item, isOpen, onClose }: InquiryDet
                 <label className={cx('detail-label')}>심사자</label>
                 <TextField
                   value={reviewer || item.reviewer}
+                  rootProps={{
+                    className: 'w-full'
+                  }}
+                  size="medium"
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => setReviewer(e.target.value)}
                   placeholder="이름"
-                  size="small"
                 />
               </div>
 
               <div className={cx('detail-field-row')}>
                 <label className={cx('detail-label')}>답변내용</label>
-                <textarea
-                  className={cx('detail-textarea')}
+                <TextArea
                   value={answerContent || item.answerContent}
                   onChange={(e) => setAnswerContent(e.target.value)}
                   placeholder="답변 내용"
@@ -155,21 +168,16 @@ export default function InquiryDetailModal({ item, isOpen, onClose }: InquiryDet
         align: 'horizontal',
         children: (
           <div className={cx('detail-footer')}>
-            <Button
-              variant="neutral"
-              appearance="filled"
-              size="large"
-              onClick={handleDelete}
-              className={cx('detail-footer-button')}
-            >
+            <Button variant="secondary" appearance="filled" size="large" onClick={handleDelete} className="flex-1">
               질의 삭제
             </Button>
             <Button
-              variant="secondary"
+              variant="primary"
+              disabled={!isEditing}
               appearance="filled"
               size="large"
               onClick={handleReRegister}
-              className={cx('detail-footer-button', 'detail-reregister-button')}
+              className="flex-1"
             >
               질의 재등록
             </Button>

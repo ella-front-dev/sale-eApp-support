@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Button, FormField, Modal } from 'sales-frontend-design-system';
 import { CustomerSearch } from 'sales-frontend-components';
 import { Divider } from '@/components/ui/divider';
+import { TextArea } from '@/components/ui/field/text-area';
 import classNames from 'classnames/bind';
 import { useBizNaviRegisterInquiry } from '@/api/biz-navi/use-query';
 import styles from './inquiryRegisterModal.module.scss';
@@ -82,7 +83,7 @@ export default function InquiryRegisterModal({ isOpen, onClose }: InquiryRegiste
                     placeholder: '이름',
                     size: 'small'
                   }}
-                  inputBoxProps={{ clearable: false }}
+                  inputBoxProps={{ clearable: false, className: 'w-full' }}
                 />
               </div>
 
@@ -93,6 +94,9 @@ export default function InquiryRegisterModal({ isOpen, onClose }: InquiryRegiste
                     placeholder="앞 6자리"
                     value={form.residentNumberFront}
                     onChange={handleChange('residentNumberFront')}
+                    rootProps={{
+                      className: 'w-full'
+                    }}
                     maxLength={6}
                     readOnly
                     size="small"
@@ -102,6 +106,9 @@ export default function InquiryRegisterModal({ isOpen, onClose }: InquiryRegiste
                     placeholder="뒤 7자리"
                     value={form.residentNumberBack}
                     onChange={handleChange('residentNumberBack')}
+                    rootProps={{
+                      className: 'w-full'
+                    }}
                     maxLength={7}
                     readOnly
                     type="password"
@@ -137,7 +144,7 @@ export default function InquiryRegisterModal({ isOpen, onClose }: InquiryRegiste
 
                 <div className={cx('register-field')}>
                   <label className={cx('register-label')}>질의내용</label>
-                  <textarea
+                  <TextArea
                     className={cx('register-textarea')}
                     placeholder="내용 입력"
                     value={form.content}

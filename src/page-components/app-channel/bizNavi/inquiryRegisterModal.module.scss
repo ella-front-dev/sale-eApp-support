@@ -3,32 +3,41 @@
 // ─── 질의 등록 모달 ───
 
 .register-customer-section {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 2fr;
   align-items: flex-end;
-  flex-wrap: wrap;
   gap: margin(inputfield-horizontal);
-}
 
-.register-field {
-  display: flex;
-  align-items: center;
-  flex-wrap: nowrap;
-  gap: padding(large);
-
-  .register-label {
-    @include apply-typography(subtitle3);
-    color: colors(text-body_1);
-  }
-
-  .register-resident-number {
+  .register-field {
     display: flex;
     align-items: center;
-    gap: padding(xxxsmall);
-  }
+    flex-wrap: nowrap;
+    gap: padding(large);
 
-  .register-resident-dash {
-    @include apply-typography(body2);
-    color: colors(text-body_3);
+    .register-label {
+      @include apply-typography(subtitle3);
+      color: colors(text-body_1);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    // label을 제외한 나머지(input/컴포넌트)가 남은 너비를 꽉 채움
+    > *:not(.register-label) {
+      flex: 1;
+      min-width: 0;
+      width: 100%;
+    }
+
+    .register-resident-number {
+      display: flex;
+      align-items: center;
+      gap: padding(xxxsmall);
+    }
+
+    .register-resident-dash {
+      @include apply-typography(body2);
+      color: colors(text-body_3);
+    }
   }
 }
 
@@ -38,9 +47,14 @@
   gap: padding(medium);
 
   .register-content {
-    display: flex;
-    flex-direction: column;
-    gap: margin(inputfield-vertical);
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: margin(inputfield-vertical) padding(large);
+    align-items: center;
+
+    .register-field {
+      display: contents;
+    }
 
     .register-textarea {
       width: 100%;

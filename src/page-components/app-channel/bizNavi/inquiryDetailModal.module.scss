@@ -1,42 +1,37 @@
 @use 'sales-frontend-design-system/design-system-context' as *;
 
-// ─── 심사 결과 모달 ───
-.detail-body {
-  display: flex;
-  flex-direction: column;
-  gap: padding(large);
-}
-
 // ─── 고객 정보 ───
 .detail-customer-section {
-  display: flex;
-  align-items: center;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: padding(large);
-  flex-wrap: wrap;
+
+  .detail-field-row {
+    display: flex;
+    align-items: center;
+    gap: padding(medium);
+
+    .detail-resident-number {
+      display: flex;
+      align-items: center;
+      gap: padding(xsmall);
+    }
+
+    .detail-resident-dash {
+      @include apply-typography(body2);
+      color: colors(text-body_3);
+    }
+  }
 }
 
 .detail-field-row {
-  display: flex;
-  align-items: center;
-  gap: padding(medium);
+  display: contents;
 }
 
 .detail-label {
   @include apply-typography(subtitle3);
-  color: colors(text-body_2);
+  color: colors(text-body_1);
   white-space: nowrap;
-  min-width: spacing(64);
-}
-
-.detail-resident-number {
-  display: flex;
-  align-items: center;
-  gap: padding(xsmall);
-}
-
-.detail-resident-dash {
-  @include apply-typography(body2);
-  color: colors(text-body_3);
 }
 
 // ─── 섹션 헤더 ───
@@ -44,6 +39,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  grid-column: 1 / -1;
 }
 
 .detail-section-header-left {
@@ -65,40 +61,10 @@
 
 // ─── 질의/답변 정보 섹션 ───
 .detail-section {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: max-content 1fr;
   gap: padding(medium);
-}
-
-// ─── Textarea ───
-.detail-textarea {
-  width: 100%;
-  min-height: spacing(120);
-  padding: padding(medium);
-  border: 1px solid colors(border-neutral_3);
-  border-radius: radius-basic(medium);
-  resize: vertical;
-  @include apply-typography(body2);
-  color: colors(text-body_1);
-  background-color: colors(background-100);
-
-  &::placeholder {
-    color: colors(text-neutral_1);
-  }
-
-  &:focus {
-    outline: none;
-    border-color: colors(border-primary);
-  }
-
-  &:read-only {
-    background-color: colors(background-200);
-    cursor: default;
-
-    &:focus {
-      border-color: colors(border-neutral_3);
-    }
-  }
+  align-items: center;
 }
 
 // ─── Footer 버튼 ───
@@ -110,15 +76,4 @@
 
 .detail-footer-button {
   flex: 1;
-}
-
-.detail-reregister-button {
-  background-color: #f5c5a3 !important;
-  border-color: #f5c5a3 !important;
-  color: colors(text-body_1) !important;
-
-  &:hover {
-    background-color: #f0b48e !important;
-    border-color: #f0b48e !important;
-  }
 }

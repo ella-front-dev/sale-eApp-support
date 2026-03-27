@@ -1,0 +1,121 @@
+@use 'sales-frontend-design-system/design-system-context' as *;
+
+.wrapper {
+  position: relative;
+  display: flex;
+  width: 100%;
+}
+
+.textarea {
+  width: 100%;
+  padding: padding(large);
+  color: colors(text-body);
+  caret-color: colors(text-primary);
+  resize: vertical;
+  outline: none;
+  background-color: transparent;
+  border: none;
+  border-radius: radius-basic(medium);
+  box-shadow: inset 0 0 0 1px colors(border-neutral_4);
+
+  @include apply-font-size(input_medium);
+  @include apply-font-weight(light);
+  @include apply-line-height(large);
+
+  &::placeholder {
+    color: colors(text-neutral_2);
+  }
+
+  @include hover {
+    &:not(:focus, .textarea-error, .textarea-disabled, .textarea-readonly) {
+      // @include field-hover();
+
+      background: colors(states-dark_1);
+    }
+  }
+
+  // 기본 상태 focus (error, disabled, readonly가 아닐 때)
+  &:focus:not(.textarea-error, .textarea-disabled, .textarea-readonly) {
+    // @include field-focus();
+
+    box-shadow: inset 0 0 0 1px colors(border-neutral_6);
+  }
+
+  // Error 상태 (disabled가 아닐 때만)
+  &.textarea-error:not(.textarea-disabled) {
+    // @include field-error-border();
+
+    box-shadow: inset 0 0 0 1px colors(additional-semantic_2);
+
+    &:focus {
+      // @include field-error-border();
+      box-shadow: inset 0 0 0 1px colors(additional-semantic_2);
+    }
+
+    @include hover {
+      // @include field-error-border();
+      box-shadow: inset 0 0 0 1px colors(additional-semantic_2);
+    }
+  }
+
+  // Readonly 상태 (disabled보다 우선순위 낮음)
+  &.textarea-readonly:not(.textarea-disabled) {
+    // @include field-readonly();
+    background: colors(surface-neutral_1);
+
+    // readonly는 보통 포커스 가능하지만 hover 효과는 없음
+    &:focus {
+      // @include field-readonly();
+      background: colors(surface-neutral_1);
+    }
+  }
+
+  // Disabled 상태 (최고 우선순위)
+  &.textarea-disabled {
+    color: rgb(0 0 0 / 24%);
+    cursor: not-allowed;
+    background: colors(surface-neutral_1);
+
+    // disabled는 모든 상호작용 차단
+    &:focus {
+      background: colors(surface-neutral_1);
+    }
+
+    @include hover {
+      background: colors(surface-neutral_1);
+    }
+  }
+
+  // Auto resize 스타일
+  &.textarea-auto-resize {
+    overflow: hidden;
+    resize: none;
+  }
+
+  // Resize 옵션별 스타일
+  &.textarea-resize-none {
+    resize: none;
+  }
+
+  &.textarea-resize-vertical {
+    resize: vertical;
+  }
+
+  &.textarea-resize-horizontal {
+    resize: horizontal;
+  }
+
+  &.textarea-resize-both {
+    resize: both;
+  }
+}
+
+.counter {
+  position: absolute;
+  right: 0.75rem;
+  bottom: 0.5rem;
+  font-size: 0.75rem;
+  color: #6b7280;
+  pointer-events: none;
+  user-select: none;
+}

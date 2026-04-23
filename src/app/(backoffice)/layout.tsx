@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Suspense } from "react";
 import { Toaster } from "react-hot-toast";
-import "../globals.css";
 import MuiThemeProvider from "@/components/MuiThemeProvider";
 import { GlobalLoading } from "@/components/Loading";
 import { MswInitializer } from "@/components/dev/msw-initializer";
@@ -32,35 +31,35 @@ export default function BackofficeLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <MswInitializer isActive={MSW_ENABLED}>
-        <MuiThemeProvider>
-          <Suspense fallback={<GlobalLoading />}>
-            {children}
-          </Suspense>
-          <Toaster
-            position="top-right"
-            toastOptions={{
-              duration: 4000,
-              style: {
-                background: '#363636',
-                color: '#fff',
-              },
-              success: {
-                duration: 3000,
-                iconTheme: {
-                  primary: '#4caf50',
-                  secondary: '#fff',
+          <MuiThemeProvider>
+            <Suspense fallback={<GlobalLoading />}>
+              {children}
+            </Suspense>
+            <Toaster
+              position="top-right"
+              toastOptions={{
+                duration: 4000,
+                style: {
+                  background: '#363636',
+                  color: '#fff',
                 },
-              },
-              error: {
-                duration: 5000,
-                iconTheme: {
-                  primary: '#f44336',
-                  secondary: '#fff',
+                success: {
+                  duration: 3000,
+                  iconTheme: {
+                    primary: '#4caf50',
+                    secondary: '#fff',
+                  },
                 },
-              },
-            }}
-          />
-        </MuiThemeProvider>
+                error: {
+                  duration: 5000,
+                  iconTheme: {
+                    primary: '#f44336',
+                    secondary: '#fff',
+                  },
+                },
+              }}
+            />
+          </MuiThemeProvider>
         </MswInitializer>
       </body>
     </html>

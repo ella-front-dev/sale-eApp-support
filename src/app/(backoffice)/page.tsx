@@ -433,31 +433,6 @@ export default function Home() {
                   <Chip label="앱 채널" size="small" sx={{ bgcolor: 'rgba(255,255,255,0.2)', color: 'white', fontWeight: 600 }} />
                 </Box>
               </Box>
-              <Box sx={{
-                display: 'flex',
-                alignItems: 'center',
-                minWidth: { xs: '100%', md: 'auto' }
-              }}>
-                <Button
-                  variant="contained"
-                  size="large"
-                  sx={{
-                    bgcolor: 'white',
-                    color: 'success.main',
-                    fontWeight: 700,
-                    fontSize: '1.1rem',
-                    px: 4,
-                    py: 1.5,
-                    width: { xs: '100%', md: 'auto' },
-                    '&:hover': {
-                      bgcolor: 'rgba(255,255,255,0.9)',
-                      transform: 'scale(1.05)'
-                    }
-                  }}
-                >
-                  페이지 이동 →
-                </Button>
-              </Box>
             </Box>
           </CardContent>
         </Card>
@@ -506,6 +481,49 @@ export default function Home() {
                   size="large"
                   fullWidth
                   onClick={() => router.push('/app-channel/biz-navi')}
+                >
+                  페이지 이동
+                </Button>
+              </CardActions>
+            </Card>
+
+          {/* Download */}
+          <Card sx={{
+              width: '100%',
+              height: '100%',
+              minHeight: '420px',
+              maxHeight: '420px',
+              display: 'flex',
+              flexDirection: 'column',
+              transition: 'transform 0.2s, box-shadow 0.2s',
+              '&:hover': { transform: 'translateY(-4px)', boxShadow: 6 }
+            }}>
+              <CardContent sx={{ flexGrow: 1, overflow: 'auto' }}>
+                <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 600, color: 'primary.main' }}>
+                  Download
+                </Typography>
+                <Typography variant="subtitle1" color="textPrimary" sx={{ fontWeight: 600, mb: 1.5 }}>
+                  앱 다운로드 랜딩 페이지
+                </Typography>
+                <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
+                  영업지원 앱(예시) 영업지원 앱 소개 및 다운로드를 위한 반응형 원페이지 랜딩입니다.
+                </Typography>
+                <Typography variant="body2" color="textSecondary" sx={{ mb: 1 }}>
+                  제공 기능:
+                </Typography>
+                <Box component="ul" sx={{ m: 0, pl: 2.5, '& li': { fontSize: '0.875rem', color: 'text.secondary' } }}>
+                  <li>앱 소개 히어로 섹션</li>
+                  <li>주요 기능 소개</li>
+                  <li>앱 설치 안내</li>
+                  <li>Android 다운로드 연동</li>
+                </Box>
+              </CardContent>
+              <CardActions sx={{ p: 2, pt: 0 }}>
+                <Button
+                  variant="contained"
+                  size="large"
+                  fullWidth
+                  onClick={() => router.push('/app-channel/download')}
                 >
                   페이지 이동
                 </Button>

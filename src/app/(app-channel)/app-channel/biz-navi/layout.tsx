@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import classNames from 'classnames/bind';
 import styles from 'sales-frontend-design-system/layout/tablet-pc';
 import { Providers } from '@/components/context/providers';
-import 'sales-frontend-design-system/core-styles';
 import { DebugToolDsp } from '@/components/dev/debug-tool';
 import { DspGtmIframe } from '@/components/dev/dsp-gtm-iframe';
 import { APP_ENV, MSW_ENABLED } from '@/constants/environments';
@@ -22,7 +21,7 @@ export const metadata: Metadata = {
   }
 };
 
-export default function AppChannelLayout({
+export default function BizNaviLayout({
   children
 }: Readonly<{
   children: React.ReactNode;

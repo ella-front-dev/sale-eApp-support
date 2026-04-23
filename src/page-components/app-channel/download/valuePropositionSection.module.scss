@@ -1,0 +1,41 @@
+@use 'sales-frontend-design-system/design-system-context' as *;
+
+.value-section {
+  background-color: #fff3e7;
+  padding: 100px 66px;
+  box-sizing: border-box;
+
+  @include media(tablet) {
+    padding: 210px 60px;
+  }
+
+  @include media(pc) {
+    padding: 210px 80px;
+  }
+}
+
+.value-inner {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.value-text {
+  @include apply-typography(title2);
+  color: #1a1a1a;
+  word-break: keep-all;
+
+  @include media(tablet) {
+    font-size: 1.625rem;
+    line-height: 1.7;
+  }
+
+  @include media(pc) {
+    font-size: 1.875rem;
+    line-height: 1.65;
+  }
+
+  .value-highlight {
+    color: colors(text-primary);
+  }
+}

@@ -1,0 +1,81 @@
+@use 'sales-frontend-design-system/design-system-context' as *;
+
+.footer {
+  background-color: #fff;
+  padding: 0 33px 33px;
+  box-sizing: border-box;
+
+  @include media(tablet) {
+    padding: 56px 40px;
+  }
+
+  @include media(pc) {
+    padding: 64px 80px;
+  }
+}
+
+.footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.footer-top {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  min-height: 286px;
+}
+
+.footer-logo {
+  height: 24px;
+  width: auto;
+
+  @include media(tablet) {
+    height: 28px;
+  }
+}
+
+.footer-tagline {
+  @include apply-typography(body3);
+  color: colors(text-body_1);
+
+  @include media(pc) {
+    @include apply-typography(body3);
+    color: colors(text-body_1);
+  }
+}
+
+.footer-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 20px;
+
+  p {
+    @include apply-typography(caption);
+    color: colors(text-body_2);
+    text-align: center;
+  }
+}
+
+.footer-meta {
+  @include apply-typography(caption);
+  color: colors(text-body_2);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  span:nth-child(odd)::after {
+    content: '';
+    display: inline-block;
+    width: 1px;
+    height: 11px;
+    background: #b4b3b2;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+}

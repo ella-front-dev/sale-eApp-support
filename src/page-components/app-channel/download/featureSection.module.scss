@@ -1,0 +1,134 @@
+@use 'sales-frontend-design-system/design-system-context' as *;
+
+.feature {
+  background-color: #fff;
+  padding: 72px 20px;
+  box-sizing: border-box;
+
+  @include media(tablet) {
+    padding: 100px 60px;
+  }
+
+  @include media(pc) {
+    padding: 120px 80px;
+  }
+}
+
+.feature-inner {
+  max-width: 1048px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+
+  @include media(tablet) {
+    flex-direction: row-reverse;
+    gap: 60px;
+    align-items: center;
+
+    .feature--reverse & {
+      flex-direction: row;
+    }
+  }
+
+  @include media(pc) {
+    flex-direction: row-reverse;
+    gap: 100px;
+
+    .feature--reverse & {
+      flex-direction: row;
+    }
+  }
+}
+
+.feature-content {
+  width: 100%;
+
+  @include media(tablet) {
+    flex: 1;
+  }
+
+  @include media(pc) {
+    flex: 1;
+  }
+}
+
+.feature-tag {
+  display: block;
+  color: colors(text-primary);
+  margin-bottom: 8px;
+  text-align: center;
+  @include apply-typography(title5);
+
+  @include media(tablet) {
+    text-align: left;
+  }
+}
+
+.feature-headline {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: colors(text-body_1);
+  font-weight: 700;
+  font-size: 26px;
+  line-height: 1.5;
+  word-break: keep-all;
+
+  @include media(tablet) {
+    font-size: 44px;
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  @include media(pc) {
+    font-size: 44px;
+    align-items: flex-start;
+    text-align: left;
+  }
+}
+
+.feature-description {
+  color: colors(text-body_1);
+  margin-top: padding(xxlarge);
+  word-break: keep-all;
+  text-align: center;
+
+  @include apply-typography(body2);
+
+  @include media(tablet) {
+    text-align: left;
+  }
+
+  @include media(pc) {
+    font-size: 1rem;
+    text-align: left;
+  }
+}
+
+.feature-image-wrap {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+
+  @include media(tablet) {
+    flex: 1;
+  }
+
+  @include media(pc) {
+    flex: 1;
+    justify-content: center;
+  }
+}
+
+.feature-image-placeholder {
+  //width: 100%;
+  width: 320px;
+  height: 365px;
+  aspect-ratio: 64/73;
+  background-color: #ece8e3;
+  @include media(pc) {
+    max-width: 520px;
+  }
+}

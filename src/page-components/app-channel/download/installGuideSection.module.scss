@@ -1,0 +1,151 @@
+@use 'sales-frontend-design-system/design-system-context' as *;
+
+.install {
+  background-color: #f9fafb;
+  padding: 72px 20px;
+  box-sizing: border-box;
+
+  @include media(tablet) {
+    padding: 100px 60px;
+  }
+
+  @include media(pc) {
+    padding: 120px 80px;
+  }
+}
+
+.install-inner {
+  max-width: 1048px;
+  margin: 0 auto;
+}
+
+.install-header {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 40px;
+
+  @include media(tablet) {
+    gap: 24px;
+    margin-bottom: 80px;
+  }
+}
+
+.install-title {
+  color: #000;
+  font-size: 26px;
+  font-weight: 700;
+
+  @include media(tablet) {
+    font-size: 44px;
+  }
+}
+
+.install-manual-btn {
+  cursor: pointer;
+
+  .install-manual-icon {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 4px;
+  }
+}
+
+.install-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 70px;
+
+  @include media(tablet) {
+    // display: grid;
+    // grid-template-columns: 1fr 1fr;
+    // gap: 90px;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}
+
+.install-step {
+  width: 416px;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.step-header {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.step-icon-placeholder {
+  width: 80px;
+  height: 80px;
+  border-radius: 12px;
+
+  img,
+  svg {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+}
+
+.step-label {
+  color: colors(text-body_3);
+  @include apply-typography(title2);
+}
+
+.step-title {
+  margin-left: 14px;
+
+  color: colors(text-body_1);
+  @include apply-typography(title2);
+}
+
+.step-bullets {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-left: 0;
+  list-style: none;
+}
+
+.step-bullet {
+  display: flex;
+  gap: 8px;
+  color: colors(text-body);
+  @include apply-typography(body2);
+}
+
+.bullet-number {
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  padding: 2px 0;
+  background-color: colors(surface-neutral_2);
+  color: colors(text-body_3);
+  text-align: center;
+  font-size: 14px;
+  font-weight: 700;
+  border-radius: 50%;
+}
+
+.step-warning {
+  margin-top: 16px;
+
+  @include apply-typography(body2);
+  color: #7e7e7e;
+}
+
+.step-download-btn {
+  @include apply-typography(body2);
+  color: colors(text-body_1);
+
+  .step-download-icon {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 4px;
+  }
+}

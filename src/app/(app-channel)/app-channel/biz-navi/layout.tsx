@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import classNames from 'classnames/bind';
 import styles from 'sales-frontend-design-system/layout/tablet-pc';
 
+import 'sales-frontend-design-system/core-styles';
 import { Providers } from '@/components/context/providers';
 import { DebugToolDsp } from '@/components/dev/debug-tool';
 import { DspGtmIframe } from '@/components/dev/dsp-gtm-iframe';

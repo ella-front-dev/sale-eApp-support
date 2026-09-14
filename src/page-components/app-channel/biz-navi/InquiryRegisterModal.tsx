@@ -40,11 +40,30 @@ export default function InquiryRegisterModal({ isOpen, onClose }: InquiryRegiste
       setForm((prev) => ({ ...prev, [field]: e.target.value }));
     };
 
-  const handleSelectCustomer = () => {
-    // TODO: 고객 선택 시 customerName, 주민번호 등 세팅
+  // CustomerSearch 는 입력값을 밖으로 내보내지 않는다. inputProps 의 onChange 를 넘기면 내부 검색 동작을
+  // 덮어쓰게 되므로, 내부에서 쓰지 않는 onInput 으로 입력한 이름만 따로 받는다.
+  const handleCustomerInput = (e: React.FormEvent<HTMLInputElement>) => {
+    const customerName = e.currentTarget.value;
+    setForm((prev) => ({ ...prev, customerName }));
   };
 
+  // TODO: 고객 선택 시 주민번호 등 나머지 정보 세팅
+  const handleSelectCustomer = (customer: { customerName?: string }) => {
+    setForm((prev) => ({ ...prev, customerName: customer.customerName ?? prev.customerName }));
+  };
+
+  const handleCustomerClear = () => {
+    setForm((prev) => ({ ...prev, customerName: '' }));
+  };
+
+  // [필수] 질의 정보가 비어 있으면 등록하지 않는다
+  const isRequiredFilled = form.inquiryTitle.trim() !== '' && form.content.trim() !== '';
+
   const handleSubmit = () => {
+    if (!isRequiredFilled) {
+      return;
+    }
+
     register(
       {
         customerName: form.customerName,
@@ -85,9 +104,11 @@ export default function InquiryRegisterModal({ isOpen, onClose }: InquiryRegiste
                 <label className={cx('register-label')}>고객검색</label>
                 <CustomerSearch
                   onSelectCustomer={handleSelectCustomer}
+                  onSearchClear={handleCustomerClear}
                   inputProps={{
                     placeholder: '이름',
-                    size: 'small'
+                    size: 'small',
+                    onInput: handleCustomerInput
                   }}
                   inputBoxProps={{ clearable: false, className: 'w-full' }}
                 />
@@ -171,7 +192,7 @@ export default function InquiryRegisterModal({ isOpen, onClose }: InquiryRegiste
             appearance="filled"
             size="large"
             onClick={handleSubmit}
-            disabled={isPending}
+            disabled={isPending || !isRequiredFilled}
             className="w-full"
           >
             {isPending ? '등록 중...' : '질의 등록'}

@@ -95,6 +95,19 @@ export const downloadDataAsExcel = async (
 };
 
 /**
+ * API 응답을 JSON 으로 읽는다.
+ * 404 같은 실패 응답은 본문이 JSON 이 아니거나 엉뚱한 데이터일 수 있어, 파싱 전에 상태 코드로 끊는다.
+ */
+const fetchJson = async (url: string): Promise<Record<string, unknown>[] | Record<string, unknown>> => {
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`${url} 응답 실패 (${response.status})`);
+  }
+
+  return response.json();
+};
+
+/**
  * 단일 API 데이터를 엑셀로 다운로드
  */
 export const downloadSingleApi = async (
@@ -103,9 +116,8 @@ export const downloadSingleApi = async (
 ): Promise<void> => {
   try {
     // API 호출 (실제 환경에서는 axios 등 사용)
-    const response = await fetch(apiUrl);
-    const data: Record<string, unknown>[] | Record<string, unknown> = await response.json();
-    
+    const data = await fetchJson(apiUrl);
+
     await downloadDataAsExcel(data, {
       filename: options.filename || `api_data_${Date.now()}`,
       sheetName: options.sheetName || 'Data',
@@ -126,22 +138,28 @@ export const downloadMultipleApis = async (
 ): Promise<void> => {
   try {
     let allData: Record<string, unknown>[] = [];
+    let failedCount = 0;
 
     // 모든 API 호출
     for (const endpoint of apiEndpoints) {
       try {
-        const response = await fetch(endpoint.url);
-        const data: Record<string, unknown>[] | Record<string, unknown> = await response.json();
-        
+        const data = await fetchJson(endpoint.url);
+
         // 데이터에 소스 정보 추가
-        const dataWithSource = Array.isArray(data) 
+        const dataWithSource = Array.isArray(data)
           ? data.map(item => ({ API_소스: endpoint.name, ...item }))
           : [{ API_소스: endpoint.name, ...data }];
-        
+
         allData = [...allData, ...dataWithSource];
       } catch {
         // 개별 엔드포인트 실패는 건너뛰고 나머지 계속 진행
+        failedCount++;
       }
+    }
+
+    // 전부 실패했는데 빈 파일을 내려주면 성공처럼 보이므로 에러로 끊는다
+    if (failedCount === apiEndpoints.length) {
+      throw new Error('모든 API 호출에 실패했습니다.');
     }
 
     await downloadDataAsExcel(allData, {
@@ -164,13 +182,13 @@ export const downloadMultipleApisAsSheets = async (
 ): Promise<void> => {
   try {
     const workbook = XLSX.utils.book_new();
-    
+    let failedCount = 0;
+
     // 각 API별로 시트 생성
     for (const endpoint of apiEndpoints) {
       try {
-        const response = await fetch(endpoint.url);
-        const data: Record<string, unknown>[] | Record<string, unknown> = await response.json();
-        
+        const data = await fetchJson(endpoint.url);
+
         const dataArray = Array.isArray(data) ? data : [data];
         const worksheet = XLSX.utils.json_to_sheet(dataArray) as XLSX.WorkSheet;
         
@@ -186,6 +204,7 @@ export const downloadMultipleApisAsSheets = async (
         
         XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
       } catch (error) {
+        failedCount++;
         // 에러 정보를 담은 시트 생성
         const errorSheet = XLSX.utils.json_to_sheet([
           { 오류: `${endpoint.name} 데이터 로드 실패`, 상세: String(error) }
@@ -194,14 +213,19 @@ export const downloadMultipleApisAsSheets = async (
       }
     }
 
+    // 전부 실패하면 에러 시트만 담긴 파일이 되므로 다운로드하지 않는다
+    if (failedCount === apiEndpoints.length) {
+      throw new Error('모든 API 호출에 실패했습니다.');
+    }
+
     // 파일 다운로드
-    const timestamp = options.includeTimestamp ?? true 
+    const timestamp = options.includeTimestamp ?? true
       ? `_${dayjs().format('YYYYMMDD')}`
       : '';
-    
+
     const filename = `${options.filename || 'multi_sheet_data'}${timestamp}.xlsx`;
     XLSX.writeFile(workbook, filename);
-    
+
   } catch {
     throw new Error('다중 시트 다운로드 중 오류가 발생했습니다.');
   }

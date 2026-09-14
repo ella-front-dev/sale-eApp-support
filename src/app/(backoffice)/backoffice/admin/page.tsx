@@ -2,12 +2,10 @@
 
 import * as React from "react";
 
-import { useRouter } from "next/navigation";
 
 import { Delete as DeleteIcon } from "@mui/icons-material";
 import {
   Box,
-  Button,
   Container,
   Typography,
   Chip,
@@ -64,7 +62,6 @@ const mockForms: FormTemplate[] = [
 ];
 
 export default function FormsListPage() {
-  const router = useRouter();
   const [forms, setForms] = React.useState<FormTemplate[]>(mockForms);
 
   const handleDelete = (id: string) => {

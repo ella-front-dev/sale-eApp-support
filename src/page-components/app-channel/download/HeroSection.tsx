@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 
 import classNames from 'classnames/bind';
-import { Button, IconButton } from 'sales-frontend-design-system';
+import { Button } from 'sales-frontend-design-system';
 
 import styles from './heroSection.module.scss';
 

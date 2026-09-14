@@ -31,8 +31,6 @@ export const createMockHandler = ({
   response,
   status = 200,
   delayMs = 1500,
-  log = true,
-  resolver
 }: IMockHandlerOptions) => {
   const handler = methodMap[method];
 

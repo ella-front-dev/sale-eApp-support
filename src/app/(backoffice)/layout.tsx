@@ -9,7 +9,7 @@ import { Toaster } from "react-hot-toast";
 import { MswInitializer } from "@/components/dev/msw-initializer";
 import { GlobalLoading } from "@/components/Loading";
 import MuiThemeProvider from "@/components/MuiThemeProvider";
-import { MSW_ENABLED } from "@/lib/constants/environments";
+import { MSW_ENABLED } from "@/constants/environments";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

@@ -3,7 +3,6 @@
 import { useState } from 'react';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { CommandModalProvider } from 'sales-frontend-design-system';
 import { ClientSessionProvider } from 'sales-frontend-features';
 
@@ -37,7 +36,6 @@ export const Providers = ({ children, enableMocking = false }: IProvidersProps) 
           <CommandModalProvider />
           {children}
           <div id="ds-portal" />
-          {/* <ReactQueryDevtools initialIsOpen={false} /> */}
         </ClientSessionProvider>
       </QueryClientProvider>
     </MswInitializer>

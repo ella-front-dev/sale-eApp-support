@@ -3,8 +3,8 @@ import React, { Suspense, useEffect, useState, startTransition, useTransition } 
 
 import { Box, Button, Card, CardContent, CircularProgress, Divider, Typography, TextField, Select, MenuItem, Chip } from '@mui/material';
 import { useForm, FormProvider, useFieldArray, useFormContext, Controller, type FieldValues, type UseFormReturn } from 'react-hook-form';
-// NOTE: react-virtuoso or react-window can be conditionally imported. Left as comment for optional virtualization.
-// import { Virtuoso } from 'react-virtuoso';
+// NOTE: 이 실험은 "가상화 없이" 어디까지 버티는지 확인하는 것이 목적이라 가상화 라이브러리를 쓰지 않는다.
+// (react-virtuoso 는 Back Office 실험에서 중첩 문제로 철회하면서 의존성에서도 제거했다.)
 
 /**
  * High-level FormData shape optimized for partial loading & large lists.
@@ -67,7 +67,7 @@ export default function LargeFormPage() {
     performance.measure('add-group', 'add-group-start', 'add-group-end');
   };
 
-  const onSubmit = (_data: FormData) => {
+  const onSubmit = () => {
     performance.mark('submit-start');
     // Simulate async save
     setTimeout(() => {
@@ -274,8 +274,8 @@ function AnswerBlock({ groupIndex, componentIndex, answerIndex, answerField }: {
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.25 }}>
         {subAnswerFields.map((s, si) => (
           <Box key={s.id} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <TextField size="small" label="하위 코드" sx={{ width: 120 }} defaultValue={(s as unknown as SubAnswer).code} {...register(`groups.${groupIndex}.components.${componentIndex}.answers.${answerIndex}.subAnswers.${si}.code`)} />
-            <TextField size="small" label="하위 내용" sx={{ width: 160 }} defaultValue={(s as unknown as SubAnswer).content} {...register(`groups.${groupIndex}.components.${componentIndex}.answers.${answerIndex}.subAnswers.${si}.content`)} />
+            <TextField size="small" label="하위 코드" sx={{ width: 120 }} defaultValue={s.code} {...register(`groups.${groupIndex}.components.${componentIndex}.answers.${answerIndex}.subAnswers.${si}.code`)} />
+            <TextField size="small" label="하위 내용" sx={{ width: 160 }} defaultValue={s.content} {...register(`groups.${groupIndex}.components.${componentIndex}.answers.${answerIndex}.subAnswers.${si}.content`)} />
           </Box>
         ))}
       </Box>

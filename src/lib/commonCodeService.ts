@@ -15,7 +15,6 @@ import {
   replaceValueWithLabel,
   ApiCodeGroup, 
   FormattedCodeGroup, 
-  FormattedCodeItem 
 } from './codeUtils';
 
 // 캐시 시스템

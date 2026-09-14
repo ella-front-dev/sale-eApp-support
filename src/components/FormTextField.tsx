@@ -1,14 +1,13 @@
 import React from 'react';
 
 import { TextField, TextFieldProps } from '@mui/material';
-import { Controller, Control, FieldErrors, Path } from 'react-hook-form';
+import { Controller, Control, Path } from 'react-hook-form';
 
 import { FormData } from '@/types/form';
 
 interface FormTextFieldProps {
   name: Path<FormData>;
   control: Control<FormData>;
-  errors?: FieldErrors<FormData>;
   label: string;
   placeholder?: string;
   textFieldProps?: Partial<TextFieldProps>;
@@ -17,7 +16,6 @@ interface FormTextFieldProps {
 export default function FormTextField({
   name,
   control,
-  errors,
   label,
   placeholder,
   textFieldProps = {}

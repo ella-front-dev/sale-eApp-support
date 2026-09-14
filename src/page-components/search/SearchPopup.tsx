@@ -26,8 +26,6 @@ import {
   List,
   ListItem,
   ListItemText,
-  ListItemButton,
-  Divider,
   IconButton,
   InputAdornment,
   Checkbox,
@@ -37,7 +35,6 @@ import {
 } from '@mui/material';
 import { v4 as uuidv4 } from 'uuid';
 
-import { api, BusinessError } from '@/lib/axios';
 
 
 interface SearchPopupProps {

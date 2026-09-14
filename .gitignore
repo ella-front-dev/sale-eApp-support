@@ -10,6 +10,10 @@
 !.yarn/releases
 !.yarn/versions
 
+# 이 프로젝트는 pnpm 을 사용합니다. 다른 패키지 매니저의 락파일은 커밋하지 않습니다.
+package-lock.json
+yarn.lock
+
 # testing
 /coverage
 

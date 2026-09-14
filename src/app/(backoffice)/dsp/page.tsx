@@ -90,10 +90,10 @@ export default function DSPPage() {
                   커스텀 React Hooks 모음
                 </Typography>
                 <Box component="ul" sx={{ mt: 2, pl: 2, '& li': { fontSize: '0.875rem', mb: 0.5 } }}>
-                  <li>useDialog</li>
                   <li>useCommonCodes</li>
-                  <li>useValidation</li>
-                  <li>usePermissions</li>
+                  <li>useCodeDuplicationCheck</li>
+                  <li>useCustomValidation</li>
+                  <li>usePagePermissions</li>
                 </Box>
               </CardContent>
             </Card>
@@ -127,7 +127,6 @@ export default function DSPPage() {
             <Chip label="TypeScript" variant="outlined" />
             <Chip label="Material-UI" variant="outlined" />
             <Chip label="React Hook Form" variant="outlined" />
-            <Chip label="Zod" variant="outlined" />
             <Chip label="Axios" variant="outlined" />
             <Chip label="Day.js" variant="outlined" />
           </Box>

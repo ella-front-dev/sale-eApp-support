@@ -128,7 +128,7 @@ export default function Home() {
                 </Typography>
                 <Box component="ul" sx={{ m: 0, pl: 2.5, '& li': { fontSize: '0.875rem', color: 'text.secondary' } }}>
                   <li>대량 Mock 데이터 자동 생성</li>
-                  <li>Virtuoso 가상화 렌더링</li>
+                  <li>React.memo 기반 리렌더링 최소화</li>
                   <li>React Hook Form 폼 관리</li>
                   <li>코드 중복 검사 및 유효성 검증</li>
                 </Box>
@@ -343,13 +343,14 @@ export default function Home() {
             }}>
               <Box sx={{ flex: 1 }}>
                 <Typography variant="h4" component="h2" gutterBottom sx={{ fontWeight: 700, color: 'white', display: 'flex', alignItems: 'center', gap: 1 }}>
-                  🔧 DSP 공통 프로젝트
+                  🔧 DSP 공통 프로젝트 <Chip label="구상 단계" size="small" sx={{ bgcolor: 'rgba(0,0,0,0.25)', color: 'white', fontWeight: 600 }} />
                 </Typography>
                 <Typography variant="h6" sx={{ mb: 2, color: 'rgba(255,255,255,0.9)' }}>
                   공통 컴포넌트 & 유틸리티 라이브러리
                 </Typography>
                 <Typography variant="body1" sx={{ mb: 2, color: 'rgba(255,255,255,0.8)' }}>
-                  재사용 가능한 공통 컴포넌트와 유틸리티 함수들을 모아놓은 라이브러리 프로젝트입니다.
+                  재사용 가능한 공통 컴포넌트와 유틸리티 함수들을 모아놓을 라이브러리 프로젝트입니다.
+                  아직 구현물 없이 방향만 정리해둔 단계입니다.
                 </Typography>
                 <Box sx={{ 
                   display: 'flex', 

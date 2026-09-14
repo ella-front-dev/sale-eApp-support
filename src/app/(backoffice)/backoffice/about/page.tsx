@@ -47,10 +47,8 @@ export default function AboutPage() {
             <Chip label="TypeScript" color="primary" />
             <Chip label="Material-UI v7" color="secondary" />
             <Chip label="React Hook Form" color="secondary" />
-            <Chip label="Virtuoso" color="secondary" />
             <Chip label="Axios" />
             <Chip label="XLSX" />
-            <Chip label="Zod" />
           </Box>
         </Box>
 
@@ -100,8 +98,8 @@ export default function AboutPage() {
                   </ListItem>
                   <ListItem>
                     <ListItemText
-                      primary="3단계: Virtuoso 가상화 적용"
-                      secondary="렌더링 성능 개선 - 실제 DOM 노드 수 감소"
+                      primary="3단계: 가상화 적용 시도 후 철회"
+                      secondary="중첩 가상화에서 높이 계산이 깨져 롤백, React.memo + 아코디언 조합으로 정리"
                     />
                   </ListItem>
                   <ListItem>
@@ -121,7 +119,7 @@ export default function AboutPage() {
                       <strong>이슈:</strong> 대량 데이터 입력 시 폼 반응 속도 저하
                     </Typography>
                     <Typography variant="body2" color="textSecondary">
-                      <strong>해결:</strong> react-virtuoso 도입 + useTransition으로 비동기 렌더링 처리
+                      <strong>해결:</strong> React.memo 로 리렌더링 차단 + 그룹 단위 아코디언으로 표시 범위 축소 (가상화는 중첩 문제로 철회)
                     </Typography>
                   </CardContent>
                 </Card>
@@ -541,19 +539,20 @@ export default function AboutPage() {
                 <Paper elevation={2} sx={{ p: 2, mb: 2, border: '2px solid', borderColor: 'success.main', bgcolor: 'success.50' }}>
                   <Typography variant="subtitle2" gutterBottom sx={{ fontWeight: 600, color: 'success.dark', display: 'flex', alignItems: 'center', gap: 1 }}>
                     <CheckCircleIcon color="success" />
-                    해결방법 5: Accordion + 가상 DOM 혼합 ✓
+                    해결방법 5: Accordion + React.memo (현재 코드 상태) ✓
                   </Typography>
                   <Typography variant="body2" color="textSecondary" paragraph>
-                    <strong>적용:</strong> 그룹은 Accordion으로 분할 + 컴포넌트는 react-virtuoso 가상화
+                    <strong>적용:</strong> 그룹은 Accordion 으로 표시 범위를 나누고, GroupSection · ComponentSection 을 React.memo 로 감싸 리렌더링 전파를 차단
                   </Typography>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
                     <CheckCircleIcon color="success" fontSize="small" />
                     <Typography variant="body2" color="success.dark" sx={{ fontWeight: 600 }}>
-                      결과: 성능 문제 해결 완료 - 대량 데이터에서도 안정적인 렌더링 성공 ✓
+                      결과: 체감 가능한 수준으로 개선 ✓
                     </Typography>
                   </Box>
                   <Typography variant="caption" color="textSecondary" sx={{ display: 'block', mt: 1 }}>
-                    * 그룹 단위 지연 로딩 + 각 그룹 내부는 가상 스크롤로 최적화
+                    * 가상화는 해결방법 3의 중첩 문제로 철회했고, 의존성(react-virtuoso)도 제거했다.
+                    근본 원인은 4단 중첩 전체를 하나의 useForm 에 등록하는 구조라고 판단해, 렌더링 기법으로 덮기보다 구조를 다시 짜는 쪽을 택했다 → Template Editor 실험
                   </Typography>
                 </Paper>
 

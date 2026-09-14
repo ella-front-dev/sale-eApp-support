@@ -36,8 +36,9 @@ API에서 제공하는 공통 코드 데이터를 React 컴포넌트에서 사�
 
 ## 🔧 주요 구성 요소
 
-### 1. CommonCodeFormatter 클래스
-- 데이터 변환 및 관리 핵심 클래스
+### 1. codeUtils - 변환 유틸 함수 모음
+- 데이터 변환 및 조회 함수들 (`formatCodeData`, `getCodesById`, `getSelectOptions` 등)
+- 여러 번 조회할 때는 `createCodeUtils(formattedData)` 로 묶어서 쓴다
 - 위치: `/src/lib/codeUtils.ts`
 
 ### 2. CommonCodeService & useCommonCodes Hook  
@@ -95,26 +96,29 @@ function MyComponent() {
 }
 ```
 
-### 2. 클래스 직접 사용법
+### 2. 유틸 함수 직접 사용법
 
 ```typescript
-import { CommonCodeFormatter } from '@/lib/codeUtils';
+import { formatCodeData, createCodeUtils } from '@/lib/codeUtils';
 
-// API 데이터를 받은 후
+// API 데이터를 받은 후 내부 형식으로 변환
 const apiData = await api.get('/common-codes');
-const formatter = new CommonCodeFormatter(apiData);
+const formattedData = formatCodeData(apiData);
+
+// 조회가 여러 번이면 createCodeUtils 로 묶어서 사용
+const codeUtils = createCodeUtils(formattedData);
 
 // 특정 그룹의 코드들 가져오기
-const codes = formatter.getCodesById(1);
+const codes = codeUtils.getCodes(1);
 
 // Select 옵션 형태로 가져오기 (기본값 포함)
-const selectOptions = formatter.getSelectOptions(1, true);
+const selectOptions = codeUtils.getSelectOptions(1, true);
 
 // Radio 옵션 형태로 가져오기
-const radioOptions = formatter.getRadioOptions(1);
+const radioOptions = codeUtils.getRadioOptions(1);
 
-// 기본값 가져오기
-const defaultValue = formatter.getDefaultValueById(1);
+// 그룹의 첫 번째 코드 가져오기
+const firstCode = codeUtils.getFirstCode(1);
 ```
 
 ### 3. Mock 데이터 사용

@@ -26,8 +26,8 @@ import GroupSection from '@/page-components/backoffice/GroupSection';
 import { FormData } from '@/types/form';
 import { PageMode, MODE_TITLES, MODE_BUTTON_TEXTS } from '@/types/pageMode';
 
-// 🎯 Virtuoso 가상화 테스트용 대량 데이터 생성
-// 그룹 10개, 컴포넌트 100개, 답변 3개 (Virtuoso 성능 확인용)
+// 렌더링 부하 확인용 대량 데이터 생성
+// 그룹 10개, 컴포넌트 100개, 답변 3개
 const generateMockData = (): FormData => {
   const groups = [];
   let componentIdCounter = 1;
@@ -87,7 +87,7 @@ const generateMockData = (): FormData => {
   }
 
   return {
-    title: "🚀 Virtuoso 성능 테스트 데이터 (그룹 10개, 컴포넌트 100개) - 가상화 활성화!",
+    title: "성능 테스트 데이터 (그룹 10개, 컴포넌트 100개)",
     startDate: new Date('2024-01-01'),
     endDate: new Date('2024-12-31'),
     groups
@@ -116,12 +116,16 @@ export default function BackofficePage({
   // 초기 데이터 저장 (기존 데이터 판별용)
   const [initialData, setInitialData] = React.useState<FormData | null>(null);
 
+  // Controller 에 이벤트 핸들러를 덧붙이는 예시에서, 마지막 이벤트를 화면에 표시하기 위한 상태
+  const [titleFieldEvent, setTitleFieldEvent] = React.useState('');
+
   const permissions = usePagePermissions(mode);
   const pageTitle = MODE_TITLES[mode];
   const buttonText = MODE_BUTTON_TEXTS[mode];
   
+  // 검증은 스키마 라이브러리 대신 RHF 기본 rules + useCustomValidation 으로 처리한다
+  // (Zod 를 붙였을 때 에러가 View 에 반영되지 않는 문제로 걷어냈다 — /backoffice/about 참고)
   const { control, handleSubmit, formState: { errors, isValid }, watch, reset, trigger, getValues, setValue } = useForm<FormData>({
-    // resolver: zodResolver(formSchema), // 성능 테스트를 위해 일시 비활성화
     defaultValues: {
       title: '',
       startDate: undefined,
@@ -137,10 +141,7 @@ export default function BackofficePage({
       // 실제로는 API 호출: fetchFormData(formId).then(data => reset(data))
       // 시뮬레이션: 1초 후에 전체 데이터 로드
       const timer = setTimeout(() => {
-        console.log(`📡 ${mode} 모드 - API에서 전체 데이터 로드 중...`);
         reset(mockEditData); // 전체 데이터를 React Hook Form에 한번에 로드
-        console.log(`✅ ${mode} 모드 - 전체 데이터 로드 완료! (총 ${mockEditData.groups.length}개 그룹)`);
-        console.log(`💡 UI 청킹: 처음 5개 그룹만 표시, 스크롤 시 점진적 렌더링`);
       }, 1000);
       
       return () => clearTimeout(timer);
@@ -153,25 +154,12 @@ export default function BackofficePage({
     name: 'groups'
   });
 
-  // 가상화 제거됨 - 동적 높이 계산 함수 주석 처리
-  /*
-  const calculateGroupHeight = React.useCallback((index: number) => {
-    // 전체 함수 내용 주석 처리
-  }, [groups]);
-  */
-
-  // 🚀 성능 최적화: 그룹 관리 콜백 메모이제이션
+  // 성능 최적화: 그룹 관리 콜백 메모이제이션
   const handleRemoveGroup = useCallback((groupIndex: number) => {
     removeGroup(groupIndex);
   }, [removeGroup]);
 
   // reset이 호출될 때 로깅만 수행
-  useEffect(() => {
-    if (groups.length > 0) {
-      console.log(`🔄 reset 감지, 전체 그룹 로드: ${groups.length}개 그룹`);
-    }
-  }, [groups.length]);
-
   // 중복 체크 훅
   const { getDuplicationReport } = useCodeDuplicationCheck(control);
 
@@ -210,15 +198,8 @@ export default function BackofficePage({
 
   // 샘플 데이터 로드 (테스트용)
   const loadSampleData = () => {
-    console.log('� Virtuoso 성능 테스트 시작 - 가상화 활성화!');
-    console.log('📊 생성할 데이터: 그룹 10개, 컴포넌트 100개, 답변 300개');
-    console.log('⚡ Group 가상화: 5개 이상 → 활성화 예정');
-    console.log('⚡ Component 가상화: 5개 이상 → 활성화 예정');
     reset(mockEditData); // 전체 데이터를 한번에 React Hook Form에 로드
     setInitialData(JSON.parse(JSON.stringify(mockEditData))); // 깊은 복사로 초기 데이터 저장
-    console.log(`✅ 대량 데이터 로드 완료!`);
-    console.log(`📈 통계: 그룹 ${mockEditData.groups.length}개, 컴포넌트 ${mockEditData.groups.reduce((acc, g) => acc + g.components.length, 0)}개`);
-    console.log('🎯 Virtuoso 가상화로 성능 최적화 시작!');
   };
 
   // 실제 구현에서는 useEffect로 API 데이터 로드 시 초기 데이터 설정
@@ -284,10 +265,9 @@ export default function BackofficePage({
     }
   };
 
-  // 폼 제출 (Zod 검증 통과 후에만 실행됨)
+  // 폼 제출 (검증 통과 후에만 실행됨)
   const onSubmit = (data: FormData) => {
-    console.log('🎯 Zod 전체 검증 통과!');
-    
+
     // 날짜 값 활용 예시
     if (data.startDate && data.endDate) {
       const startDate = new Date(data.startDate);
@@ -461,15 +441,19 @@ export default function BackofficePage({
                     sx={{ mb: 2 }}
                     error={!!fieldState.error}
                     helperText={fieldState.error?.message}
-                    onFocus={() => console.log('제목 필드 포커스')}
-                    onBlur={() => console.log('제목 필드 블러')}
+                    // Controller 의 field 를 유지한 채 핸들러를 덧붙이는 예시
+                    onFocus={() => setTitleFieldEvent('focus')}
+                    onBlur={() => setTitleFieldEvent('blur')}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                      field.onChange(e); // 기본 onChange
-                      console.log('제목 변경:', e.target.value);
+                      field.onChange(e); // 기본 onChange 는 반드시 먼저 호출
+                      setTitleFieldEvent(`change: ${e.target.value}`);
                     }}
                   />
                 )}
               />
+              <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 2 }}>
+                마지막 이벤트: {titleFieldEvent || '아직 없음'}
+              </Typography>
 
               {/* 2. 조건부 렌더링 */}
               <Controller
@@ -510,7 +494,7 @@ export default function BackofficePage({
                 color="secondary"
                 onClick={loadSampleData}
               >
-                � Virtuoso 테스트 (그룹 10개)
+                📊 대량 샘플 로드 (그룹 10개)
               </Button>
               <Button
                 type="button"
@@ -606,7 +590,7 @@ export default function BackofficePage({
 
 
 
-        {/* 🚀 성능 최적화: 가상화 또는 일반 렌더링 */}
+        {/* 그룹 렌더링 (가상화 없음 — 각 GroupSection 은 React.memo 로 감싸져 있다) */}
         {groups.length === 0 ? (
           // 빈 상태 처리
           <Card sx={{ mb: 3 }}>
@@ -624,7 +608,7 @@ export default function BackofficePage({
             </CardContent>
           </Card>
         ) : (
-          // 일반 렌더링 (15개 미만)
+          // 전체 그룹을 그대로 렌더링
           <>
             {groups.map((group, groupIndex) => (
               <GroupSection

@@ -401,12 +401,8 @@ export default function Home() {
             border: '2px solid',
             borderColor: 'success.main',
             background: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
-            color: 'white',
-            transition: 'transform 0.2s, box-shadow 0.2s',
-            '&:hover': { transform: 'translateY(-2px)', boxShadow: 8 },
-            cursor: 'pointer'
+            color: 'white'
           }}
-          onClick={() => router.push('/app-channel')}
         >
           <CardContent sx={{ p: 4 }}>
             <Box sx={{

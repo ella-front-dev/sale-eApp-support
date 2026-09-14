@@ -87,7 +87,8 @@ const generateMockData = (): FormData => {
   }
 
   return {
-    title: "성능 테스트 데이터 (그룹 10개, 컴포넌트 100개)",
+    // 제목 검증 규칙(한글/영문/숫자/공백)을 통과하도록 괄호·쉼표 없이 둔다
+    title: "성능 테스트 데이터 그룹 10개 컴포넌트 100개",
     startDate: new Date('2024-01-01'),
     endDate: new Date('2024-12-31'),
     groups

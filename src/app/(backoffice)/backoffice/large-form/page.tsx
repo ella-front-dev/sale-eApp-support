@@ -1,7 +1,8 @@
 "use client";
 import React, { Suspense, useEffect, useState, startTransition, useTransition } from 'react';
-import { useForm, FormProvider, useFieldArray, useFormContext, Controller, type FieldValues, type UseFormReturn } from 'react-hook-form';
+
 import { Box, Button, Card, CardContent, CircularProgress, Divider, Typography, TextField, Select, MenuItem, Chip } from '@mui/material';
+import { useForm, FormProvider, useFieldArray, useFormContext, Controller, type FieldValues, type UseFormReturn } from 'react-hook-form';
 // NOTE: react-virtuoso or react-window can be conditionally imported. Left as comment for optional virtualization.
 // import { Virtuoso } from 'react-virtuoso';
 
@@ -39,6 +40,7 @@ export default function LargeFormPage() {
     const sub = (ai: number) => Array.from({ length: subPer }).map((_, si) => ({ id: mkId(), code: `SUB_${ai + 1}_${si + 1}`, content: `하위 ${ai + 1}-${si + 1}` }));
     const ans = () => Array.from({ length: answersPer }).map((_, ai) => ({ id: mkId(), code: `ANS_${ai + 1}`, content: `답변 ${ai + 1}`, type: 'FP', valueType: 'TEXT', serviceCode: 'Group1', subAnswers: sub(ai) }));
     const comps = Array.from({ length: componentCount }).map((_, ci) => ({ id: mkId(), seq: ci + 1, code: `CMP_${String(ci + 1).padStart(3, '0')}`, name: `컴포넌트 ${ci + 1}`, answers: ans() }));
+
     return [{ id: mkId(), seq: 1, code: 'GRP_001', name: '샘플 그룹', startDate: '', endDate: '', components: comps }];
   };
 
@@ -65,14 +67,13 @@ export default function LargeFormPage() {
     performance.measure('add-group', 'add-group-start', 'add-group-end');
   };
 
-  const onSubmit = (data: FormData) => {
+  const onSubmit = (_data: FormData) => {
     performance.mark('submit-start');
     // Simulate async save
     setTimeout(() => {
       performance.mark('submit-end');
       performance.measure('form-submit', 'submit-start', 'submit-end');
       // Inspect measure in Performance panel
-      console.log('Saved form', data);
     }, 300);
   };
 
@@ -139,11 +140,16 @@ function GroupCard({ groupIndex, groupField }: { groupIndex: number; groupField:
 
   // 필드 수가 변하면 자동으로 일정 간격으로 가시 개수 증가
   useEffect(() => {
-    if (!autoReveal) return;
-    if (visibleCount >= componentFields.length) return;
+    if (!autoReveal) {
+return;
+}
+    if (visibleCount >= componentFields.length) {
+return;
+}
     const handle = setTimeout(() => {
       startTransition(() => setVisibleCount((c) => Math.min(c + CHUNK_SIZE, componentFields.length)));
     }, 32); // 약 2프레임 텀
+
     return () => clearTimeout(handle);
   }, [autoReveal, visibleCount, componentFields.length]);
 

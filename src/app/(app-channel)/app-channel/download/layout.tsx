@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+
 import 'sales-frontend-design-system/layout/responsive';
 import 'sales-frontend-design-system/core-styles';
 import { Providers } from '@/components/context/providers';
@@ -7,8 +8,8 @@ import { DspGtmIframe } from '@/components/dev/dsp-gtm-iframe';
 import { APP_ENV, MSW_ENABLED } from '@/constants/environments';
 
 export const metadata: Metadata = {
-  title: '영업지원 앱(예시) 영업지원',
-  description: '언제 어디서나 영업지원 앱(예시) 영업지원 앱을 만나보세요.',
+  title: '영업지원 앱 (Demo)',
+  description: '언제 어디서나 영업지원 앱 데모를 만나보세요.',
   formatDetection: {
     telephone: false,
     date: false,

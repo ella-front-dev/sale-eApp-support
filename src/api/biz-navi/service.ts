@@ -1,12 +1,13 @@
 import { AxiosRequestConfig } from 'axios';
 import { HttpClientAxios } from 'sales-frontend-api';
-import type { ResponseDto } from '@/types/api';
+
 import type {
   BizNaviInquiryListParams,
   BizNaviInquiryListResponse,
   BizNaviInquiryRegisterRequest,
   BizNaviInquiryRegisterResponse
 } from './dto';
+import type { ResponseDto } from '@/types/api';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
 const BASE = '/biz-navi/inquiries';
@@ -21,6 +22,7 @@ export const getInquiryList = async (
 ): Promise<BizNaviInquiryListResponse> => {
   const httpClient = new HttpClientAxios({ baseURL: API_BASE_URL, ...axiosConfig });
   const res = await httpClient.api.get<ResponseDto<BizNaviInquiryListResponse>>(BASE, { params });
+
   return res.data.data!;
 };
 
@@ -34,5 +36,6 @@ export const createInquiry = async (
 ): Promise<BizNaviInquiryRegisterResponse> => {
   const httpClient = new HttpClientAxios({ baseURL: API_BASE_URL, ...axiosConfig });
   const res = await httpClient.api.post<ResponseDto<BizNaviInquiryRegisterResponse>>(BASE, { ...body });
+
   return res.data.data!;
 };

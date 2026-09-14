@@ -1,16 +1,20 @@
 'use client';
 
-import Image from 'next/image';
-import classNames from 'classnames/bind';
 import { useEffect, useState } from 'react';
 
-import mainBg from '@/assets/img/download_main_bg.png';
-import mainImgTablet from '@/assets/img/download_main_img_tablet.png';
-import mainImgPhone from '@/assets/img/download_main_img_phone.png';
-import qrImg from '@/assets/img/download_qr.png';
-import { IconAndroid, IconIOS, IconDownArrow } from '@/assets/icons';
-import styles from './heroSection.module.scss';
+import Image from 'next/image';
+
+import classNames from 'classnames/bind';
 import { Button, IconButton } from 'sales-frontend-design-system';
+
+import styles from './heroSection.module.scss';
+
+import { IconAndroid, IconIOS, IconDownArrow } from '@/assets/icons';
+import mainBg from '@/assets/img/download_main_bg.png';
+import mainImgPhone from '@/assets/img/download_main_img_phone.png';
+import mainImgTablet from '@/assets/img/download_main_img_tablet.png';
+import qrImg from '@/assets/img/download_qr.png';
+
 const cx = classNames.bind(styles);
 
 const DOWNLOAD_OS = {
@@ -35,8 +39,11 @@ export default function HeroSection({ onScrollDown }: HeroSectionProps) {
 
   useEffect(() => {
     const ua = navigator.userAgent.toLowerCase();
-    if (/android/.test(ua)) setOs('android');
-    else if (/iphone|ipad|ipod/.test(ua)) setOs('ios');
+    if (/android/.test(ua)) {
+setOs('android');
+} else if (/iphone|ipad|ipod/.test(ua)) {
+setOs('ios');
+}
   }, []);
 
   return (
@@ -48,12 +55,12 @@ export default function HeroSection({ onScrollDown }: HeroSectionProps) {
           <span className={cx('hero-headline')}>
             언제 어디서나
             <br />
-            영업지원 앱(예시) 영업지원
+            영업지원 앱 (예시)
           </span>
           <p className={cx('hero-subtext')}>
             더 쉽고 새로워진
             <br />
-            영업지원 앱(예시) 영업지원 앱을 만나보세요.
+            영업지원 앱 데모를 만나보세요.
           </p>
 
           {os !== 'other' && (

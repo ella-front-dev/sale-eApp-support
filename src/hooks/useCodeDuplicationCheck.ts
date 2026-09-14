@@ -1,4 +1,5 @@
 import { useWatch, Control } from 'react-hook-form';
+
 import { FormData } from '@/types/form';
 
 export function useCodeDuplicationCheck(control: Control<FormData>) {
@@ -7,7 +8,9 @@ export function useCodeDuplicationCheck(control: Control<FormData>) {
   // 모든 Group Code 수집
   const getAllGroupCodes = (): string[] => {
     const codes: string[] = [];
-    if (!watchedData?.groups) return codes;
+    if (!watchedData?.groups) {
+return codes;
+}
 
     watchedData.groups.forEach(group => {
       if (group.code) {
@@ -21,7 +24,9 @@ export function useCodeDuplicationCheck(control: Control<FormData>) {
   // 모든 Component Code 수집
   const getAllComponentCodes = (): string[] => {
     const codes: string[] = [];
-    if (!watchedData?.groups) return codes;
+    if (!watchedData?.groups) {
+return codes;
+}
 
     watchedData.groups.forEach(group => {
       group.components?.forEach(component => {
@@ -37,7 +42,9 @@ export function useCodeDuplicationCheck(control: Control<FormData>) {
   // 모든 SubAnswer Code 수집
   const getAllSubAnswerCodes = (): string[] => {
     const codes: string[] = [];
-    if (!watchedData?.groups) return codes;
+    if (!watchedData?.groups) {
+return codes;
+}
 
     watchedData.groups.forEach(group => {
       group.components?.forEach(component => {
@@ -69,7 +76,9 @@ export function useCodeDuplicationCheck(control: Control<FormData>) {
     currentCode: string,
     currentGroupIndex: number
   ): string | null => {
-    if (!currentCode) return null;
+    if (!currentCode) {
+return null;
+}
 
     let duplicateCount = 0;
 
@@ -89,7 +98,9 @@ export function useCodeDuplicationCheck(control: Control<FormData>) {
     currentGroupIndex: number,
     currentComponentIndex: number
   ): string | null => {
-    if (!currentCode) return null;
+    if (!currentCode) {
+return null;
+}
 
     let duplicateCount = 0;
 
@@ -126,7 +137,9 @@ export function useCodeDuplicationCheck(control: Control<FormData>) {
     currentAnswerIndex: number,
     currentSubAnswerIndex: number
   ): string | null => {
-    if (!currentCode) return null;
+    if (!currentCode) {
+return null;
+}
 
     let duplicateCount = 0;
 

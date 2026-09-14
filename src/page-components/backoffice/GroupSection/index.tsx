@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Control, FieldErrors, useFieldArray, Controller, useWatch, UseFormGetValues, UseFormSetValue } from 'react-hook-form';
+
+import {
+  Add as AddIcon,
+  Delete as DeleteIcon,
+  ExpandMore as ExpandMoreIcon
+} from '@mui/icons-material';
 import {
   Box,
   IconButton,
@@ -15,14 +20,12 @@ import {
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
-import {
-  Add as AddIcon,
-  Delete as DeleteIcon,
-  ExpandMore as ExpandMoreIcon
-} from '@mui/icons-material';
+import { Control, FieldErrors, useFieldArray, Controller, useWatch, UseFormGetValues, UseFormSetValue } from 'react-hook-form';
+
+import ComponentSection from '../ComponentSection';
+
 import { FormData } from '@/types/form';
 import { PagePermissions, canDeleteItemByIndex } from '@/types/pageMode';
-import ComponentSection from '../ComponentSection';
 
 interface GroupSectionProps {
   control: Control<FormData>;
@@ -73,19 +76,24 @@ function GroupSection({
 
   // Union 타입 날짜 정규화 유틸 (필수값)
   const normalizeDate = (value: Date | string): Date => {
-    if (value instanceof Date) return value;
+    if (value instanceof Date) {
+return value;
+}
     if (typeof value === 'string') {
       // API 포맷 처리: "2024.12.25 00:00:00"
       const isoString = value.replace(/\./g, '-').replace(' ', 'T');
       const parsed = new Date(isoString);
+
       return isNaN(parsed.getTime()) ? new Date() : parsed;
     }
+
     return new Date();
   };
 
   // 무제한 날짜 감지 유틸 (9999년 기준)
   const isInfiniteDate = (value: Date | string): boolean => {
     const date = normalizeDate(value);
+
     return date.getFullYear() >= 9999;
   };
 

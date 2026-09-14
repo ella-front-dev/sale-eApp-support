@@ -1,7 +1,6 @@
 import React from 'react';
-import { Control, FieldErrors, useFieldArray, Controller } from 'react-hook-form';
-import { useCodeDuplicationCheck } from '@/hooks/useCodeDuplicationCheck';
-import { rhfRules } from '@/hooks/useCustomValidation';
+
+import { Delete as DeleteIcon } from '@mui/icons-material';
 import {
   Box,
   IconButton,
@@ -13,7 +12,10 @@ import {
   InputLabel,
   FormHelperText
 } from '@mui/material';
-import { Delete as DeleteIcon } from '@mui/icons-material';
+import { Control, FieldErrors, useFieldArray, Controller } from 'react-hook-form';
+
+import { useCodeDuplicationCheck } from '@/hooks/useCodeDuplicationCheck';
+import { rhfRules } from '@/hooks/useCustomValidation';
 import { FormData } from '@/types/form';
 import { PagePermissions, canDeleteItemByIndex } from '@/types/pageMode';
 
@@ -57,10 +59,13 @@ function AnswerSection({
     }
     
     // update 모드에서만 initialData 확인
-    if (!initialData) return 0;
+    if (!initialData) {
+return 0;
+}
     
     try {
       const initialAnswer = initialData.groups?.[groupIndex]?.components?.[componentIndex]?.answers?.[answerIndex];
+
       return Array.isArray(initialAnswer?.subAnswers) ? initialAnswer.subAnswers.length : 0;
     } catch {
       return 0;
@@ -150,6 +155,7 @@ function AnswerSection({
                   </MenuItem>
                 );
               }
+
               return options;
             })()}
           </Select>
@@ -188,6 +194,7 @@ function AnswerSection({
                 validate: (value) => {
                   // 코드 중복 체크만 커스텀으로 처리
                   const duplicateError = checkSubAnswerCodeDuplication(value, groupIndex, componentIndex, answerIndex, subAnswerIndex);
+
                   return duplicateError || true;
                 }
               }}

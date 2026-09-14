@@ -1,10 +1,12 @@
 "use client";
 
 import * as React from "react";
-import { Box, List, ListItem, ListItemButton, ListItemText, Collapse, Typography } from "@mui/material";
+
 import { ExpandMore, ChevronRight } from "@mui/icons-material";
-import { NodeItem } from "./types";
+import { Box, List, ListItem, ListItemButton, ListItemText, Collapse, Typography } from "@mui/material";
+
 import { getChildren, getRootNodes } from "./mock";
+import { NodeItem } from "./types";
 
 export function SidebarTree({
   nodes,
@@ -27,24 +29,13 @@ export function SidebarTree({
     }
   }, [roots]);
 
-  // 디버그: 노드 수 출력
-  React.useEffect(() => {
-    console.log('[SidebarTree] mounted:', mounted, 'nodes.length:', nodes.length, '루트:', roots.length);
-    if (nodes.length === 0) {
-      console.warn('[SidebarTree] ⚠️ nodes 비어있음');
-    } else {
-      console.log('[SidebarTree] ✓ 총 노드:', nodes.length, '루트:', roots.length);
-      console.log('[SidebarTree] 루트 노드들:', roots.map(r => `${r.title} (${r.type})`));
-    }
-  }, [mounted, nodes, roots]);
-
   if (!mounted) {
-    console.log('[SidebarTree] 아직 마운트 안됨');
+
     return null;
   }
 
   if (nodes.length === 0) {
-    console.log('[SidebarTree] nodes가 비어있어서 렌더링 안함');
+
     return (
       <Box sx={{ p: 2, textAlign: 'center' }}>
         <Typography variant="body2" color="text.secondary" gutterBottom>
@@ -67,6 +58,7 @@ export function SidebarTree({
       } else {
         next.add(nodeId);
       }
+
       return next;
     });
   };
@@ -125,7 +117,6 @@ export function SidebarTree({
     );
   };
 
-  console.log('[SidebarTree] 렌더링 시작, roots:', roots.length);
 
   return (
     <Box sx={{ height: "100%", overflow: "auto" }}>

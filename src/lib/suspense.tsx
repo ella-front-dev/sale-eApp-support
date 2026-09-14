@@ -1,7 +1,8 @@
 import { Suspense } from 'react';
+
+import { PageLoading } from '@/components/Loading';
 import { api } from '@/lib/axios';
 import { FormData } from '@/types/form';
-import { PageLoading } from '@/components/Loading';
 
 // Suspense용 데이터 fetcher 생성
 function createSuspenseResource<T>(promise: Promise<T>) {
@@ -26,6 +27,7 @@ function createSuspenseResource<T>(promise: Promise<T>) {
       } else if (status === 'error') {
         throw result; // Error Boundary가 catch
       }
+
       return result;
     }
   };
@@ -33,7 +35,7 @@ function createSuspenseResource<T>(promise: Promise<T>) {
 
 // 폼 데이터를 위한 Suspense 리소스
 export function createFormResource(id: string) {
-  return createSuspenseResource(api.get(`/forms/${id}`));
+  return createSuspenseResource(api.get<FormData>(`/forms/${id}`));
 }
 
 // 폼 목록을 위한 Suspense 리소스

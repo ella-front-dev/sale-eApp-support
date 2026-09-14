@@ -19,6 +19,7 @@ export const MswInitializer = ({ children, isActive = true, onUnhandledRequest =
   useEffect(() => {
     if (!isActive) {
       setIsMswInitialized(true);
+
       return;
     }
 

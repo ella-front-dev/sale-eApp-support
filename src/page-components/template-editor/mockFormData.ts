@@ -2,20 +2,21 @@
 
 import { NodeItem } from "./types";
 
-// API 응답 구조에 맞는 Mock 데이터
-const MOCK_FORM_DATA: Record<string, { eapfCode: string; eapfNm: string; description: string; nodes: NodeItem[] }> = {
+// ⚠️ 데모용 임시(Mock) 데이터입니다. 실제 서비스 데이터가 아닙니다.
+// Template Editor 화면 동작 확인을 위해 만든 샘플 구조이며, 코드값/문구는 모두 예시입니다.
+const MOCK_FORM_DATA: Record<string, { formCode: string; formName: string; description: string; nodes: NodeItem[] }> = {
   "1": {
-    eapfCode: "A0010",
-    eapfNm: "청약서",
-    description: "보험 청약을 위한 서식",
+    formCode: "DEMO-0001",
+    formName: "샘플 서식 템플릿 (Demo)",
+    description: "Template Editor 데모용 임시 데이터입니다. 실제 서식이 아닌 예시 구조입니다.",
     nodes: [
-      // GROUP 1: 사용자미입력데이터
+      // GROUP 1: 샘플 그룹 - 미입력 항목
       {
         id: "grp_001",
         parentId: null,
-        title: "사용자미입력데이터",
+        title: "[예시] 샘플 그룹 1 - 미입력 항목",
         type: "GROUP" as const,
-        code: "A0010_DOC_GRP_INDT_001",
+        code: "DEMO_DOC_GRP_001",
         order: 16,
         processLinkYn: "Y",
         status: "ACTIVE" as const,
@@ -24,10 +25,10 @@ const MOCK_FORM_DATA: Record<string, { eapfCode: string; eapfNm: string; descrip
       {
         id: "ans_001_001",
         parentId: "grp_001",
-        title: "작성일자",
+        title: "작성일자 (샘플)",
         type: "ANSWER" as const,
-        code: "A0010_ANSR_059",
-        eacpTypeCode: "FP",
+        code: "DEMO_ANSR_001",
+        eacpTypeCode: "SAMPLE",
         userInptDatYn: "N",
         formatCode: "TEXT",
         dplcAnsrPssbYn: "N",
@@ -47,25 +48,25 @@ const MOCK_FORM_DATA: Record<string, { eapfCode: string; eapfNm: string; descrip
         status: "ACTIVE" as const,
       },
 
-      // GROUP 2: 성명/서명
+      // GROUP 2: 샘플 그룹 - 성명/서명
       {
         id: "grp_002",
         parentId: null,
-        title: "성명/서명",
+        title: "[예시] 샘플 그룹 2 - 성명/서명",
         type: "GROUP" as const,
-        code: "A0010_DOC_GRP_NMSN_001",
+        code: "DEMO_DOC_GRP_002",
         order: 15,
         processLinkYn: "N",
         status: "ACTIVE" as const,
       },
-      // ANSWER: 계약자서명
+      // ANSWER: 신청자서명
       {
         id: "ans_002_001",
         parentId: "grp_002",
-        title: "계약자서명",
+        title: "신청자서명 (샘플)",
         type: "ANSWER" as const,
-        code: "A0010_ANSR_052",
-        eacpTypeCode: "11",
+        code: "DEMO_ANSR_002",
+        eacpTypeCode: "SAMPLE",
         userInptDatYn: "Y",
         formatCode: "IMGS",
         dplcAnsrPssbYn: "N",
@@ -75,22 +76,22 @@ const MOCK_FORM_DATA: Record<string, { eapfCode: string; eapfNm: string; descrip
       {
         id: "dtl_002_001_001",
         parentId: "ans_002_001",
-        title: "계약자서명",
+        title: "신청자서명",
         type: "ANSWER_DETAIL" as const,
         sqno: 1,
-        controlId: "A0010_mysg_sign",
+        controlId: "demo_sign_input",
         controlValue: "",
         order: 1,
         status: "ACTIVE" as const,
       },
-      // ANSWER: 계약자성명
+      // ANSWER: 신청자성명
       {
         id: "ans_002_002",
         parentId: "grp_002",
-        title: "계약자성명",
+        title: "신청자성명 (샘플)",
         type: "ANSWER" as const,
-        code: "A0010_ANSR_045",
-        eacpTypeCode: "11",
+        code: "DEMO_ANSR_003",
+        eacpTypeCode: "SAMPLE",
         userInptDatYn: "Y",
         formatCode: "IMGN",
         dplcAnsrPssbYn: "N",
@@ -100,22 +101,22 @@ const MOCK_FORM_DATA: Record<string, { eapfCode: string; eapfNm: string; descrip
       {
         id: "dtl_002_002_001",
         parentId: "ans_002_002",
-        title: "계약자성명",
+        title: "신청자성명",
         type: "ANSWER_DETAIL" as const,
         sqno: 1,
-        controlId: "A0010_mynm_sg",
+        controlId: "demo_name_input",
         controlValue: "",
         order: 1,
         status: "ACTIVE" as const,
       },
 
-      // GROUP 3: 완전판매 실천 여부
+      // GROUP 3: 샘플 그룹 - 안내사항 확인
       {
         id: "grp_003",
         parentId: null,
-        title: "완전판매 실천 여부",
+        title: "[예시] 샘플 그룹 3 - 안내사항 확인",
         type: "GROUP" as const,
-        code: "A0010_DOC_GRP_OTHR_001",
+        code: "DEMO_DOC_GRP_003",
         order: 1,
         processLinkYn: "N",
         status: "ACTIVE" as const,
@@ -124,10 +125,10 @@ const MOCK_FORM_DATA: Record<string, { eapfCode: string; eapfNm: string; descrip
       {
         id: "ans_003_001",
         parentId: "grp_003",
-        title: "완전판매 질문 1",
+        title: "샘플 확인 질문 1",
         type: "ANSWER" as const,
-        code: "A0010_ANSR_001",
-        eacpTypeCode: "FP",
+        code: "DEMO_ANSR_004",
+        eacpTypeCode: "SAMPLE",
         userInptDatYn: "Y",
         formatCode: "RADI",
         dplcAnsrPssbYn: "N",
@@ -140,9 +141,9 @@ const MOCK_FORM_DATA: Record<string, { eapfCode: string; eapfNm: string; descrip
         title: "예",
         type: "ANSWER_DETAIL" as const,
         sqno: 1,
-        controlId: "A0010_que1_rdg",
+        controlId: "demo_que1_radio",
         controlValue: "1",
-        remark: "[장표수정] 없음 -> A0010_que1_rdg",
+        remark: "(예시) 데모 데이터입니다",
         order: 1,
         status: "ACTIVE" as const,
       },
@@ -152,20 +153,20 @@ const MOCK_FORM_DATA: Record<string, { eapfCode: string; eapfNm: string; descrip
         title: "아니오",
         type: "ANSWER_DETAIL" as const,
         sqno: 2,
-        controlId: "A0010_que1_rdg",
+        controlId: "demo_que1_radio",
         controlValue: "2",
-        remark: "[장표수정] 없음 -> A0010_que1_rdg",
+        remark: "(예시) 데모 데이터입니다",
         order: 2,
         status: "ACTIVE" as const,
       },
 
-      // GROUP 4: 모니터링 방법
+      // GROUP 4: 샘플 그룹 - 연락 방법 선택
       {
         id: "grp_004",
         parentId: null,
-        title: "모니터링 방법",
+        title: "[예시] 샘플 그룹 4 - 연락 방법 선택",
         type: "GROUP" as const,
-        code: "A0010_DOC_GRP_OTHR_002",
+        code: "DEMO_DOC_GRP_004",
         order: 2,
         processLinkYn: "N",
         status: "ACTIVE" as const,
@@ -173,10 +174,10 @@ const MOCK_FORM_DATA: Record<string, { eapfCode: string; eapfNm: string; descrip
       {
         id: "ans_004_001",
         parentId: "grp_004",
-        title: "모니터링 방법 선택",
+        title: "연락 방법 선택 (샘플)",
         type: "ANSWER" as const,
-        code: "A0010_ANSR_004",
-        eacpTypeCode: "FP",
+        code: "DEMO_ANSR_005",
+        eacpTypeCode: "SAMPLE",
         userInptDatYn: "Y",
         formatCode: "RADI",
         dplcAnsrPssbYn: "N",
@@ -186,10 +187,10 @@ const MOCK_FORM_DATA: Record<string, { eapfCode: string; eapfNm: string; descrip
       {
         id: "dtl_004_001_001",
         parentId: "ans_004_001",
-        title: "보이는 ARS",
+        title: "이메일",
         type: "ANSWER_DETAIL" as const,
         sqno: 1,
-        controlId: "A0010_monitor_grp",
+        controlId: "demo_contact_grp",
         controlValue: "1",
         order: 1,
         status: "ACTIVE" as const,
@@ -197,10 +198,10 @@ const MOCK_FORM_DATA: Record<string, { eapfCode: string; eapfNm: string; descrip
       {
         id: "dtl_004_001_002",
         parentId: "ans_004_001",
-        title: "전화(콜센터)",
+        title: "전화",
         type: "ANSWER_DETAIL" as const,
         sqno: 2,
-        controlId: "A0010_monitor_grp",
+        controlId: "demo_contact_grp",
         controlValue: "2",
         order: 2,
         status: "ACTIVE" as const,
@@ -209,11 +210,11 @@ const MOCK_FORM_DATA: Record<string, { eapfCode: string; eapfNm: string; descrip
       {
         id: "sub_004_001_002_001",
         parentId: "dtl_004_001_002",
-        title: "계약자 통화 요청일자",
+        title: "통화 희망일자 (샘플)",
         type: "SUB_ANSWER" as const,
-        code: "A0010_ANSR_005",
+        code: "DEMO_ANSR_006",
         formatCode: "DATE",
-        controlId: "A0010_11_call_date",
+        controlId: "demo_call_date",
         controlValue: "",
         order: 1,
         status: "ACTIVE" as const,
@@ -221,11 +222,11 @@ const MOCK_FORM_DATA: Record<string, { eapfCode: string; eapfNm: string; descrip
       {
         id: "sub_004_001_002_002",
         parentId: "dtl_004_001_002",
-        title: "계약자 통화 요청시간",
+        title: "통화 희망시간 (샘플)",
         type: "SUB_ANSWER" as const,
-        code: "A0010_ANSR_006",
+        code: "DEMO_ANSR_007",
         formatCode: "DTTM",
-        controlId: "A0010_11_call_time",
+        controlId: "demo_call_time",
         controlValue: "",
         order: 2,
         status: "ACTIVE" as const,
@@ -233,22 +234,22 @@ const MOCK_FORM_DATA: Record<string, { eapfCode: string; eapfNm: string; descrip
       {
         id: "dtl_004_001_003",
         parentId: "ans_004_001",
-        title: "홈페이지",
+        title: "문자메시지",
         type: "ANSWER_DETAIL" as const,
         sqno: 3,
-        controlId: "A0010_monitor_grp",
+        controlId: "demo_contact_grp",
         controlValue: "3",
         order: 3,
         status: "ACTIVE" as const,
       },
 
-      // GROUP 5: 보험모집자와 계약자 관계
+      // GROUP 5: 샘플 그룹 - 관계 선택
       {
         id: "grp_005",
         parentId: null,
-        title: "보험모집자와 계약자 관계",
+        title: "[예시] 샘플 그룹 5 - 관계 선택",
         type: "GROUP" as const,
-        code: "A0010_DOC_GRP_OTHR_003",
+        code: "DEMO_DOC_GRP_005",
         order: 3,
         processLinkYn: "N",
         status: "ACTIVE" as const,
@@ -256,10 +257,10 @@ const MOCK_FORM_DATA: Record<string, { eapfCode: string; eapfNm: string; descrip
       {
         id: "ans_005_001",
         parentId: "grp_005",
-        title: "관계 선택",
+        title: "관계 선택 (샘플)",
         type: "ANSWER" as const,
-        code: "A0010_ANSR_011",
-        eacpTypeCode: "FP",
+        code: "DEMO_ANSR_008",
+        eacpTypeCode: "SAMPLE",
         userInptDatYn: "Y",
         formatCode: "RADI",
         dplcAnsrPssbYn: "N",
@@ -272,8 +273,8 @@ const MOCK_FORM_DATA: Record<string, { eapfCode: string; eapfNm: string; descrip
         title: "가족",
         type: "ANSWER_DETAIL" as const,
         sqno: 1,
-        controlId: "Group2",
-        controlValue: "3",
+        controlId: "demo_relation_grp",
+        controlValue: "1",
         order: 1,
         status: "ACTIVE" as const,
       },
@@ -283,8 +284,8 @@ const MOCK_FORM_DATA: Record<string, { eapfCode: string; eapfNm: string; descrip
         title: "지인",
         type: "ANSWER_DETAIL" as const,
         sqno: 2,
-        controlId: "Group2",
-        controlValue: "4",
+        controlId: "demo_relation_grp",
+        controlValue: "2",
         order: 2,
         status: "ACTIVE" as const,
       },
@@ -294,41 +295,30 @@ const MOCK_FORM_DATA: Record<string, { eapfCode: string; eapfNm: string; descrip
         title: "소개",
         type: "ANSWER_DETAIL" as const,
         sqno: 3,
-        controlId: "Group2",
-        controlValue: "5",
+        controlId: "demo_relation_grp",
+        controlValue: "3",
         order: 3,
         status: "ACTIVE" as const,
       },
       {
         id: "dtl_005_001_004",
         parentId: "ans_005_001",
-        title: "개척",
+        title: "기타",
         type: "ANSWER_DETAIL" as const,
         sqno: 4,
-        controlId: "Group2",
-        controlValue: "6",
+        controlId: "demo_relation_grp",
+        controlValue: "4",
         order: 4,
         status: "ACTIVE" as const,
       },
-      {
-        id: "dtl_005_001_005",
-        parentId: "ans_005_001",
-        title: "기타",
-        type: "ANSWER_DETAIL" as const,
-        sqno: 5,
-        controlId: "Group2",
-        controlValue: "7",
-        order: 5,
-        status: "ACTIVE" as const,
-      },
 
-      // GROUP 6: 직업정보 확인
+      // GROUP 6: 샘플 그룹 - 직업 정보 확인
       {
         id: "grp_006",
         parentId: null,
-        title: "직업정보 확인",
+        title: "[예시] 샘플 그룹 6 - 직업 정보 확인",
         type: "GROUP" as const,
-        code: "A0010_DOC_GRP_OTHR_013",
+        code: "DEMO_DOC_GRP_006",
         order: 13,
         processLinkYn: "N",
         status: "ACTIVE" as const,
@@ -336,10 +326,10 @@ const MOCK_FORM_DATA: Record<string, { eapfCode: string; eapfNm: string; descrip
       {
         id: "ans_006_001",
         parentId: "grp_006",
-        title: "직업 구분",
+        title: "직업 구분 (샘플)",
         type: "ANSWER" as const,
-        code: "A0010_ANSR_039",
-        eacpTypeCode: "11",
+        code: "DEMO_ANSR_009",
+        eacpTypeCode: "SAMPLE",
         userInptDatYn: "Y",
         formatCode: "RADI",
         dplcAnsrPssbYn: "N",
@@ -360,9 +350,9 @@ const MOCK_FORM_DATA: Record<string, { eapfCode: string; eapfNm: string; descrip
       {
         id: "sub_006_001_001_001",
         parentId: "dtl_006_001_001",
-        title: "직장명",
+        title: "직장명 (샘플)",
         type: "SUB_ANSWER" as const,
-        code: "A0010_ANSR_040",
+        code: "DEMO_ANSR_010",
         formatCode: "TEXT",
         controlId: "",
         controlValue: "",
@@ -372,7 +362,7 @@ const MOCK_FORM_DATA: Record<string, { eapfCode: string; eapfNm: string; descrip
       {
         id: "dtl_006_001_002",
         parentId: "ans_006_001",
-        title: "개인사업자(자영업)",
+        title: "자영업",
         type: "ANSWER_DETAIL" as const,
         sqno: 2,
         controlId: "",
@@ -383,9 +373,9 @@ const MOCK_FORM_DATA: Record<string, { eapfCode: string; eapfNm: string; descrip
       {
         id: "sub_006_001_002_001",
         parentId: "dtl_006_001_002",
-        title: "사업장명",
+        title: "사업장명 (샘플)",
         type: "SUB_ANSWER" as const,
-        code: "A0010_ANSR_041",
+        code: "DEMO_ANSR_011",
         formatCode: "TEXT",
         controlId: "",
         controlValue: "",
@@ -399,7 +389,7 @@ const MOCK_FORM_DATA: Record<string, { eapfCode: string; eapfNm: string; descrip
         type: "ANSWER_DETAIL" as const,
         sqno: 3,
         controlId: "",
-        controlValue: "5",
+        controlValue: "3",
         order: 3,
         status: "ACTIVE" as const,
       },
@@ -409,10 +399,12 @@ const MOCK_FORM_DATA: Record<string, { eapfCode: string; eapfNm: string; descrip
 
 export function getFormMockData(formId: string) {
   const data = MOCK_FORM_DATA[formId as keyof typeof MOCK_FORM_DATA];
-  if (!data) return null;
-  
+  if (!data) {
+return null;
+}
+
   return {
-    name: data.eapfNm,
+    name: data.formName,
     description: data.description,
     nodes: data.nodes,
   };
@@ -421,10 +413,12 @@ export function getFormMockData(formId: string) {
 // Sidebar용 트리 구조 API Mock (계층만 포함)
 export function getTreeStructure(formId: string): NodeItem[] {
   const data = MOCK_FORM_DATA[formId as keyof typeof MOCK_FORM_DATA];
-  if (!data) return [];
-  
+  if (!data) {
+return [];
+}
+
   // GROUP과 ANSWER까지만 반환 (트리 구조용)
-  return data.nodes.filter(node => 
+  return data.nodes.filter(node =>
     node.type === "GROUP" || node.type === "ANSWER"
   );
 }
@@ -432,15 +426,19 @@ export function getTreeStructure(formId: string): NodeItem[] {
 // 특정 노드의 상세 정보 API Mock
 export function getNodeDetail(formId: string, nodeId: string): NodeItem | null {
   const data = MOCK_FORM_DATA[formId as keyof typeof MOCK_FORM_DATA];
-  if (!data) return null;
-  
+  if (!data) {
+return null;
+}
+
   return data.nodes.find(node => node.id === nodeId) || null;
 }
 
 // 특정 노드의 하위 항목 리스트 API Mock
 export function getNodeChildren(formId: string, nodeId: string): NodeItem[] {
   const data = MOCK_FORM_DATA[formId as keyof typeof MOCK_FORM_DATA];
-  if (!data) return [];
-  
+  if (!data) {
+return [];
+}
+
   return data.nodes.filter(node => node.parentId === nodeId);
 }

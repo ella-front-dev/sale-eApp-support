@@ -1,6 +1,10 @@
 "use client";
 
 import * as React from "react";
+
+import { useRouter } from "next/navigation";
+
+import { Delete as DeleteIcon } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -17,8 +21,6 @@ import {
   IconButton,
   Stack,
 } from "@mui/material";
-import { Delete as DeleteIcon } from "@mui/icons-material";
-import { useRouter } from "next/navigation";
 
 interface FormTemplate {
   id: string;
@@ -30,12 +32,12 @@ interface FormTemplate {
   updatedAt: string;
 }
 
-// Mock 데이터
+// ⚠️ 데모용 임시(Mock) 데이터입니다. 실제 서식이 아닌 예시 항목입니다.
 const mockForms: FormTemplate[] = [
   {
     id: "1",
-    name: "고객 가입 신청서",
-    description: "신규 고객 가입을 위한 기본 정보 수집 서식",
+    name: "[예시] 샘플 서식 템플릿 1",
+    description: "Template Editor 데모용 기본 정보 수집 예시 서식입니다",
     nodeCount: 15,
     status: "ACTIVE",
     createdAt: "2025-01-10",
@@ -43,8 +45,8 @@ const mockForms: FormTemplate[] = [
   },
   {
     id: "2",
-    name: "보험 청구 서식",
-    description: "보험금 청구를 위한 상세 정보 입력 서식",
+    name: "[예시] 샘플 서식 템플릿 2",
+    description: "다단계 입력 항목을 포함한 예시 서식입니다",
     nodeCount: 28,
     status: "ACTIVE",
     createdAt: "2025-01-08",
@@ -52,8 +54,8 @@ const mockForms: FormTemplate[] = [
   },
   {
     id: "3",
-    name: "고객 만족도 조사",
-    description: "고객 만족도 조사를 위한 설문 서식",
+    name: "[예시] 샘플 서식 템플릿 3",
+    description: "설문형 입력 항목을 포함한 예시 서식입니다",
     nodeCount: 12,
     status: "INACTIVE",
     createdAt: "2024-12-20",

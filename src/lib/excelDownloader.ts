@@ -1,5 +1,5 @@
-import * as XLSX from 'xlsx';
 import dayjs from 'dayjs';
+import * as XLSX from 'xlsx';
 
 // 컬럼 너비 타입 정의
 interface ColumnWidth {
@@ -32,9 +32,10 @@ export interface MultiSheetOptions {
 /**
  * 워크시트 컬럼 너비 자동 조정
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const setAutoWidth = (worksheet: any, data: Record<string, unknown>[]): void => {
-  if (!data || data.length === 0) return;
+const setAutoWidth = (worksheet: XLSX.WorkSheet, data: Record<string, unknown>[]): void => {
+  if (!data || data.length === 0) {
+return;
+}
 
   const keys = Object.keys(data[0]);
   const columnWidths: ColumnWidth[] = keys.map((key) => {
@@ -46,6 +47,7 @@ const setAutoWidth = (worksheet: any, data: Record<string, unknown>[]): void => 
       .slice(0, 100)
       .map((row) => {
         const value = row[key];
+
         return value !== undefined && value !== null ? String(value).length : 0;
       })
       .filter((length): length is number => typeof length === 'number');
@@ -62,8 +64,7 @@ const setAutoWidth = (worksheet: any, data: Record<string, unknown>[]): void => 
     return { wch } as ColumnWidth;
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  (worksheet as any)['!cols'] = columnWidths;
+  (worksheet as XLSX.WorkSheet & { '!cols'?: ColumnWidth[] })['!cols'] = columnWidths;
 };
 
 /**
@@ -111,8 +112,7 @@ export const downloadSingleApi = async (
       includeTimestamp: options.includeTimestamp ?? true,
       autoWidth: options.autoWidth ?? true
     });
-  } catch (error) {
-    console.error('API 데이터 다운로드 실패:', error);
+  } catch {
     throw new Error('API 데이터 다운로드 중 오류가 발생했습니다.');
   }
 };
@@ -139,8 +139,8 @@ export const downloadMultipleApis = async (
           : [{ API_소스: endpoint.name, ...data }];
         
         allData = [...allData, ...dataWithSource];
-      } catch (error) {
-        console.warn(`API ${endpoint.name} 호출 실패:`, error);
+      } catch {
+        // 개별 엔드포인트 실패는 건너뛰고 나머지 계속 진행
       }
     }
 
@@ -150,8 +150,7 @@ export const downloadMultipleApis = async (
       includeTimestamp: options.includeTimestamp ?? true,
       autoWidth: options.autoWidth ?? true
     });
-  } catch (error) {
-    console.error('다중 API 데이터 다운로드 실패:', error);
+  } catch {
     throw new Error('다중 API 데이터 다운로드 중 오류가 발생했습니다.');
   }
 };
@@ -182,12 +181,11 @@ export const downloadMultipleApisAsSheets = async (
 
         // 시트명 설정 (한글 지원)
         const sheetName = endpoint.name.length > 31 
-          ? endpoint.name.substring(0, 28) + '...' 
+          ? `${endpoint.name.substring(0, 28)  }...` 
           : endpoint.name;
         
         XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
       } catch (error) {
-        console.warn(`API ${endpoint.name} 처리 실패:`, error);
         // 에러 정보를 담은 시트 생성
         const errorSheet = XLSX.utils.json_to_sheet([
           { 오류: `${endpoint.name} 데이터 로드 실패`, 상세: String(error) }
@@ -204,8 +202,7 @@ export const downloadMultipleApisAsSheets = async (
     const filename = `${options.filename || 'multi_sheet_data'}${timestamp}.xlsx`;
     XLSX.writeFile(workbook, filename);
     
-  } catch (error) {
-    console.error('다중 시트 다운로드 실패:', error);
+  } catch {
     throw new Error('다중 시트 다운로드 중 오류가 발생했습니다.');
   }
 };
@@ -278,6 +275,7 @@ export const testDownloadFunctions = {
 // Mock 데이터로 단일 다운로드 테스트
 export const testSingleDownload = async (dataType: 'users' | 'products' | 'orders'): Promise<void> => {
   const data = testDownloadFunctions[dataType]();
+
   return downloadDataAsExcel(data, {
     filename: `test_${dataType}`,
     sheetName: dataType,

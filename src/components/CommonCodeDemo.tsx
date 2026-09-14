@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+
 import {
   Box,
   Typography,
@@ -25,6 +26,7 @@ import {
   Paper,
   Chip
 } from '@mui/material';
+
 import { useCommonCodes } from '@/lib/commonCodeService';
 
 export default function CommonCodeDemo() {

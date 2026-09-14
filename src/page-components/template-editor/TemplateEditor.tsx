@@ -1,12 +1,13 @@
 "use client";
 
 import * as React from "react";
-import { Box, Button, Chip, Container, Paper, Stack, TextField, Typography, Divider } from "@mui/material";
+
 import { useRouter } from "next/navigation";
-import { SidebarTree } from "./SidebarTree";
+
+import { Box, Button, Chip, Container, Paper, Stack, TextField, Typography, Divider } from "@mui/material";
+
 import { ContentDataGrid } from "./ContentDataGrid";
 import { EditDrawer } from "./EditDrawer";
-import { NodeItem } from "./types";
 import { findNodeById, getChildren, getRootNodes } from "./mock";
 import { getFormMockData } from "./mockFormData";
 import { 
@@ -16,6 +17,8 @@ import {
   SubAnswerDetailView,
   FormDetailView 
 } from "./NodeDetailViews";
+import { SidebarTree } from "./SidebarTree";
+import { NodeItem } from "./types";
 
 interface TemplateEditorProps {
   mode: "create" | "edit";
@@ -52,7 +55,6 @@ export default function TemplateEditor({ mode, templateId }: TemplateEditorProps
         setFormName(mockData.name);
         setFormDescription(mockData.description);
         setTreeNodes(mockData.nodes);
-        console.log('[TemplateEditor] Mock 데이터 로드:', mockData.name, '항목 수:', mockData.nodes.length);
       }
       // TODO: 실제로는 API 호출
       // const response = await fetch(`/api/forms/${templateId}`);
@@ -67,7 +69,6 @@ export default function TemplateEditor({ mode, templateId }: TemplateEditorProps
   const fetchNodeDetail = React.useCallback(async (nodeId: string) => {
     setIsLoadingDetail(true);
     try {
-      console.log('[TemplateEditor] 노드 상세 정보 API 호출:', nodeId);
 
       // 임시: Mock 데이터에서 찾기
       await new Promise(resolve => setTimeout(resolve, 200));
@@ -77,10 +78,7 @@ export default function TemplateEditor({ mode, templateId }: TemplateEditorProps
       setSelectedNodeDetail(selectedNode || null);
       setDetailRows(children);
       
-      console.log('[TemplateEditor] 노드 상세 정보:', selectedNode);
-      console.log('[TemplateEditor] 하위 항목:', children.length, '개');
-    } catch (error) {
-      console.error('[TemplateEditor] 노드 상세 정보 로드 실패:', error);
+    } catch {
       setSelectedNodeDetail(null);
       setDetailRows([]);
     } finally {
@@ -107,7 +105,9 @@ export default function TemplateEditor({ mode, templateId }: TemplateEditorProps
 
   // 선택된 노드 타입에 따른 추가 버튼 레이블
   const getAddButtonLabel = () => {
-    if (!selectedNodeDetail) return "항목 추가";
+    if (!selectedNodeDetail) {
+return "항목 추가";
+}
     switch (selectedNodeDetail.type) {
       case "GROUP":
         return "💬 응답 추가";
@@ -127,14 +127,20 @@ export default function TemplateEditor({ mode, templateId }: TemplateEditorProps
   };
 
   const handleAdd = () => {
-    if (!selectedNodeId || !selectedNodeDetail) return;
+    if (!selectedNodeId || !selectedNodeDetail) {
+return;
+}
     const parent = selectedNodeDetail;
 
     // 부모 타입에 따라 자식 타입 결정
     let childType: NodeItem["type"] = "ANSWER";
-    if (parent.type === "GROUP") childType = "ANSWER";
-    else if (parent.type === "ANSWER") childType = "ANSWER_DETAIL";
-    else if (parent.type === "ANSWER_DETAIL") childType = "SUB_ANSWER";
+    if (parent.type === "GROUP") {
+childType = "ANSWER";
+} else if (parent.type === "ANSWER") {
+childType = "ANSWER_DETAIL";
+} else if (parent.type === "ANSWER_DETAIL") {
+childType = "SUB_ANSWER";
+}
 
     // 새 항목 템플릿
     const newItem: NodeItem = {
@@ -152,7 +158,6 @@ export default function TemplateEditor({ mode, templateId }: TemplateEditorProps
   };
 
   const handleSave = async () => {
-    console.log('[TemplateEditor] 저장 완료, 데이터 새로고침');
     
     try {
       // TODO: API에서 계층 구조 다시 가져오기
@@ -165,7 +170,6 @@ export default function TemplateEditor({ mode, templateId }: TemplateEditorProps
         const mockData = getFormMockData(templateId);
         if (mockData) {
           setTreeNodes(mockData.nodes);
-          console.log('[TemplateEditor] 계층 구조 새로고침 완료:', mockData.nodes.length, '개 노드');
         }
         
         // 현재 선택된 노드의 상세 정보 재로드
@@ -173,8 +177,8 @@ export default function TemplateEditor({ mode, templateId }: TemplateEditorProps
           await fetchNodeDetail(selectedNodeId);
         }
       }
-    } catch (error) {
-      console.error('[TemplateEditor] 데이터 새로고침 실패:', error);
+    } catch {
+      // 새로고침 실패는 조용히 무시
     }
   };
 
@@ -195,22 +199,15 @@ export default function TemplateEditor({ mode, templateId }: TemplateEditorProps
   const handleSubmit = async () => {
     if (!formName.trim()) {
       alert("서식 폼 이름을 입력해주세요.");
+
       return;
     }
 
     if (treeNodes.length === 0) {
       alert("최소 1개 이상의 서식 항목을 추가해주세요.");
+
       return;
     }
-
-    const formData = {
-      name: formName,
-      description: formDescription,
-      nodes: treeNodes,
-      createdAt: new Date().toISOString(),
-    };
-
-    console.log("[TemplateEditor] 서식 폼 저장:", formData);
 
     // TODO: API 호출
     // if (mode === 'create') {
@@ -220,7 +217,7 @@ export default function TemplateEditor({ mode, templateId }: TemplateEditorProps
     // }
 
     alert(`서식 폼이 ${mode === "create" ? "생성" : "수정"}되었습니다.`);
-    router.push("/template-editor");
+    router.push("/backoffice/template-editor");
   };
 
   if (!mounted) {

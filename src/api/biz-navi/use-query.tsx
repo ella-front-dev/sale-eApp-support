@@ -1,6 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import type { BizNaviInquiryListParams, BizNaviInquiryRegisterRequest } from './dto';
+
 import { getInquiryList, createInquiry } from './service';
+
+import type { BizNaviInquiryListParams, BizNaviInquiryRegisterRequest } from './dto';
 
 export const BIZ_NAVI_QUERY_KEYS = {
   all: ['biz-navi'] as const,

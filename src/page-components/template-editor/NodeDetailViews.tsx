@@ -1,7 +1,9 @@
 "use client";
 
 import * as React from "react";
+
 import { Box, Typography, Chip } from "@mui/material";
+
 import { NodeItem } from "./types";
 
 // 공통 필드 컴포넌트

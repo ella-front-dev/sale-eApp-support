@@ -1,0 +1,7 @@
+allowBuilds:
+  '@mui/x-telemetry': false
+  '@parcel/watcher': true
+  '@sentry/cli': true
+  msw: false
+  sharp: true
+  unrs-resolver: true

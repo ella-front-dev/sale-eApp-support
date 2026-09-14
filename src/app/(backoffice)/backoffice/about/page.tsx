@@ -1,5 +1,10 @@
 'use client';
 
+import BugReportIcon from '@mui/icons-material/BugReport';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CodeIcon from '@mui/icons-material/Code';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import TipsAndUpdatesIcon from '@mui/icons-material/TipsAndUpdates';
 import {
   Container,
   Typography,
@@ -16,11 +21,6 @@ import {
   Card,
   CardContent,
 } from '@mui/material';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import CodeIcon from '@mui/icons-material/Code';
-import BugReportIcon from '@mui/icons-material/BugReport';
-import TipsAndUpdatesIcon from '@mui/icons-material/TipsAndUpdates';
 
 export default function AboutPage() {
   return (

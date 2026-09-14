@@ -1,6 +1,13 @@
 'use client';
 
 import React, { useState } from 'react';
+
+import {
+  Download,
+  TableView,
+  FilterList,
+  FileDownload
+} from '@mui/icons-material';
 import {
   Box,
   Button,
@@ -24,12 +31,6 @@ import {
   Alert,
   Divider
 } from '@mui/material';
-import {
-  Download,
-  TableView,
-  FilterList,
-  FileDownload
-} from '@mui/icons-material';
 import * as XLSX from 'xlsx';
 
 // 엑셀 데이터 타입 정의
@@ -109,6 +110,7 @@ export default function ExcelDownload() {
     }
 
     setCurrentData(data);
+
     return data;
   };
 
@@ -132,8 +134,7 @@ export default function ExcelDownload() {
       XLSX.writeFile(workbook, fileName);
       
       alert(`${data.length}개의 데이터가 엑셀로 다운로드되었습니다.`);
-    } catch (error) {
-      console.error('엑셀 다운로드 오류:', error);
+    } catch {
       alert('엑셀 파일 다운로드 중 오류가 발생했습니다.');
     }
   };
@@ -176,8 +177,7 @@ export default function ExcelDownload() {
       XLSX.writeFile(workbook, fileName);
       
       alert('다중 시트 엑셀 파일이 다운로드되었습니다.');
-    } catch (error) {
-      console.error('다중 시트 다운로드 오류:', error);
+    } catch {
       alert('다중 시트 엑셀 파일 다운로드 중 오류가 발생했습니다.');
     }
   };
@@ -227,8 +227,7 @@ export default function ExcelDownload() {
       XLSX.writeFile(workbook, '서식_업로드_템플릿.xlsx');
       
       alert('업로드 템플릿이 다운로드되었습니다.');
-    } catch (error) {
-      console.error('템플릿 다운로드 오류:', error);
+    } catch {
       alert('템플릿 다운로드 중 오류가 발생했습니다.');
     }
   };
@@ -240,6 +239,7 @@ export default function ExcelDownload() {
       
       if (data.length === 0) {
         alert('필터 조건에 맞는 데이터가 없습니다.');
+
         return;
       }
 
@@ -258,8 +258,7 @@ export default function ExcelDownload() {
       XLSX.writeFile(workbook, fileName);
       
       alert(`필터 조건에 맞는 ${data.length}개의 데이터가 다운로드되었습니다.`);
-    } catch (error) {
-      console.error('필터링된 다운로드 오류:', error);
+    } catch {
       alert('필터링된 엑셀 다운로드 중 오류가 발생했습니다.');
     }
   };

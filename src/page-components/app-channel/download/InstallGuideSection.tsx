@@ -1,10 +1,11 @@
 'use client';
 
 import classNames from 'classnames/bind';
+import { Button } from 'sales-frontend-design-system';
+
+import { IconFileDownload, IconSavefolder, IconPhoneVerification } from '../../../assets/icons';
 
 import styles from './installGuideSection.module.scss';
-import { Button } from 'sales-frontend-design-system';
-import { IconFileDownload, IconSavefolder, IconPhoneVerification } from '../../../assets/icons';
 
 const cx = classNames.bind(styles);
 

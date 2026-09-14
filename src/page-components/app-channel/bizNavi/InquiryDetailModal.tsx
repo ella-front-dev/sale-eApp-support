@@ -1,12 +1,17 @@
 'use client';
 
 import { useState } from 'react';
+
+import classNames from 'classnames/bind';
 import { Button, FormField, Modal } from 'sales-frontend-design-system';
+
+import styles from './inquiryDetailModal.module.scss';
+
+import type { BizNaviInquiryItem } from '@/api/biz-navi/dto';
+
 import { Divider } from '@/components/ui/divider';
 import { TextArea } from '@/components/ui/field/text-area';
-import classNames from 'classnames/bind';
-import type { BizNaviInquiryItem } from '@/api/biz-navi/dto';
-import styles from './inquiryDetailModal.module.scss';
+
 
 const cx = classNames.bind(styles);
 const { TextField } = FormField;
@@ -24,7 +29,9 @@ export default function InquiryDetailModal({ item, isOpen, onClose }: InquiryDet
   const [reviewer, setReviewer] = useState('');
   const [answerContent, setAnswerContent] = useState('');
 
-  if (!item) return null;
+  if (!item) {
+return null;
+}
 
   const handleEditStart = () => {
     setEditTitle(item.title);

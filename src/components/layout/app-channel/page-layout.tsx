@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 
-import { AppChannelBottomBar } from './bottom-bar';
 import { BodySection } from './body-section';
+import { AppChannelBottomBar } from './bottom-bar';
 import { Contents } from './contents';
 
 interface AppChannelPageLayoutProps {

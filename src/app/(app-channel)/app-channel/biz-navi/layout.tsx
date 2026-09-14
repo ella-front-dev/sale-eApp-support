@@ -1,16 +1,18 @@
 import type { Metadata } from 'next';
+
 import classNames from 'classnames/bind';
 import styles from 'sales-frontend-design-system/layout/tablet-pc';
+
 import { Providers } from '@/components/context/providers';
 import { DebugToolDsp } from '@/components/dev/debug-tool';
 import { DspGtmIframe } from '@/components/dev/dsp-gtm-iframe';
-import { APP_ENV, MSW_ENABLED } from '@/constants/environments';
 import { AppChannelHeader } from '@/components/layout/app-channel/header';
+import { APP_ENV, MSW_ENABLED } from '@/constants/environments';
 
 const cx = classNames.bind(styles);
 
 export const metadata: Metadata = {
-  title: '영업지원 앱(예시)',
+  title: '영업지원 앱 (Demo)',
   description: '설명',
   formatDetection: {
     telephone: false,

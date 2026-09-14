@@ -18,12 +18,12 @@ export interface CommonCodeApiResponse {
 export const commonCodeService = {
   // 공통코드 목록 조회
   async getCommonCodes(): Promise<CommonCodeApiResponse[]> {
-    return api.get('/common-codes');
+    return api.get<CommonCodeApiResponse[]>('/common-codes');
   },
-  
+
   // 특정 공통코드 그룹 조회
   async getCommonCodeGroup(codeId: number): Promise<CommonCodeApiResponse> {
-    return api.get(`/common-codes/${codeId}`);
+    return api.get<CommonCodeApiResponse>(`/common-codes/${codeId}`);
   }
 };
 
@@ -31,22 +31,22 @@ export const commonCodeService = {
 export const formService = {
   // 폼 조회
   async getForm(id: string): Promise<FormData> {
-    return api.get(`/forms/${id}`);
+    return api.get<FormData>(`/forms/${id}`);
   },
-  
-  // 폼 저장  
+
+  // 폼 저장
   async saveForm(formData: FormData): Promise<{ id: string }> {
-    return api.post('/forms', formData);
+    return api.post<{ id: string }>('/forms', formData);
   },
-  
+
   // 폼 수정
   async updateForm(id: string, formData: Partial<FormData>): Promise<void> {
-    return api.put(`/forms/${id}`, formData);
+    return api.put<void>(`/forms/${id}`, formData);
   },
-  
+
   // 폼 삭제
   async deleteForm(id: string): Promise<void> {
-    return api.delete(`/forms/${id}`);
+    return api.delete<void>(`/forms/${id}`);
   }
 };
 
@@ -54,8 +54,7 @@ export const formService = {
 export const useFormApi = () => {
   const handleApiCall = async () => {
     try {
-      const formData = await formService.getForm('123');
-      console.log('폼 데이터:', formData);
+      await formService.getForm('123');
     } catch (error) {
       if (error instanceof BusinessError) {
         alert(`에러: ${error.message}`);

@@ -1,8 +1,10 @@
 "use client";
 
 import * as React from "react";
+
 import { Box, Button, Chip } from "@mui/material";
 import { DataGrid, GridColDef, GridPaginationModel } from "@mui/x-data-grid";
+
 import { NodeItem } from "./types";
 
 export function ContentDataGrid({
@@ -45,7 +47,9 @@ export function ContentDataGrid({
             size="small"
             variant="outlined"
             onClick={() => {
-              if (p?.row) onEdit(p.row);
+              if (p?.row) {
+onEdit(p.row);
+}
             }}
           >
             수정
@@ -77,7 +81,9 @@ export function ContentDataGrid({
         pageSizeOptions={[25, 50, 100]}
         disableRowSelectionOnClick
         onRowDoubleClick={(params) => {
-          if (params?.row) onEdit(params.row);
+          if (params?.row) {
+onEdit(params.row);
+}
         }}
       />
     </Box>

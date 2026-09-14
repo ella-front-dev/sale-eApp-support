@@ -46,6 +46,7 @@ export function getCodeGroupById(formattedData: FormattedCodeGroup[], id: number
  */
 export function getCodesById(formattedData: FormattedCodeGroup[], id: number): FormattedCodeItem[] {
   const group = getCodeGroupById(formattedData, id);
+
   return group?.codes || [];
 }
 
@@ -54,6 +55,7 @@ export function getCodesById(formattedData: FormattedCodeGroup[], id: number): F
  */
 export function getFirstCodeById(formattedData: FormattedCodeGroup[], id: number): FormattedCodeItem | undefined {
   const codes = getCodesById(formattedData, id);
+
   return codes.length > 0 ? codes[0] : undefined;
 }
 
@@ -66,6 +68,7 @@ export function findCodeByValue(
   value: string
 ): FormattedCodeItem | undefined {
   const codes = getCodesById(formattedData, id);
+
   return codes.find(code => code.value === value);
 }
 
@@ -167,7 +170,9 @@ export const formatCommonCodes = (apiData: ApiCodeGroup[]): FormattedCodeGroup[]
  */
 export const getCodesByIdFromApi = (apiData: ApiCodeGroup[], id: number): FormattedCodeItem[] => {
   const group = apiData.find(item => item.codeid === id);
-  if (!group) return [];
+  if (!group) {
+return [];
+}
 
   return group.codeList.map(item => ({
     value: item.CodeValue,
@@ -201,6 +206,7 @@ export function getCodeLabelByValue(
 ): string {
   const codes = getCodesById(formattedData, id);
   const foundCode = codes.find(code => code.value === value);
+
   return foundCode?.label || value; // 못 찾으면 원본 value 반환
 }
 
@@ -232,9 +238,12 @@ export function getCodeLabelFromApi(
   value: string
 ): string {
   const group = apiData.find(item => item.codeid === id);
-  if (!group) return value;
+  if (!group) {
+return value;
+}
   
   const foundCode = group.codeList.find(item => item.CodeValue === value);
+
   return foundCode?.Codelabel || value;
 }
 

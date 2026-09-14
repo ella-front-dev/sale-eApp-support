@@ -1,14 +1,15 @@
 'use client';
 
 import { useRef } from 'react';
+
 import classNames from 'classnames/bind';
 
 import styles from './download.module.scss';
-import HeroSection from './HeroSection';
-import ValuePropositionSection from './ValuePropositionSection';
 import FeatureSection from './FeatureSection';
-import InstallGuideSection from './InstallGuideSection';
 import FooterSection from './FooterSection';
+import HeroSection from './HeroSection';
+import InstallGuideSection from './InstallGuideSection';
+import ValuePropositionSection from './ValuePropositionSection';
 
 const cx = classNames.bind(styles);
 

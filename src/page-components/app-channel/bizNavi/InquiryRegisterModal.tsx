@@ -1,13 +1,19 @@
 'use client';
 
 import { useState } from 'react';
-import { Button, FormField, Modal } from 'sales-frontend-design-system';
+
+import classNames from 'classnames/bind';
 import { CustomerSearch } from 'sales-frontend-components';
+import { Button, FormField, Modal } from 'sales-frontend-design-system';
+
+import styles from './inquiryRegisterModal.module.scss';
+
+import { useBizNaviRegisterInquiry } from '@/api/biz-navi/use-query';
 import { Divider } from '@/components/ui/divider';
 import { TextArea } from '@/components/ui/field/text-area';
-import classNames from 'classnames/bind';
-import { useBizNaviRegisterInquiry } from '@/api/biz-navi/use-query';
-import styles from './inquiryRegisterModal.module.scss';
+
+
+
 
 const cx = classNames.bind(styles);
 const { TextField } = FormField;

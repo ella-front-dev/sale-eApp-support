@@ -1,5 +1,7 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
+
 import { 
   Box, 
   Button, 
@@ -10,7 +12,6 @@ import {
   Container, 
   Typography
 } from '@mui/material';
-import { useRouter } from 'next/navigation';
 
 export default function Home() {
   const router = useRouter();
@@ -506,7 +507,7 @@ export default function Home() {
                   앱 다운로드 랜딩 페이지
                 </Typography>
                 <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
-                  영업지원 앱(예시) 영업지원 앱 소개 및 다운로드를 위한 반응형 원페이지 랜딩입니다.
+                  [예시] 영업지원 앱 소개 및 다운로드를 위한 반응형 원페이지 랜딩입니다.
                 </Typography>
                 <Typography variant="body2" color="textSecondary" sx={{ mb: 1 }}>
                   제공 기능:

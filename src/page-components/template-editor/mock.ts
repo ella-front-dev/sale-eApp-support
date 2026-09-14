@@ -118,13 +118,19 @@ export function getChildren(all: NodeItem[], parentId: string): NodeItem[] {
 }
 
 export function findNodeById(all: NodeItem[], id?: string | null): NodeItem | undefined {
-  if (!id) return undefined;
+  if (!id) {
+return undefined;
+}
+
   return all.find((n) => n.id === id);
 }
 
 function byOrderThenTitle(a: NodeItem, b: NodeItem): number {
   const ao = a.order ?? 0;
   const bo = b.order ?? 0;
-  if (ao !== bo) return ao - bo;
+  if (ao !== bo) {
+return ao - bo;
+}
+
   return a.title.localeCompare(b.title);
 }

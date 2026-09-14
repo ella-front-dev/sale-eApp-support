@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+
 import {
   Box,
   Typography,
@@ -19,6 +20,7 @@ import {
   Chip,
   Stack
 } from '@mui/material';
+
 import { useCommonCodes } from '@/lib/commonCodeService';
 
 // 예시 API 응답 데이터 (실제로는 서버에서 받는 데이터)
@@ -42,9 +44,15 @@ export default function ValueToLabelDemo() {
   const [selectedValue, setSelectedValue] = useState('');
   const [codeId, setCodeId] = useState(1);
 
-  if (loading) return <div>로딩 중...</div>;
-  if (error) return <Alert severity="error">에러: {error}</Alert>;
-  if (!isReady) return <Alert severity="warning">공통 코드를 사용할 수 없습니다.</Alert>;
+  if (loading) {
+return <div>로딩 중...</div>;
+}
+  if (error) {
+return <Alert severity="error">에러: {error}</Alert>;
+}
+  if (!isReady) {
+return <Alert severity="warning">공통 코드를 사용할 수 없습니다.</Alert>;
+}
 
   return (
     <Box sx={{ p: 3 }}>

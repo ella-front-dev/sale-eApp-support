@@ -42,13 +42,15 @@ export const SelectField = ({
   const isInteractive = !readOnly && !disabled;
   const isTableHeader = variant === 'table-header';
 
-  const { triggerRef, setIsOpen, isOpen, DropDown } = useDropDown({
+  const { triggerRef, setIsOpen, isOpen, DropDown } = useDropDown<HTMLInputElement>({
     spacing: 4,
     width: dropdownWidth,
   });
 
   const handleClickItem = (option: SelectOption) => {
-    if (!isInteractive) return;
+    if (!isInteractive) {
+return;
+}
     setIsOpen(false);
     setIsSelectedOption(option);
     onValueChange?.(option.value);
@@ -57,6 +59,7 @@ export const SelectField = ({
   useEffect(() => {
     if (!defaultValue) {
       setIsSelectedOption(undefined);
+
       return;
     }
     if (options) {
@@ -66,7 +69,9 @@ export const SelectField = ({
 
   useEffect(() => {
     const mainElement = document.querySelector('#main') as HTMLElement;
-    if (!mainElement) return;
+    if (!mainElement) {
+return;
+}
     mainElement.style.overflow = isOpen ? 'hidden' : 'auto';
   }, [isOpen]);
 
@@ -79,7 +84,9 @@ export const SelectField = ({
             'aria-expanded': isOpen,
             'aria-haspopup': 'listbox',
             onClick: () => {
-              if (!isInteractive) return;
+              if (!isInteractive) {
+return;
+}
               setIsOpen((prev) => !prev);
             },
             ...rootProps

@@ -1,6 +1,12 @@
 'use client';
 
 import React from 'react';
+
+import {
+  Download,
+  TableView,
+  Api
+} from '@mui/icons-material';
 import {
   Box,
   Button,
@@ -11,11 +17,7 @@ import {
   Alert,
   Divider
 } from '@mui/material';
-import {
-  Download,
-  TableView,
-  Api
-} from '@mui/icons-material';
+
 import {
   downloadApiData,
   downloadMultiApiData,
@@ -56,7 +58,7 @@ export default function SimpleExcelDownload() {
       await downloadApiData('/api/users', 'users_data');
       alert('사용자 데이터가 다운로드되었습니다.');
     } catch (error) {
-      alert('다운로드 실패: ' + error);
+      alert(`다운로드 실패: ${  error}`);
     }
   };
 
@@ -66,7 +68,7 @@ export default function SimpleExcelDownload() {
       await downloadMultiApiData(apiEndpoints, 'integrated_data');
       alert('통합 데이터가 다운로드되었습니다.');
     } catch (error) {
-      alert('다운로드 실패: ' + error);
+      alert(`다운로드 실패: ${  error}`);
     }
   };
 
@@ -76,7 +78,7 @@ export default function SimpleExcelDownload() {
       await downloadMultiSheetData(apiEndpoints, 'multi_sheet_data');
       alert('다중 시트 데이터가 다운로드되었습니다.');
     } catch (error) {
-      alert('다운로드 실패: ' + error);
+      alert(`다운로드 실패: ${  error}`);
     }
   };
 
@@ -91,7 +93,7 @@ export default function SimpleExcelDownload() {
       });
       alert('커스텀 리포트가 다운로드되었습니다.');
     } catch (error) {
-      alert('다운로드 실패: ' + error);
+      alert(`다운로드 실패: ${  error}`);
     }
   };
 
@@ -101,7 +103,7 @@ export default function SimpleExcelDownload() {
       await testSingleDownload('users');
       alert('Mock 사용자 데이터가 다운로드되었습니다.');
     } catch (error) {
-      alert('테스트 다운로드 실패: ' + error);
+      alert(`테스트 다운로드 실패: ${  error}`);
     }
   };
 
@@ -110,7 +112,7 @@ export default function SimpleExcelDownload() {
       await testMultiSheetDownload();
       alert('Mock 다중 시트 데이터가 다운로드되었습니다.');
     } catch (error) {
-      alert('테스트 다운로드 실패: ' + error);
+      alert(`테스트 다운로드 실패: ${  error}`);
     }
   };
 
@@ -241,7 +243,6 @@ await downloadMultipleApis(apiEndpoints, {
   await downloadApiData('/api/users');
   alert('다운로드 완료!');
 } catch (error) {
-  console.error('다운로드 실패:', error);
   alert('다운로드 중 오류가 발생했습니다.');
 }`}</pre>
           </Box>

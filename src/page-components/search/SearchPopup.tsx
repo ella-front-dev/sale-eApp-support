@@ -1,6 +1,14 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+
+import {
+  Search as SearchIcon,
+  Close as CloseIcon,
+  ArrowForward as ArrowRightIcon,
+  ArrowBack as ArrowLeftIcon,
+  DragIndicator as DragIndicatorIcon
+} from '@mui/icons-material';
 import {
   Dialog,
   DialogTitle,
@@ -27,20 +35,15 @@ import {
   CardHeader,
   CardContent
 } from '@mui/material';
-import {
-  Search as SearchIcon,
-  Close as CloseIcon,
-  ArrowForward as ArrowRightIcon,
-  ArrowBack as ArrowLeftIcon,
-  DragIndicator as DragIndicatorIcon
-} from '@mui/icons-material';
-import { api, BusinessError } from '@/lib/axios';
 import { v4 as uuidv4 } from 'uuid';
+
+import { api, BusinessError } from '@/lib/axios';
+
 
 interface SearchPopupProps {
   open: boolean;
   onClose: () => void;
-  onSelect: (items: any[]) => void;
+  onSelect: (items: ListItem[]) => void;
 }
 
 interface ListItem {
@@ -181,6 +184,7 @@ export default function SearchPopup({ open, onClose, onSelect }: SearchPopupProp
     };
     
     setErrors(newErrors);
+
     return !Object.values(newErrors).some(error => error);
   };
 
@@ -208,8 +212,8 @@ export default function SearchPopup({ open, onClose, onSelect }: SearchPopupProp
       setRightItems(allItems);
       setFilteredRightItems(allItems);
       
-    } catch (error) {
-      console.error('선택된 데이터 로드 실패:', error);
+    } catch {
+      // 로드 실패는 조용히 무시
     } finally {
       setLoading(false);
     }
@@ -285,10 +289,14 @@ export default function SearchPopup({ open, onClose, onSelect }: SearchPopupProp
   const handleDrop = (e: React.DragEvent, dropIndex: number) => {
     e.preventDefault();
     
-    if (!draggedItem) return;
+    if (!draggedItem) {
+return;
+}
 
     const dragIndex = leftItems.findIndex(item => item.id === draggedItem);
-    if (dragIndex === -1) return;
+    if (dragIndex === -1) {
+return;
+}
 
     // 배열 재정렬
     const newItems = [...leftItems];
@@ -330,6 +338,7 @@ export default function SearchPopup({ open, onClose, onSelect }: SearchPopupProp
     if (selectedRightItems.includes(item.id)) {
       return 'action.selected';
     }
+
     return 'action.hover';
   };
 
@@ -340,6 +349,7 @@ export default function SearchPopup({ open, onClose, onSelect }: SearchPopupProp
     
     if (leftItems.length === 0) {
       alert('구성 항목을 최소 1개 이상 선택해주세요.');
+
       return;
     }
     

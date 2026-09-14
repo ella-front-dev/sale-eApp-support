@@ -6,30 +6,30 @@ export type NodeType = "FORM" | "GROUP" | "ANSWER" | "ANSWER_DETAIL" | "SUB_ANSW
 export interface NodeItem {
   id: string;
   parentId: string | null;
-  title: string; // eapfComnItmNm, eapfComnItmAnsrNm 등
+  title: string;
   type: NodeType;
-  code?: string; // eapfComnItmCode, eapfComnItmAnsrCode 등
-  
+  code?: string;
+
   // 공통 필드
   description?: string;
-  order?: number; // indaOrdr
+  order?: number;
   status?: "ACTIVE" | "INACTIVE";
   updatedAt?: string;
-  
+
   // GROUP 관련
   processLinkYn?: string; // "Y" | "N"
-  
+
   // ANSWER 관련
-  eacpTypeCode?: string; // "FP", "11", "21" 등
+  eacpTypeCode?: string; // 샘플 타입 코드 (예시)
   userInptDatYn?: string; // "Y" | "N"
-  formatCode?: string; // eapfComnItmAnsrFrmtCode: "TEXT", "RADI", "CHBX", "DATE" 등
+  formatCode?: string; // "TEXT", "RADI", "CHBX", "DATE" 등
   dplcAnsrPssbYn?: string; // "Y" | "N"
-  
+
   // ANSWER_DETAIL 관련
-  controlId?: string; // eapfComnItmAnsrCntlId
-  controlValue?: string; // eapfComnItmAnsrCntlVal
-  remark?: string; // rmrkCntn
-  sqno?: number; // eapfComnItmAnsrSqno
+  controlId?: string;
+  controlValue?: string;
+  remark?: string;
+  sqno?: number;
 }
 
 export interface NodeEditForm {

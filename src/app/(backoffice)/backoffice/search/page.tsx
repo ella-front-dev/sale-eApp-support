@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+
 import {
   Container,
   Typography,
@@ -10,10 +11,11 @@ import {
   Tab,
   Paper
 } from '@mui/material';
-import SearchPopup from '@/page-components/search/SearchPopup';
-import ExcelDownload from '@/components/utils/ExcelDownload';
-import ApiExcelDownload from '@/components/utils/ApiExcelDownload';
+
 import SimpleExcelDownload from '@/components/SimpleExcelDownload';
+import ApiExcelDownload from '@/components/utils/ApiExcelDownload';
+import ExcelDownload from '@/components/utils/ExcelDownload';
+import SearchPopup from '@/page-components/search/SearchPopup';
 
 export default function SearchPage() {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -28,7 +30,6 @@ export default function SearchPage() {
   };
 
   const handleSelectItem = (items: unknown[]) => {
-    console.log('선택된 항목들:', items);
     alert(`${items.length}개의 항목이 선택되었습니다.`);
     setIsPopupOpen(false);
   };

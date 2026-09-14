@@ -1,14 +1,11 @@
 'use client';
 
 import React, { useCallback, useEffect } from 'react';
-import { useForm, useFieldArray, Controller } from 'react-hook-form';
 
-import { FormData } from '@/types/form';
-import { PageMode, MODE_TITLES, MODE_BUTTON_TEXTS } from '@/types/pageMode';
-import { usePagePermissions } from '@/hooks/usePagePermissions';
-import GroupSection from '@/page-components/backoffice/GroupSection';
-import FormTextField from '@/components/FormTextField';
-import { useCodeDuplicationCheck } from '@/hooks/useCodeDuplicationCheck';
+import {
+  Add as AddIcon,
+  Save as SaveIcon
+} from '@mui/icons-material';
 import {
   Container,
   Typography,
@@ -20,10 +17,14 @@ import {
   Box,
   Alert
 } from '@mui/material';
-import {
-  Add as AddIcon,
-  Save as SaveIcon
-} from '@mui/icons-material';
+import { useForm, useFieldArray, Controller } from 'react-hook-form';
+
+import FormTextField from '@/components/FormTextField';
+import { useCodeDuplicationCheck } from '@/hooks/useCodeDuplicationCheck';
+import { usePagePermissions } from '@/hooks/usePagePermissions';
+import GroupSection from '@/page-components/backoffice/GroupSection';
+import { FormData } from '@/types/form';
+import { PageMode, MODE_TITLES, MODE_BUTTON_TEXTS } from '@/types/pageMode';
 
 // 🎯 Virtuoso 가상화 테스트용 대량 데이터 생성
 // 그룹 10개, 컴포넌트 100개, 답변 3개 (Virtuoso 성능 확인용)

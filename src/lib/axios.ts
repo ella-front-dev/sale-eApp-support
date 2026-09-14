@@ -39,6 +39,7 @@ const createInstance = (baseURL: string, timeout = 10000) => {
         
         throw businessError;
       }
+
       return response;
     },
     (error) => {
@@ -79,49 +80,49 @@ const instances = {
 export const api = {
   // 메인 API
   main: {
-    get: (url: string, params?: unknown) => 
-      instances.main.get(url, { params }).then((res: any) => res.data.data),
-    post: (url: string, data?: unknown) => 
-      instances.main.post(url, data).then((res: any) => res.data.data),
-    put: (url: string, data?: unknown) => 
-      instances.main.put(url, data).then((res: any) => res.data.data),
-    delete: (url: string) => 
-      instances.main.delete(url).then((res: any) => res.data.data),
+    get: <T = unknown>(url: string, params?: unknown) =>
+      instances.main.get(url, { params }).then((res: { data: { data: T } }) => res.data.data),
+    post: <T = unknown>(url: string, data?: unknown) =>
+      instances.main.post(url, data).then((res: { data: { data: T } }) => res.data.data),
+    put: <T = unknown>(url: string, data?: unknown) =>
+      instances.main.put(url, data).then((res: { data: { data: T } }) => res.data.data),
+    delete: <T = unknown>(url: string) =>
+      instances.main.delete(url).then((res: { data: { data: T } }) => res.data.data),
   },
   
   // 인증 API
   auth: {
-    get: (url: string, params?: unknown) => 
-      instances.auth.get(url, { params }).then((res: any) => res.data.data),
-    post: (url: string, data?: unknown) => 
-      instances.auth.post(url, data).then((res: any) => res.data.data),
-    put: (url: string, data?: unknown) => 
-      instances.auth.put(url, data).then((res: any) => res.data.data),
-    delete: (url: string) => 
-      instances.auth.delete(url).then((res: any) => res.data.data),
+    get: <T = unknown>(url: string, params?: unknown) =>
+      instances.auth.get(url, { params }).then((res: { data: { data: T } }) => res.data.data),
+    post: <T = unknown>(url: string, data?: unknown) =>
+      instances.auth.post(url, data).then((res: { data: { data: T } }) => res.data.data),
+    put: <T = unknown>(url: string, data?: unknown) =>
+      instances.auth.put(url, data).then((res: { data: { data: T } }) => res.data.data),
+    delete: <T = unknown>(url: string) =>
+      instances.auth.delete(url).then((res: { data: { data: T } }) => res.data.data),
   },
   
   // 파일 API
   file: {
-    get: (url: string, params?: unknown) => 
-      instances.file.get(url, { params }).then((res: any) => res.data.data),
-    post: (url: string, data?: unknown) => 
-      instances.file.post(url, data).then((res: any) => res.data.data),
-    put: (url: string, data?: unknown) => 
-      instances.file.put(url, data).then((res: any) => res.data.data),
-    delete: (url: string) => 
-      instances.file.delete(url).then((res: any) => res.data.data),
+    get: <T = unknown>(url: string, params?: unknown) =>
+      instances.file.get(url, { params }).then((res: { data: { data: T } }) => res.data.data),
+    post: <T = unknown>(url: string, data?: unknown) =>
+      instances.file.post(url, data).then((res: { data: { data: T } }) => res.data.data),
+    put: <T = unknown>(url: string, data?: unknown) =>
+      instances.file.put(url, data).then((res: { data: { data: T } }) => res.data.data),
+    delete: <T = unknown>(url: string) =>
+      instances.file.delete(url).then((res: { data: { data: T } }) => res.data.data),
   },
   
   // 기본 API (하위 호환성을 위해 main과 동일)
-  get: (url: string, params?: unknown) => 
-    instances.main.get(url, { params }).then((res: any) => res.data.data),
-  post: (url: string, data?: unknown) => 
-    instances.main.post(url, data).then((res: any) => res.data.data),
-  put: (url: string, data?: unknown) => 
-    instances.main.put(url, data).then((res: any) => res.data.data),
-  delete: (url: string) => 
-    instances.main.delete(url).then((res: any) => res.data.data),
+  get: <T = unknown>(url: string, params?: unknown) =>
+    instances.main.get(url, { params }).then((res: { data: { data: T } }) => res.data.data),
+  post: <T = unknown>(url: string, data?: unknown) =>
+    instances.main.post(url, data).then((res: { data: { data: T } }) => res.data.data),
+  put: <T = unknown>(url: string, data?: unknown) =>
+    instances.main.put(url, data).then((res: { data: { data: T } }) => res.data.data),
+  delete: <T = unknown>(url: string) =>
+    instances.main.delete(url).then((res: { data: { data: T } }) => res.data.data),
 };
 
 export default instances.main;

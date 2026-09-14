@@ -1,7 +1,9 @@
 'use client';
 
 import React from 'react';
+
 import { Button, Box } from '@mui/material';
+
 import { api, BusinessError } from '@/lib/axios';
 import { showSuccessToast, showErrorToast, CustomToastContainer } from '@/lib/toast';
 
@@ -21,8 +23,7 @@ export default function ToastTest() {
     try {
       // 존재하지 않는 API 호출로 에러 테스트
       await api.get('/test-error-endpoint');
-    } catch (error) {
-      console.log('API 에러가 발생했습니다:', error);
+    } catch {
       showErrorToast();
     }
   };

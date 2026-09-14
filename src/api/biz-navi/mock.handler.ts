@@ -1,12 +1,14 @@
-import { createMockHandler } from '@/lib/mocks/createMockHandler';
-import type { BizNaviInquiryListResponse, BizNaviInquiryRegisterResponse } from './dto';
 import { BIZ_NAVI_INQUIRY_MOCK_LIST } from './mock.data';
+
+import type { BizNaviInquiryListResponse, BizNaviInquiryRegisterResponse } from './dto';
+
+import { createMockHandler } from '@/lib/mocks/createMockHandler';
 
 const getInquiryListHandler = createMockHandler({
   method: 'get',
   path: '/api/biz-navi/inquiries',
   delayMs: 800,
-  response: (req: any) => {
+  response: (req: { request: Request }) => {
     const url = new URL(req.request.url);
     const customerName = url.searchParams.get('customerName') ?? '';
     const inquiryTitle = url.searchParams.get('inquiryTitle') ?? '';
@@ -38,6 +40,7 @@ const registerInquiryHandler = createMockHandler({
   delayMs: 1000,
   response: () => {
     const result: BizNaviInquiryRegisterResponse = { id: String(Date.now()) };
+
     return { isSuccess: true, data: result };
   },
 });

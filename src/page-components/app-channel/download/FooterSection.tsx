@@ -2,8 +2,9 @@
 
 import classNames from 'classnames/bind';
 
-import { IMG_PREFIX } from '@/constants/path';
 import styles from './footerSection.module.scss';
+
+import { IMG_PREFIX } from '@/constants/path';
 
 const cx = classNames.bind(styles);
 
@@ -14,7 +15,7 @@ export default function FooterSection() {
         <div className={cx('footer-top')}>
           <img
             src={`${IMG_PREFIX}/logo/company_logo_pc.svg`}
-            alt="영업지원 앱(예시)"
+            alt="회사 로고 (예시)"
             className={cx('footer-logo')}
           />
           <p className={cx('footer-tagline')}>
@@ -29,7 +30,7 @@ export default function FooterSection() {
             <span>대표전화 1588-0000</span>
             <span>IT 헬프데스크 1588-0000</span>
           </div>
-          <p >© Sample Corp. (Demo) All Rights Reserved.</p>
+          <p >© Sample Corp. All Rights Reserved. (Demo)</p>
         </div>
       </div>
     </footer>

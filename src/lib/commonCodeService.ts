@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+
+import { commonCodeService, type CommonCodeApiResponse } from './api/formService';
 import { api } from './axios';
 import { 
   formatCodeData,
@@ -15,7 +17,6 @@ import {
   FormattedCodeGroup, 
   FormattedCodeItem 
 } from './codeUtils';
-import { commonCodeService, type CommonCodeApiResponse } from './api/formService';
 
 // 캐시 시스템
 const codeCache = new Map<string, FormattedCodeGroup[]>();
@@ -40,7 +41,7 @@ export async function fetchCommonCodes(endpoint = '/common-codes'): Promise<ApiC
     }));
   } catch {
     // API 호출 실패 시 기본 fallback 사용
-    return api.get(endpoint);
+    return api.get<ApiCodeGroup[]>(endpoint);
   }
 }
 

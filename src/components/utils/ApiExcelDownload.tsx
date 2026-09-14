@@ -1,6 +1,12 @@
 'use client';
 
 import React, { useState } from 'react';
+
+import {
+  Download,
+  Api,
+  TableView
+} from '@mui/icons-material';
 import {
   Box,
   Button,
@@ -19,11 +25,6 @@ import {
   TableRow,
   Paper
 } from '@mui/material';
-import {
-  Download,
-  Api,
-  TableView
-} from '@mui/icons-material';
 import * as XLSX from 'xlsx';
 
 // API 데이터 타입 정의
@@ -155,6 +156,7 @@ export default function ApiExcelDownload() {
   const handlePreview = async () => {
     if (selectedApis.length === 0) {
       alert('다운로드할 API를 선택해주세요.');
+
       return;
     }
 
@@ -171,8 +173,7 @@ export default function ApiExcelDownload() {
 
       setPreviewData(preview);
       alert('데이터 미리보기가 준비되었습니다.');
-    } catch (error) {
-      console.error('데이터 미리보기 오류:', error);
+    } catch {
       alert('데이터 미리보기 중 오류가 발생했습니다.');
     } finally {
       setIsLoading(false);
@@ -183,6 +184,7 @@ export default function ApiExcelDownload() {
   const handleSingleSheetDownload = async () => {
     if (selectedApis.length === 0) {
       alert('다운로드할 API를 선택해주세요.');
+
       return;
     }
 
@@ -213,9 +215,9 @@ export default function ApiExcelDownload() {
       // 컬럼 너비 자동 조정
       const range = XLSX.utils.decode_range(worksheet['!ref'] || 'A1:A1');
       const columnWidths = [];
-      for (let c = range.s.c; c <= range.e.c; c++) {
+      for (let {c} = range.s; c <= range.e.c; c++) {
         let maxWidth = 10;
-        for (let r = range.s.r; r <= Math.min(range.e.r, 100); r++) {
+        for (let {r} = range.s; r <= Math.min(range.e.r, 100); r++) {
           const cellAddress = XLSX.utils.encode_cell({ r, c });
           const cell = worksheet[cellAddress];
           if (cell && cell.v) {
@@ -232,8 +234,7 @@ export default function ApiExcelDownload() {
       XLSX.writeFile(workbook, fileName);
       
       alert(`${selectedApis.length}개 API의 통합 데이터가 다운로드되었습니다.`);
-    } catch (error) {
-      console.error('엑셀 다운로드 오류:', error);
+    } catch {
       alert('엑셀 다운로드 중 오류가 발생했습니다.');
     } finally {
       setIsLoading(false);
@@ -244,6 +245,7 @@ export default function ApiExcelDownload() {
   const handleMultiSheetDownload = async () => {
     if (selectedApis.length === 0) {
       alert('다운로드할 API를 선택해주세요.');
+
       return;
     }
 
@@ -275,8 +277,7 @@ export default function ApiExcelDownload() {
       XLSX.writeFile(workbook, fileName);
       
       alert(`${selectedApis.length}개 API의 다중 시트 데이터가 다운로드되었습니다.`);
-    } catch (error) {
-      console.error('다중 시트 다운로드 오류:', error);
+    } catch {
       alert('다중 시트 다운로드 중 오류가 발생했습니다.');
     } finally {
       setIsLoading(false);
@@ -396,6 +397,7 @@ export default function ApiExcelDownload() {
             
             {Object.entries(previewData).map(([apiId, data]) => {
               const apiInfo = availableApis.find(api => api.id === apiId);
+
               return (
                 <Box key={apiId} sx={{ mb: 3 }}>
                   <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 'bold' }}>

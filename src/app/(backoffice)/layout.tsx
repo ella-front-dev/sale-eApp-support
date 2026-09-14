@@ -1,10 +1,14 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import { Suspense } from "react";
+
+import { Geist, Geist_Mono } from "next/font/google";
+
+import type { Metadata } from "next";
+
 import { Toaster } from "react-hot-toast";
-import MuiThemeProvider from "@/components/MuiThemeProvider";
-import { GlobalLoading } from "@/components/Loading";
+
 import { MswInitializer } from "@/components/dev/msw-initializer";
+import { GlobalLoading } from "@/components/Loading";
+import MuiThemeProvider from "@/components/MuiThemeProvider";
 import { MSW_ENABLED } from "@/lib/constants/environments";
 
 const geistSans = Geist({

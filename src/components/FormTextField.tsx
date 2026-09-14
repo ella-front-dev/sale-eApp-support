@@ -1,10 +1,12 @@
 import React from 'react';
-import { Controller, Control, FieldErrors } from 'react-hook-form';
+
 import { TextField, TextFieldProps } from '@mui/material';
+import { Controller, Control, FieldErrors, Path } from 'react-hook-form';
+
 import { FormData } from '@/types/form';
 
 interface FormTextFieldProps {
-  name: string;
+  name: Path<FormData>;
   control: Control<FormData>;
   errors?: FieldErrors<FormData>;
   label: string;
@@ -22,7 +24,7 @@ export default function FormTextField({
 }: FormTextFieldProps) {
   return (
     <Controller
-      name={name as any} // 타입 단언 (실제로는 더 정확한 타입 지정 필요)
+      name={name}
       control={control}
       render={({ field, fieldState }) => (
         <TextField

@@ -1,4 +1,11 @@
 import React from 'react';
+
+import {
+  CheckCircle,
+  Warning,
+  Error,
+  Info
+} from '@mui/icons-material';
 import {
   Dialog,
   DialogTitle,
@@ -9,12 +16,6 @@ import {
   Alert,
   Snackbar
 } from '@mui/material';
-import {
-  CheckCircle,
-  Warning,
-  Error,
-  Info
-} from '@mui/icons-material';
 
 interface DialogState {
   isOpen: boolean;
@@ -22,7 +23,7 @@ interface DialogState {
   message: string;
   type: 'confirm' | 'alert';
   variant?: 'success' | 'warning' | 'error' | 'info';
-  resolve?: (value: any) => void;
+  resolve?: (value?: boolean) => void;
   onConfirm?: () => void | Promise<void>;
   confirmText?: string;
   cancelText?: string;
@@ -58,7 +59,7 @@ export const useDialog = () => {
         message,
         type: 'confirm',
         variant: options?.variant || 'warning',
-        resolve,
+        resolve: (value) => resolve(value ?? false),
         onConfirm: options?.onConfirm,
         confirmText: options?.confirmText || '확인',
         cancelText: options?.cancelText || '취소',
@@ -85,7 +86,7 @@ export const useDialog = () => {
         message,
         type: 'alert',
         variant: options?.variant || 'info',
-        resolve,
+        resolve: () => resolve(),
         confirmText: options?.closeText || '닫기',
         customContent: options?.customContent,
         customActions: options?.customActions
@@ -98,8 +99,8 @@ export const useDialog = () => {
     if (dialog.onConfirm) {
       try {
         await dialog.onConfirm();
-      } catch (error) {
-        console.error('확인 액션 실행 중 오류:', error);
+      } catch {
+        // onConfirm 실패는 조용히 무시
       }
     }
     

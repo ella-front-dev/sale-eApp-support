@@ -1,4 +1,5 @@
 import { useCallback } from 'react';
+
 import { UseFormSetError, FieldPath, FieldValues } from 'react-hook-form';
 
 // 커스텀 검증 훅 (RHF rules 활용)
@@ -9,21 +10,27 @@ export function useCustomValidation<T extends FieldValues>() {
     if (!value || (typeof value === 'string' && value.trim().length === 0)) {
       return message;
     }
+
     return true;
   }, []);
 
   // 코드 패턴 검증 함수 (RHF rules에서 사용)
   const validateCodePattern = useCallback((value: string) => {
-    if (!value) return true; // 빈값은 required에서 처리
+    if (!value) {
+return true;
+} // 빈값은 required에서 처리
     if (!/^[A-Z0-9_]+$/.test(value)) {
       return '대문자, 숫자, 언더스코어만 사용 가능합니다';
     }
+
     return true;
   }, []);
 
   // 날짜 범위 검증 함수
   const validateDateRange = useCallback((startDate: Date | string, endDate: Date | string) => {
-    if (!startDate || !endDate) return true; // 빈값은 required에서 처리
+    if (!startDate || !endDate) {
+return true;
+} // 빈값은 required에서 처리
     
     const start = new Date(startDate);
     const end = new Date(endDate);
@@ -31,6 +38,7 @@ export function useCustomValidation<T extends FieldValues>() {
     if (start > end) {
       return '종료일은 시작일보다 늦어야 합니다';
     }
+
     return true;
   }, []);
 
@@ -183,7 +191,6 @@ const { checkSubAnswerCodeDuplication } = useCodeDuplicationCheck(control);
 const onSubmit = (data: FormData) => {
   const isValid = validateNestedFields(data, form.setError); // 필수값 + 중복 체크 모두 수행
   if (isValid) {
-    console.log('검증 성공!', data);
   }
 };
 

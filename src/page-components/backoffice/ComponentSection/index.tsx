@@ -1,5 +1,9 @@
 import React from 'react';
-import { Control, FieldErrors, useFieldArray, Controller } from 'react-hook-form';
+
+import {
+  Add as AddIcon,
+  Delete as DeleteIcon
+} from '@mui/icons-material';
 import {
   Box,
   IconButton,
@@ -8,14 +12,13 @@ import {
   Paper,
   Chip
 } from '@mui/material';
-import {
-  Add as AddIcon,
-  Delete as DeleteIcon
-} from '@mui/icons-material';
+import { Control, FieldErrors, useFieldArray, Controller } from 'react-hook-form';
+import { UseFormGetValues, UseFormSetValue } from 'react-hook-form';
+
+import AnswerSection from '../AnswerSection';
+
 import { FormData } from '@/types/form';
 import { PagePermissions, canDeleteItemByIndex } from '@/types/pageMode';
-import AnswerSection from '../AnswerSection';
-import { UseFormGetValues, UseFormSetValue } from 'react-hook-form';
 
 interface ComponentSectionProps {
   control: Control<FormData>;
@@ -139,6 +142,7 @@ function ComponentSection({
       {answers.map((answer, answerIndex) => {
         try {
           console.log(`💬 답변 ${answerIndex} 렌더링: ID ${answer.id}, 내용 "${answer.content}"`);
+
           return (
             <AnswerSection
               key={answer.id}
@@ -154,6 +158,7 @@ function ComponentSection({
           );
         } catch (error) {
           console.error(`❌ 답변 ${answerIndex} 렌더링 실패:`, error);
+
           return (
             <Box key={`error-${answerIndex}`} sx={{ p: 2, bgcolor: 'error.light', color: 'error.contrastText', borderRadius: 1 }}>
               답변 렌더링 오류: {error instanceof Error ? error.message : '알 수 없는 오류'}
@@ -175,6 +180,7 @@ function ComponentSection({
   );
   } catch (error) {
     console.error(`❌ ComponentSection 렌더링 오류 (그룹 ${groupIndex}, 컴포넌트 ${componentIndex}):`, error);
+
     return (
       <Paper elevation={1} sx={{ p: 2, mb: 2, bgcolor: 'error.light' }}>
         <Box sx={{ color: 'error.contrastText' }}>

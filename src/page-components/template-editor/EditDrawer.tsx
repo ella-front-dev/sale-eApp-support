@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+
 import {
   Box,
   Button,
@@ -13,6 +14,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useForm } from "react-hook-form";
+
 import { NodeEditForm, NodeItem } from "./types";
 
 export interface EditDrawerProps {
@@ -86,7 +88,6 @@ export function EditDrawer({ open, item, mode, parentId, onClose, onSave }: Edit
       if (mode === 'create') {
         // 새 항목 생성
         payload.parentId = parentId ?? null;
-        console.log('[EditDrawer] POST 요청:', payload);
         
         // TODO: API 호출
         // await fetch('/api/nodes', {
@@ -97,11 +98,11 @@ export function EditDrawer({ open, item, mode, parentId, onClose, onSave }: Edit
         
         // 임시: 로컬 저장 시뮬레이션
         await new Promise(resolve => setTimeout(resolve, 500));
-        console.log('[EditDrawer] 생성 완료');
       } else {
         // 기존 항목 수정
-        if (!item?.id) throw new Error('수정할 항목의 ID가 없습니다');
-        console.log('[EditDrawer] PUT 요청:', item.id, payload);
+        if (!item?.id) {
+throw new Error('수정할 항목의 ID가 없습니다');
+}
         
         // TODO: API 호출
         // await fetch(`/api/nodes/${item.id}`, {
@@ -112,13 +113,11 @@ export function EditDrawer({ open, item, mode, parentId, onClose, onSave }: Edit
         
         // 임시: 로컬 저장 시뮬레이션
         await new Promise(resolve => setTimeout(resolve, 500));
-        console.log('[EditDrawer] 수정 완료');
       }
 
       onSave(); // 저장 완료 알림
       onClose();
     } catch (err) {
-      console.error('[EditDrawer] 저장 실패:', err);
       setError(err instanceof Error ? err.message : '저장 중 오류가 발생했습니다');
     } finally {
       setIsSaving(false);
@@ -220,7 +219,10 @@ export function EditDrawer({ open, item, mode, parentId, onClose, onSave }: Edit
             min: { value: 0, message: "0 이상이어야 합니다" },
             max: { value: 9999, message: "9999 이하여야 합니다" },
             validate: (value) => {
-              if (value === undefined || value === null) return true;
+              if (value === undefined || value === null) {
+return true;
+}
+
               return Number.isInteger(value) || "정수만 허용됩니다";
             },
           })}

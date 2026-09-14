@@ -113,24 +113,26 @@ export function getFilteredCodes(
     labelContains?: string;
   }
 ): FormattedCodeItem[] {
+  // 지역 변수로 분해해야 콜백 안에서도 narrowing 이 유지된다 (프로퍼티 접근은 유지 안 됨)
+  const { excludeEmpty, includeValues, excludeValues, labelContains } = filter;
+
   let codes = getCodesById(formattedData, id);
 
-  if (filter.excludeEmpty) {
+  if (excludeEmpty) {
     codes = codes.filter(code => code.value.trim() !== "");
   }
 
-  if (filter.includeValues) {
-    codes = codes.filter(code => filter.includeValues!.includes(code.value));
+  if (includeValues) {
+    codes = codes.filter(code => includeValues.includes(code.value));
   }
 
-  if (filter.excludeValues) {
-    codes = codes.filter(code => !filter.excludeValues!.includes(code.value));
+  if (excludeValues) {
+    codes = codes.filter(code => !excludeValues.includes(code.value));
   }
 
-  if (filter.labelContains) {
-    codes = codes.filter(code => 
-      code.label.toLowerCase().includes(filter.labelContains!.toLowerCase())
-    );
+  if (labelContains) {
+    const keyword = labelContains.toLowerCase();
+    codes = codes.filter(code => code.label.toLowerCase().includes(keyword));
   }
 
   return codes;

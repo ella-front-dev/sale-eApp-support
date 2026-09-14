@@ -25,7 +25,7 @@ const getInquiryListHandler = createMockHandler({
     }
 
     if (sort === 'answered') {
-      list = list.sort((a, b) => (a.status === '답변완료' ? -1 : 1));
+      list = list.sort((a, b) => Number(b.status === '답변완료') - Number(a.status === '답변완료'));
     }
 
     const result: BizNaviInquiryListResponse = { list, total: list.length };

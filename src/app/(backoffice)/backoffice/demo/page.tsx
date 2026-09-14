@@ -2,8 +2,8 @@
 
 import { Box, Divider } from '@mui/material';
 
-import CommonCodeDemo from '@/components/CommonCodeDemo';
-import ValueToLabelDemo from '@/components/ValueToLabelDemo';
+import CommonCodeDemo from '@/components/demo/CommonCodeDemo';
+import ValueToLabelDemo from '@/components/demo/ValueToLabelDemo';
 
 export default function CommonCodeDemoPage() {
   return (

@@ -15,7 +15,7 @@ import {
 import { Control, FieldErrors, useFieldArray, Controller } from 'react-hook-form';
 import { UseFormGetValues, UseFormSetValue } from 'react-hook-form';
 
-import AnswerSection from '../AnswerSection';
+import AnswerSection from './AnswerSection';
 
 import { FormData } from '@/types/form';
 import { PagePermissions, canDeleteItemByIndex } from '@/types/pageMode';

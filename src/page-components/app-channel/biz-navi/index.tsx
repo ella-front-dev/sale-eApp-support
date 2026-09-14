@@ -43,7 +43,7 @@ export default function BizNavi({ isRegisterOpen = false, onRegisterClose }: Biz
   const [selectedItem, setSelectedItem] = useState<BizNaviInquiryItem | null>(null);
   const [queryEnabled, setQueryEnabled] = useState(true);
 
-  const [customerSearchKey, setCustomerSearchKey] = useState(0);
+  const [customerSearchKey] = useState(0);
 
   const { isOpen: isDetailOpen, openModal: openDetailModal, closeModal: closeDetailModal } = useModalState();
 
@@ -82,14 +82,9 @@ export default function BizNavi({ isRegisterOpen = false, onRegisterClose }: Biz
     setSelectedItem(null);
   };
 
-  //   const handleSelectCustomer = (cust: CustomerDto) => {
-  //   setSelectedCustomer(cust);
-  //   setFoundCustomerId(cust.customerId ?? null);
-  // };
-
+  // TODO: 고객 선택 시 선택된 고객 정보를 상태에 반영 (현재는 검색 UI 동작만 확인)
   const handleSelectCustomer = () => {
-    // setSelectedCustomer(cust);
-    // setFoundCustomerId(cust.customerId ?? null);
+    // 예: setSelectedCustomer(cust); setFoundCustomerId(cust.customerId ?? null);
   };
 
   return (

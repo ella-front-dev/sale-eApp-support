@@ -4,7 +4,7 @@ import { Button, useModalState } from 'sales-frontend-design-system';
 
 import { AppChannelBottomBar } from '@/components/layout/app-channel/bottom-bar';
 import { AppChannelPageLayout } from '@/components/layout/app-channel/page-layout';
-import BizNavi from '@/page-components/app-channel/bizNavi';
+import BizNavi from '@/page-components/app-channel/biz-navi';
 
 export default function BizNaviPage() {
   const { isOpen: isRegisterOpen, openModal: openRegisterModal, closeModal: closeRegisterModal } = useModalState();

@@ -31,51 +31,51 @@ export interface MultiSheetOptions {
 
 /**
  * 워크시트 컬럼 너비 자동 조정
+ *
+ * 컬럼 순서와 목록은 json_to_sheet 와 동일하게 첫 행의 키를 기준으로 한다.
  */
-const setAutoWidth = (worksheet: XLSX.WorkSheet, data: Record<string, unknown>[]): void => {
-  if (!data || data.length === 0) {
-return;
-}
+const setAutoWidth = (worksheet: XLSX.WorkSheet, data: object[]): void => {
+  const [firstRow] = data;
+  if (!firstRow) {
+    return;
+  }
 
-  const keys = Object.keys(data[0]);
-  const columnWidths: ColumnWidth[] = keys.map((key) => {
-    // 헤더 길이
-    const headerLength = key.length;
-    
-    // 샘플값(최대 100개) 길이들을 number[]로 수집
-    const sampleLengths = data
-      .slice(0, 100)
-      .map((row) => {
-        const value = row[key];
+  // 헤더 길이로 초기화한 뒤, 샘플 행(최대 100개)을 훑어 최대 길이로 갱신
+  const maxLengthByKey = new Map<string, number>(
+    Object.keys(firstRow).map((key) => [key, key.length])
+  );
 
-        return value !== undefined && value !== null ? String(value).length : 0;
-      })
-      .filter((length): length is number => typeof length === 'number');
+  data.slice(0, 100).forEach((row) => {
+    Object.entries(row).forEach(([key, value]) => {
+      const current = maxLengthByKey.get(key);
+      if (current === undefined) {
+        return;
+      }
 
-    // 샘플 데이터 중 최대 길이
-    const maxSampleLength = sampleLengths.length > 0 ? Math.max(...sampleLengths) : 0;
-    
-    // 헤더와 샘플 데이터 중 더 긴 길이 선택
-    const maxLength = Math.max(headerLength, maxSampleLength);
-    
-    // 최소 10, 최대 50으로 제한하고 여백 2 추가
-    const wch = Math.min(Math.max(maxLength + 2, 10), 50);
-    
-    return { wch } as ColumnWidth;
+      const length = value === undefined || value === null ? 0 : String(value).length;
+      if (length > current) {
+        maxLengthByKey.set(key, length);
+      }
+    });
   });
 
-  (worksheet as XLSX.WorkSheet & { '!cols'?: ColumnWidth[] })['!cols'] = columnWidths;
+  // 최소 10, 최대 50으로 제한하고 여백 2 추가
+  const columnWidths: ColumnWidth[] = [...maxLengthByKey.values()].map((maxLength) => ({
+    wch: Math.min(Math.max(maxLength + 2, 10), 50)
+  }));
+
+  worksheet['!cols'] = columnWidths;
 };
 
 /**
  * 데이터를 엑셀로 다운로드 (내부 함수)
  */
 export const downloadDataAsExcel = async (
-  data: Record<string, unknown>[] | Record<string, unknown>,
+  data: object[] | object,
   options: ExcelDownloadOptions = {}
 ): Promise<void> => {
   const workbook = XLSX.utils.book_new();
-  const dataArray = Array.isArray(data) ? data : [data];
+  const dataArray: object[] = Array.isArray(data) ? data : [data];
   const worksheet = XLSX.utils.json_to_sheet(dataArray) as XLSX.WorkSheet;
   
   // 자동 컬럼 너비 설정
@@ -208,6 +208,38 @@ export const downloadMultipleApisAsSheets = async (
 };
 
 /**
+ * 이미 메모리에 있는 데이터를 이름별로 나눠 다중 시트 엑셀로 다운로드
+ * (API 호출 없이, 클라이언트에서 이미 들고 있는 데이터를 시트로 쪼갤 때 사용)
+ */
+export const downloadDataAsMultiSheetExcel = (
+  sheets: { name: string; data: object[] }[],
+  options: MultiSheetOptions = {}
+): void => {
+  const workbook = XLSX.utils.book_new();
+
+  sheets.forEach(({ name, data }) => {
+    if (data.length === 0) {
+      return;
+    }
+
+    const worksheet = XLSX.utils.json_to_sheet(data) as XLSX.WorkSheet;
+    if (options.autoWidth ?? true) {
+      setAutoWidth(worksheet, data);
+    }
+
+    const sheetName = name.length > 31 ? `${name.substring(0, 28)}...` : name;
+    XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
+  });
+
+  const timestamp = options.includeTimestamp
+    ? `_${dayjs().format('YYYYMMDD')}`
+    : '';
+
+  const filename = `${options.filename || 'multi_sheet_data'}${timestamp}.xlsx`;
+  XLSX.writeFile(workbook, filename);
+};
+
+/**
  * 간단한 사용을 위한 헬퍼 함수들
  */
 
@@ -233,69 +265,4 @@ export const downloadMultiSheetData = async (
   filename?: string
 ): Promise<void> => {
   return downloadMultipleApisAsSheets(apiEndpoints, { filename });
-};
-
-/**
- * Mock 데이터를 사용한 테스트 함수들
- */
-export const testDownloadFunctions = {
-  // 사용자 데이터 Mock
-  users: () => Array.from({ length: 50 }, (_, i) => ({
-    id: i + 1,
-    name: `사용자${i + 1}`,
-    email: `user${i + 1}@example.com`,
-    department: ['개발팀', '디자인팀', '기획팀'][i % 3],
-    joinDate: dayjs().subtract(i * 10, 'day').format('YYYY-MM-DD')
-  })),
-
-  // 상품 데이터 Mock
-  products: () => Array.from({ length: 30 }, (_, i) => ({
-    id: i + 1,
-    name: `상품${i + 1}`,
-    category: ['전자제품', '의류', '도서'][i % 3],
-    price: (i + 1) * 1000,
-    stock: Math.floor(Math.random() * 100)
-  })),
-
-  // 주문 데이터 Mock
-  orders: () => Array.from({ length: 100 }, (_, i) => ({
-    id: i + 1,
-    orderNumber: `ORD${String(i + 1).padStart(6, '0')}`,
-    customerName: `고객${i + 1}`,
-    totalAmount: (i + 1) * 500,
-    status: ['완료', '진행중', '취소'][i % 3],
-    orderDate: dayjs().subtract(i * 2, 'day').format('YYYY-MM-DD')
-  }))
-};
-
-/**
- * Mock 데이터로 테스트할 수 있는 헬퍼 함수들
- */
-
-// Mock 데이터로 단일 다운로드 테스트
-export const testSingleDownload = async (dataType: 'users' | 'products' | 'orders'): Promise<void> => {
-  const data = testDownloadFunctions[dataType]();
-
-  return downloadDataAsExcel(data, {
-    filename: `test_${dataType}`,
-    sheetName: dataType,
-    includeTimestamp: true,
-    autoWidth: true
-  });
-};
-
-// Mock 데이터로 다중 시트 다운로드 테스트
-export const testMultiSheetDownload = async (): Promise<void> => {
-  const workbook = XLSX.utils.book_new();
-
-  // 각 Mock 데이터를 시트로 추가
-  Object.entries(testDownloadFunctions).forEach(([key, dataFunc]) => {
-    const data = dataFunc();
-    const worksheet = XLSX.utils.json_to_sheet(data) as XLSX.WorkSheet;
-    setAutoWidth(worksheet, data);
-    XLSX.utils.book_append_sheet(workbook, worksheet, key);
-  });
-
-  const filename = `test_multi_sheet_${Date.now()}.xlsx`;
-  XLSX.writeFile(workbook, filename);
 };

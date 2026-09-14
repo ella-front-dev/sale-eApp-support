@@ -25,7 +25,9 @@ import {
   TableRow,
   Paper
 } from '@mui/material';
-import * as XLSX from 'xlsx';
+
+import { demoDataSets } from '@/components/demo/excelDemoData';
+import { downloadDataAsExcel, downloadDataAsMultiSheetExcel } from '@/lib/excelDownloader';
 
 // API 데이터 타입 정의
 interface ApiDataType {
@@ -69,70 +71,10 @@ const availableApis: ApiDataType[] = [
   }
 ];
 
-// Mock API 데이터 생성 함수들
-const generateMockData = {
-  users: () => Array.from({ length: 50 }, (_, i) => ({
-    id: i + 1,
-    name: `사용자${i + 1}`,
-    email: `user${i + 1}@example.com`,
-    phone: `010-${String(Math.floor(Math.random() * 10000)).padStart(4, '0')}-${String(Math.floor(Math.random() * 10000)).padStart(4, '0')}`,
-    department: ['개발팀', '디자인팀', '기획팀', '마케팅팀'][i % 4],
-    position: ['팀장', '대리', '사원', '주임'][i % 4],
-    joinDate: new Date(2020 + (i % 4), (i % 12), (i % 28) + 1).toISOString().split('T')[0],
-    status: ['활성', '비활성', '대기'][i % 3]
-  })),
-
-  products: () => Array.from({ length: 100 }, (_, i) => ({
-    id: i + 1,
-    name: `상품${i + 1}`,
-    category: ['전자제품', '의류', '도서', '식품', '가구'][i % 5],
-    price: (i + 1) * 1000 + Math.floor(Math.random() * 5000),
-    stock: Math.floor(Math.random() * 100),
-    brand: ['브랜드A', '브랜드B', '브랜드C'][i % 3],
-    rating: (Math.random() * 2 + 3).toFixed(1),
-    createdAt: new Date(2023, (i % 12), (i % 28) + 1).toISOString().split('T')[0]
-  })),
-
-  orders: () => Array.from({ length: 200 }, (_, i) => ({
-    id: i + 1,
-    orderNumber: `ORD${String(i + 1).padStart(6, '0')}`,
-    customerName: `고객${i + 1}`,
-    productName: `상품${(i % 100) + 1}`,
-    quantity: Math.floor(Math.random() * 5) + 1,
-    totalAmount: (i + 1) * 500 + Math.floor(Math.random() * 10000),
-    status: ['주문완료', '배송중', '배송완료', '취소'][i % 4],
-    orderDate: new Date(2024, (i % 12), (i % 28) + 1).toISOString().split('T')[0],
-    deliveryDate: new Date(2024, (i % 12), (i % 28) + 3).toISOString().split('T')[0]
-  })),
-
-  forms: () => Array.from({ length: 30 }, (_, i) => ({
-    id: i + 1,
-    formCode: `FORM${String(i + 1).padStart(3, '0')}`,
-    title: `서식${i + 1}`,
-    category: ['개인정보', '계약서', '신청서', '확인서'][i % 4],
-    version: `v${Math.floor(i / 10) + 1}.${i % 10}`,
-    status: ['사용중', '검토중', '폐기'][i % 3],
-    createdBy: `작성자${(i % 10) + 1}`,
-    createdAt: new Date(2024, (i % 12), (i % 28) + 1).toISOString().split('T')[0],
-    lastModified: new Date(2024, (i % 12), (i % 28) + 5).toISOString().split('T')[0]
-  })),
-
-  analytics: () => Array.from({ length: 365 }, (_, i) => ({
-    date: new Date(2024, 0, i + 1).toISOString().split('T')[0],
-    pageViews: Math.floor(Math.random() * 1000) + 100,
-    users: Math.floor(Math.random() * 200) + 50,
-    sessions: Math.floor(Math.random() * 300) + 80,
-    bounceRate: (Math.random() * 30 + 20).toFixed(2),
-    avgSessionDuration: `${Math.floor(Math.random() * 5) + 1}:${String(Math.floor(Math.random() * 60)).padStart(2, '0')}`,
-    conversions: Math.floor(Math.random() * 20),
-    revenue: Math.floor(Math.random() * 100000) + 10000
-  }))
-};
-
 export default function ApiExcelDownload() {
   const [selectedApis, setSelectedApis] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [previewData, setPreviewData] = useState<Record<string, unknown[]>>({});
+  const [previewData, setPreviewData] = useState<Record<string, Record<string, unknown>[]>>({});
 
   // API 선택 핸들러
   const handleApiSelection = (apiId: string) => {
@@ -162,12 +104,12 @@ export default function ApiExcelDownload() {
 
     setIsLoading(true);
     try {
-      const preview: Record<string, unknown[]> = {};
+      const preview: Record<string, Record<string, unknown>[]> = {};
       
       // 실제로는 여기서 API를 호출하지만, 지금은 Mock 데이터 사용
       selectedApis.forEach(apiId => {
-        if (apiId in generateMockData) {
-          preview[apiId] = generateMockData[apiId as keyof typeof generateMockData]().slice(0, 5); // 미리보기용으로 5개만
+        if (apiId in demoDataSets) {
+          preview[apiId] = demoDataSets[apiId as keyof typeof demoDataSets]().slice(0, 5); // 미리보기용으로 5개만
         }
       });
 
@@ -194,8 +136,8 @@ export default function ApiExcelDownload() {
 
       // 모든 선택된 API 데이터를 하나로 합치기
       selectedApis.forEach(apiId => {
-        if (apiId in generateMockData) {
-          const data = generateMockData[apiId as keyof typeof generateMockData]();
+        if (apiId in demoDataSets) {
+          const data = demoDataSets[apiId as keyof typeof demoDataSets]();
           const apiInfo = availableApis.find(api => api.id === apiId);
           
           // 각 데이터에 API 구분자 추가
@@ -208,31 +150,13 @@ export default function ApiExcelDownload() {
         }
       });
 
-      // 엑셀 파일 생성
-      const workbook = XLSX.utils.book_new();
-      const worksheet = XLSX.utils.json_to_sheet(allData);
-      
-      // 컬럼 너비 자동 조정
-      const range = XLSX.utils.decode_range(worksheet['!ref'] || 'A1:A1');
-      const columnWidths = [];
-      for (let {c} = range.s; c <= range.e.c; c++) {
-        let maxWidth = 10;
-        for (let {r} = range.s; r <= Math.min(range.e.r, 100); r++) {
-          const cellAddress = XLSX.utils.encode_cell({ r, c });
-          const cell = worksheet[cellAddress];
-          if (cell && cell.v) {
-            maxWidth = Math.max(maxWidth, String(cell.v).length);
-          }
-        }
-        columnWidths.push({ wch: Math.min(maxWidth + 2, 50) });
-      }
-      worksheet['!cols'] = columnWidths;
+      await downloadDataAsExcel(allData, {
+        filename: 'API_통합데이터',
+        sheetName: '통합데이터',
+        includeTimestamp: true,
+        autoWidth: true
+      });
 
-      XLSX.utils.book_append_sheet(workbook, worksheet, '통합데이터');
-      
-      const fileName = `API_통합데이터_${new Date().getFullYear()}${String(new Date().getMonth() + 1).padStart(2, '0')}${String(new Date().getDate()).padStart(2, '0')}_${new Date().getTime()}.xlsx`;
-      XLSX.writeFile(workbook, fileName);
-      
       alert(`${selectedApis.length}개 API의 통합 데이터가 다운로드되었습니다.`);
     } catch {
       alert('엑셀 다운로드 중 오류가 발생했습니다.');
@@ -251,31 +175,24 @@ export default function ApiExcelDownload() {
 
     setIsLoading(true);
     try {
-      const workbook = XLSX.utils.book_new();
-
       // 각 API별로 시트 생성
-      selectedApis.forEach(apiId => {
-        if (apiId in generateMockData) {
-          const data = generateMockData[apiId as keyof typeof generateMockData]();
+      const sheets = selectedApis
+        .filter(apiId => apiId in demoDataSets)
+        .map(apiId => {
           const apiInfo = availableApis.find(api => api.id === apiId);
-          
-          const worksheet = XLSX.utils.json_to_sheet(data);
-          
-          // 컬럼 너비 자동 조정
-          if (data.length > 0) {
-            const columnWidths = Object.keys(data[0]).map(key => ({
-              wch: Math.max(key.length, 15)
-            }));
-            worksheet['!cols'] = columnWidths;
-          }
 
-          XLSX.utils.book_append_sheet(workbook, worksheet, apiInfo?.name || apiId);
-        }
+          return {
+            name: apiInfo?.name || apiId,
+            data: demoDataSets[apiId as keyof typeof demoDataSets]()
+          };
+        });
+
+      downloadDataAsMultiSheetExcel(sheets, {
+        filename: 'API_다중시트',
+        includeTimestamp: true,
+        autoWidth: true
       });
 
-      const fileName = `API_다중시트_${new Date().getFullYear()}${String(new Date().getMonth() + 1).padStart(2, '0')}${String(new Date().getDate()).padStart(2, '0')}_${new Date().getTime()}.xlsx`;
-      XLSX.writeFile(workbook, fileName);
-      
       alert(`${selectedApis.length}개 API의 다중 시트 데이터가 다운로드되었습니다.`);
     } catch {
       alert('다중 시트 다운로드 중 오류가 발생했습니다.');
@@ -408,7 +325,7 @@ export default function ApiExcelDownload() {
                     <Table size="small">
                       <TableHead>
                         <TableRow>
-                          {data.length > 0 && Object.keys(data[0] as Record<string, unknown>).map((key) => (
+                          {data.length > 0 && Object.keys(data[0]).map((key) => (
                             <TableCell key={key} sx={{ fontWeight: 'bold' }}>
                               {key}
                             </TableCell>
@@ -418,7 +335,7 @@ export default function ApiExcelDownload() {
                       <TableBody>
                         {data.map((row, index) => (
                           <TableRow key={index}>
-                            {Object.values(row as Record<string, unknown>).map((value, cellIndex) => (
+                            {Object.values(row).map((value, cellIndex) => (
                               <TableCell key={cellIndex}>
                                 {typeof value === 'object' ? JSON.stringify(value) : String(value)}
                               </TableCell>

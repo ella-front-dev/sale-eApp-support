@@ -18,13 +18,12 @@ import {
   Divider
 } from '@mui/material';
 
+import { downloadDemoSingleSheet, downloadDemoMultiSheet } from '@/components/demo/excelDemoData';
 import {
   downloadApiData,
   downloadMultiApiData,
   downloadMultiSheetData,
   downloadMultipleApis,
-  testSingleDownload,
-  testMultiSheetDownload,
   type ApiEndpoint
 } from '@/lib/excelDownloader';
 
@@ -100,7 +99,7 @@ export default function SimpleExcelDownload() {
   // Mock 데이터 테스트
   const handleTestSingleDownload = async () => {
     try {
-      await testSingleDownload('users');
+      await downloadDemoSingleSheet('users');
       alert('Mock 사용자 데이터가 다운로드되었습니다.');
     } catch (error) {
       alert(`테스트 다운로드 실패: ${  error}`);
@@ -109,7 +108,7 @@ export default function SimpleExcelDownload() {
 
   const handleTestMultiSheetDownload = async () => {
     try {
-      await testMultiSheetDownload();
+      await downloadDemoMultiSheet();
       alert('Mock 다중 시트 데이터가 다운로드되었습니다.');
     } catch (error) {
       alert(`테스트 다운로드 실패: ${  error}`);

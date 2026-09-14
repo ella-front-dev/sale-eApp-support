@@ -22,7 +22,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
 import { Control, FieldErrors, useFieldArray, Controller, useWatch, UseFormGetValues, UseFormSetValue } from 'react-hook-form';
 
-import ComponentSection from '../ComponentSection';
+import ComponentSection from './ComponentSection';
 
 import { FormData } from '@/types/form';
 import { PagePermissions, canDeleteItemByIndex } from '@/types/pageMode';

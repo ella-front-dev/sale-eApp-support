@@ -31,7 +31,8 @@ import {
   Alert,
   Divider
 } from '@mui/material';
-import * as XLSX from 'xlsx';
+
+import { downloadDataAsExcel, downloadDataAsMultiSheetExcel } from '@/lib/excelDownloader';
 
 // 엑셀 데이터 타입 정의
 interface ExcelRowData {
@@ -115,24 +116,17 @@ export default function ExcelDownload() {
   };
 
   // 기본 엑셀 다운로드
-  const handleBasicDownload = () => {
+  const handleBasicDownload = async () => {
     try {
       const data = generateAndFilterData();
-      
-      const workbook = XLSX.utils.book_new();
-      const worksheet = XLSX.utils.json_to_sheet(data);
-      
-      // 컬럼 너비 자동 조정
-      const columnWidths = Object.keys(data[0] || {}).map(key => ({
-        wch: Math.max(key.length, 15)
-      }));
-      worksheet['!cols'] = columnWidths;
 
-      XLSX.utils.book_append_sheet(workbook, worksheet, '서식 데이터');
-      
-      const fileName = `서식_데이터_${new Date().getFullYear()}${String(new Date().getMonth() + 1).padStart(2, '0')}${String(new Date().getDate()).padStart(2, '0')}_${new Date().getTime()}.xlsx`;
-      XLSX.writeFile(workbook, fileName);
-      
+      await downloadDataAsExcel(data, {
+        filename: '서식_데이터',
+        sheetName: '서식 데이터',
+        includeTimestamp: true,
+        autoWidth: true
+      });
+
       alert(`${data.length}개의 데이터가 엑셀로 다운로드되었습니다.`);
     } catch {
       alert('엑셀 파일 다운로드 중 오류가 발생했습니다.');
@@ -143,39 +137,25 @@ export default function ExcelDownload() {
   const handleMultiSheetDownload = () => {
     try {
       const allData = generateMockApiData(dataCount);
-      
-      const workbook = XLSX.utils.book_new();
 
-      // 카테고리별 시트 생성
+      // 카테고리별 시트 + 전체 데이터 시트
       const categories = ['CAT001', 'CAT002', 'CAT003', 'CAT004'];
       const categoryNames = ['개인정보', '사업정보', '계약정보', '신원정보'];
 
-      categories.forEach((cat, index) => {
-        const categoryData = allData.filter(item => item['카테고리 코드'] === cat);
-        if (categoryData.length > 0) {
-          const worksheet = XLSX.utils.json_to_sheet(categoryData);
-          
-          // 컬럼 너비 설정
-          const columnWidths = Object.keys(categoryData[0]).map(key => ({
-            wch: Math.max(key.length, 15)
-          }));
-          worksheet['!cols'] = columnWidths;
+      const sheets = [
+        ...categories.map((cat, index) => ({
+          name: categoryNames[index],
+          data: allData.filter(item => item['카테고리 코드'] === cat)
+        })),
+        { name: '전체데이터', data: allData }
+      ];
 
-          XLSX.utils.book_append_sheet(workbook, worksheet, categoryNames[index]);
-        }
+      downloadDataAsMultiSheetExcel(sheets, {
+        filename: '서식_다중시트',
+        includeTimestamp: true,
+        autoWidth: true
       });
 
-      // 전체 데이터 시트
-      const allWorksheet = XLSX.utils.json_to_sheet(allData);
-      const columnWidths = Object.keys(allData[0] || {}).map(key => ({
-        wch: Math.max(key.length, 15)
-      }));
-      allWorksheet['!cols'] = columnWidths;
-      XLSX.utils.book_append_sheet(workbook, allWorksheet, '전체데이터');
-
-      const fileName = `서식_다중시트_${new Date().getFullYear()}${String(new Date().getMonth() + 1).padStart(2, '0')}${String(new Date().getDate()).padStart(2, '0')}_${new Date().getTime()}.xlsx`;
-      XLSX.writeFile(workbook, fileName);
-      
       alert('다중 시트 엑셀 파일이 다운로드되었습니다.');
     } catch {
       alert('다중 시트 엑셀 파일 다운로드 중 오류가 발생했습니다.');
@@ -183,15 +163,8 @@ export default function ExcelDownload() {
   };
 
   // 템플릿 다운로드
-  const handleTemplateDownload = () => {
+  const handleTemplateDownload = async () => {
     try {
-      const templateHeaders = [
-        '순서', '서식 코드', '카테고리 코드', '서식 파일명', '서식명',
-        '통합서식 여부', '사전조회 여부', '그룹 순서', '그룹 코드', '그룹명',
-        '메뉴 코드', '구성 순서', '구성 코드', '행 순서', '서식 답변명',
-        '계약 관계자 코드', '중복입력 가능여부', '데이터 구분'
-      ];
-
       // 샘플 데이터 1행 추가
       const sampleData = [{
         순서: 1,
@@ -214,18 +187,12 @@ export default function ExcelDownload() {
         '데이터 구분': 'MASTER'
       }];
 
-      const workbook = XLSX.utils.book_new();
-      const worksheet = XLSX.utils.json_to_sheet(sampleData);
-      
-      // 컬럼 너비 설정
-      const columnWidths = templateHeaders.map(header => ({
-        wch: Math.max(header.length, 15)
-      }));
-      worksheet['!cols'] = columnWidths;
+      await downloadDataAsExcel(sampleData, {
+        filename: '서식_업로드_템플릿',
+        sheetName: '업로드_템플릿',
+        autoWidth: true
+      });
 
-      XLSX.utils.book_append_sheet(workbook, worksheet, '업로드_템플릿');
-      XLSX.writeFile(workbook, '서식_업로드_템플릿.xlsx');
-      
       alert('업로드 템플릿이 다운로드되었습니다.');
     } catch {
       alert('템플릿 다운로드 중 오류가 발생했습니다.');
@@ -233,30 +200,23 @@ export default function ExcelDownload() {
   };
 
   // 커스텀 필터 적용된 다운로드
-  const handleFilteredDownload = () => {
+  const handleFilteredDownload = async () => {
     try {
       const data = generateAndFilterData();
-      
+
       if (data.length === 0) {
         alert('필터 조건에 맞는 데이터가 없습니다.');
 
         return;
       }
 
-      const workbook = XLSX.utils.book_new();
-      const worksheet = XLSX.utils.json_to_sheet(data);
-      
-      // 컬럼 너비 설정
-      const columnWidths = Object.keys(data[0]).map(key => ({
-        wch: Math.max(key.length, 15)
-      }));
-      worksheet['!cols'] = columnWidths;
+      await downloadDataAsExcel(data, {
+        filename: '필터링_서식_데이터',
+        sheetName: '필터링된_데이터',
+        includeTimestamp: true,
+        autoWidth: true
+      });
 
-      XLSX.utils.book_append_sheet(workbook, worksheet, '필터링된_데이터');
-      
-      const fileName = `필터링_서식_데이터_${new Date().getTime()}.xlsx`;
-      XLSX.writeFile(workbook, fileName);
-      
       alert(`필터 조건에 맞는 ${data.length}개의 데이터가 다운로드되었습니다.`);
     } catch {
       alert('필터링된 엑셀 다운로드 중 오류가 발생했습니다.');
